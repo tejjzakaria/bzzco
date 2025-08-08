@@ -1,0 +1,564 @@
+<!doctype html>
+
+<html lang="en" class="layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr" data-skin="default"
+    data-bs-theme="light" data-assets-path="/assets/" data-template="vertical-menu-template">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Edit Product - Bzz Co.</title>
+
+    <meta name="description" content="" />
+    <%- include("layout/header") %>
+</head>
+
+<body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <!-- Menu -->
+            <%- include("layout/sidebar") %>
+
+            <div class="menu-mobile-toggler d-xl-none rounded-1">
+                <a href="javascript:void(0);"
+                    class="layout-menu-toggle menu-link text-large text-bg-secondary p-2 rounded-1">
+                    <i class="ri ri-menu-line icon-base"></i>
+                    <i class="ri ri-arrow-right-s-line icon-base"></i>
+                </a>
+            </div>
+            <!-- / Menu -->
+
+            <!-- Layout container -->
+            <div class="layout-page">
+                <!-- Navbar -->
+                <%- include("layout/header") %>
+                <!-- / Navbar -->
+
+                <!-- Content wrapper -->
+                <div class="content-wrapper">
+                    <!-- Content -->
+                    <div class="container-xxl flex-grow-1 container-p-y">
+                        <!-- Breadcrumb -->
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="/view-products">Products</a>
+                                </li>
+                                <li class="breadcrumb-item active">Edit Product</li>
+                            </ol>
+                        </nav>
+
+                        <div class="row">
+                            <!-- Product Form -->
+                            <div class="col-12 col-lg-8">
+                                <div class="card mb-6">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">Edit Product</h5>
+                                        <small class="text-muted float-end">Update product information</small>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="editProductForm">
+                                            <input type="hidden" id="productId" name="productId">
+                                            
+                                            <!-- Product Title -->
+                                            <div class="mb-4">
+                                                <label class="form-label" for="productTitle">Product Title *</label>
+                                                <input type="text" class="form-control" id="productTitle" name="productTitle"
+                                                    placeholder="Enter product title" required>
+                                            </div>
+
+                                            <!-- Category -->
+                                            <div class="mb-4">
+                                                <label class="form-label" for="category">Category *</label>
+                                                <select class="form-select" id="category" name="category" required>
+                                                    <option value="">Select Category</option>
+                                                    <option value="Electronics">Electronics</option>
+                                                    <option value="Clothing">Clothing</option>
+                                                    <option value="Home & Garden">Home & Garden</option>
+                                                    <option value="Sports">Sports</option>
+                                                    <option value="Books">Books</option>
+                                                    <option value="Toys">Toys</option>
+                                                    <option value="Health & Beauty">Health & Beauty</option>
+                                                    <option value="Automotive">Automotive</option>
+                                                    <option value="Office">Office</option>
+                                                    <option value="Household">Household</option>
+                                                    <option value="Management">Management</option>
+                                                    <option value="Food & Beverages">Food & Beverages</option>
+                                                    <option value="Jewelry">Jewelry</option>
+                                                    <option value="Pet Supplies">Pet Supplies</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Description -->
+                                            <div class="mb-4">
+                                                <label class="form-label" for="description">Description</label>
+                                                <textarea class="form-control" id="description" name="description" rows="4"
+                                                    placeholder="Enter product description"></textarea>
+                                            </div>
+
+                                            <!-- SKU and Price Row -->
+                                            <div class="row">
+                                                <div class="col-md-6 mb-4">
+                                                    <label class="form-label" for="productSku">SKU *</label>
+                                                    <input type="text" class="form-control" id="productSku" name="productSku"
+                                                        placeholder="Enter SKU" required>
+                                                </div>
+                                                <div class="col-md-6 mb-4">
+                                                    <label class="form-label" for="productPrice">Price *</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">$</span>
+                                                        <input type="number" class="form-control" id="productPrice" name="productPrice"
+                                                            placeholder="0.00" step="0.01" min="0" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Quantity and Weight Row -->
+                                            <div class="row">
+                                                <div class="col-md-6 mb-4">
+                                                    <label class="form-label" for="quantity">Quantity *</label>
+                                                    <input type="number" class="form-control" id="quantity" name="quantity"
+                                                        placeholder="Enter quantity" min="0" required>
+                                                </div>
+                                                <div class="col-md-6 mb-4">
+                                                    <label class="form-label" for="weight">Weight</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="weight" name="weight"
+                                                            placeholder="Enter weight">
+                                                        <span class="input-group-text">kg</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Manufacturer and Dimensions Row -->
+                                            <div class="row">
+                                                <div class="col-md-6 mb-4">
+                                                    <label class="form-label" for="manufacturer">Manufacturer</label>
+                                                    <input type="text" class="form-control" id="manufacturer" name="manufacturer"
+                                                        placeholder="Enter manufacturer">
+                                                </div>
+                                                <div class="col-md-6 mb-4">
+                                                    <label class="form-label" for="dimensions">Dimensions</label>
+                                                    <input type="text" class="form-control" id="dimensions" name="dimensions"
+                                                        placeholder="L x W x H">
+                                                </div>
+                                            </div>
+
+                                            <!-- Status and Stock -->
+                                            <div class="row">
+                                                <div class="col-md-6 mb-4">
+                                                    <label class="form-label" for="status">Status</label>
+                                                    <select class="form-select" id="status" name="status">
+                                                        <option value="Published">Published</option>
+                                                        <option value="Draft">Draft</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6 mb-4">
+                                                    <label class="form-label">Stock Status</label>
+                                                    <div class="form-check form-switch mt-2">
+                                                        <input class="form-check-input" type="checkbox" id="inStock" name="inStock">
+                                                        <label class="form-check-label" for="inStock">In Stock</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Tags -->
+                                            <div class="mb-4">
+                                                <label class="form-label" for="tags">Tags</label>
+                                                <input type="text" class="form-control" id="tags" name="tags"
+                                                    placeholder="Enter tags separated by commas">
+                                                <small class="text-muted">Separate multiple tags with commas</small>
+                                            </div>
+
+                                            <!-- Action Buttons -->
+                                            <div class="d-flex justify-content-between">
+                                                <button type="button" class="btn btn-outline-secondary" onclick="window.history.back()">
+                                                    <i class="ri ri-arrow-left-line me-2"></i>Cancel
+                                                </button>
+                                                <div>
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="ri ri-save-line me-2"></i>Update Product
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product Images -->
+                            <div class="col-12 col-lg-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Product Images</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Current Images -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Current Images</label>
+                                            <div id="currentImages" class="d-flex flex-wrap gap-2">
+                                                <!-- Images will be loaded here -->
+                                            </div>
+                                        </div>
+
+                                        <!-- Upload New Images -->
+                                        <div class="mb-3">
+                                            <label class="form-label" for="newImages">Add New Images</label>
+                                            <input type="file" class="form-control" id="newImages" name="newImages" multiple accept="image/*">
+                                            <small class="text-muted">You can select multiple images</small>
+                                        </div>
+
+                                        <!-- Image Preview -->
+                                        <div id="imagePreview" class="d-flex flex-wrap gap-2"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Product Variants -->
+                                <div class="card mt-4">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">Variants</h5>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addVariant()">
+                                            <i class="ri ri-add-line"></i> Add Variant
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="variantsContainer">
+                                            <!-- Variants will be loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- / Content -->
+
+                    <!-- Footer -->
+                    <%- include("layout/footer") %>
+                    <!-- / Footer -->
+
+                    <div class="content-backdrop fade"></div>
+                </div>
+                <!-- Content wrapper -->
+            </div>
+            <!-- / Layout page -->
+        </div>
+
+        <!-- Overlay -->
+        <div class="layout-overlay layout-menu-toggle"></div>
+
+        <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+        <div class="drag-target"></div>
+    </div>
+    <!-- / Layout wrapper -->
+
+    <!-- Core JS -->
+    <script src="/assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="/assets/vendor/libs/popper/popper.js"></script>
+    <script src="/assets/vendor/js/bootstrap.js"></script>
+    <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
+    <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="/assets/vendor/libs/hammer/hammer.js"></script>
+    <script src="/assets/vendor/libs/i18n/i18n.js"></script>
+    <script src="/assets/vendor/libs/typeahead-js/typeahead.js"></script>
+    <script src="/assets/vendor/js/menu.js"></script>
+
+    <!-- Vendors JS -->
+    <script src="/assets/vendor/libs/select2/select2.js"></script>
+    <script src="/assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
+
+    <!-- Main JS -->
+    <script src="/assets/js/main.js"></script>
+
+    <!-- Page specific JS -->
+    <script>
+        let currentProduct = null;
+        const productId = window.location.pathname.split('/').pop();
+
+        $(document).ready(function () {
+            loadProductData();
+            setupImagePreview();
+            setupFormSubmission();
+        });
+
+        // Load product data
+        function loadProductData() {
+            if (!productId || productId === 'edit-product') {
+                Swal.fire('Error', 'Invalid product ID', 'error').then(() => {
+                    window.location.href = '/view-products';
+                });
+                return;
+            }
+
+            fetch(`/api/products/${productId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        currentProduct = data.product;
+                        populateForm(data.product);
+                    } else {
+                        throw new Error(data.message || 'Failed to load product');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading product:', error);
+                    Swal.fire('Error', error.message || 'Failed to load product data', 'error').then(() => {
+                        window.location.href = '/view-products';
+                    });
+                });
+        }
+
+        // Populate form with product data
+        function populateForm(product) {
+            document.getElementById('productId').value = product._id;
+            document.getElementById('productTitle').value = product.productTitle || '';
+            document.getElementById('category').value = product.category || '';
+            document.getElementById('description').value = product.description || '';
+            document.getElementById('productSku').value = product.productSku || '';
+            document.getElementById('productPrice').value = product.productPrice || '';
+            document.getElementById('quantity').value = product.quantity || '';
+            document.getElementById('weight').value = product.weight || '';
+            document.getElementById('manufacturer').value = product.manufacturer || '';
+            document.getElementById('dimensions').value = product.dimensions || '';
+            document.getElementById('status').value = product.status || 'Published';
+            document.getElementById('inStock').checked = product.inStock || false;
+            
+            // Handle tags
+            if (product.tags && Array.isArray(product.tags)) {
+                document.getElementById('tags').value = product.tags.join(', ');
+            }
+
+            // Load images
+            loadCurrentImages(product.images || []);
+
+            // Load variants
+            loadVariants(product.variants || []);
+        }
+
+        // Load current images
+        function loadCurrentImages(images) {
+            const container = document.getElementById('currentImages');
+            container.innerHTML = '';
+
+            if (images.length === 0) {
+                container.innerHTML = '<p class="text-muted">No images uploaded</p>';
+                return;
+            }
+
+            images.forEach((image, index) => {
+                const imageDiv = document.createElement('div');
+                imageDiv.className = 'position-relative';
+                imageDiv.innerHTML = `
+                    <img src="${image}" class="rounded border" style="width: 80px; height: 80px; object-fit: cover;">
+                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 rounded-circle" 
+                            style="width: 20px; height: 20px; padding: 0; margin: -5px;" 
+                            onclick="removeImage(${index})" title="Remove image">
+                        <i class="ri ri-close-line" style="font-size: 12px;"></i>
+                    </button>
+                `;
+                container.appendChild(imageDiv);
+            });
+        }
+
+        // Remove image
+        function removeImage(index) {
+            if (currentProduct && currentProduct.images) {
+                currentProduct.images.splice(index, 1);
+                loadCurrentImages(currentProduct.images);
+            }
+        }
+
+        // Setup image preview for new uploads
+        function setupImagePreview() {
+            document.getElementById('newImages').addEventListener('change', function(e) {
+                const preview = document.getElementById('imagePreview');
+                preview.innerHTML = '';
+
+                Array.from(e.target.files).forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const div = document.createElement('div');
+                            div.innerHTML = `<img src="${e.target.result}" class="rounded border" style="width: 80px; height: 80px; object-fit: cover;">`;
+                            preview.appendChild(div);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            });
+        }
+
+        // Load variants
+        function loadVariants(variants) {
+            const container = document.getElementById('variantsContainer');
+            container.innerHTML = '';
+
+            if (variants.length === 0) {
+                container.innerHTML = '<p class="text-muted">No variants added</p>';
+                return;
+            }
+
+            variants.forEach((variant, index) => {
+                addVariantRow(variant.option, variant.value, index);
+            });
+        }
+
+        // Add variant
+        function addVariant() {
+            addVariantRow('', '', Date.now());
+        }
+
+        // Add variant row
+        function addVariantRow(option = '', value = '', id) {
+            const container = document.getElementById('variantsContainer');
+            
+            if (container.innerHTML.includes('text-muted')) {
+                container.innerHTML = '';
+            }
+
+            const variantDiv = document.createElement('div');
+            variantDiv.className = 'row mb-2';
+            variantDiv.id = `variant-${id}`;
+            variantDiv.innerHTML = `
+                <div class="col-5">
+                    <input type="text" class="form-control form-control-sm" placeholder="Option (e.g., Color)" 
+                           value="${option}" onchange="updateVariant(${id}, 'option', this.value)">
+                </div>
+                <div class="col-5">
+                    <input type="text" class="form-control form-control-sm" placeholder="Value (e.g., Red)" 
+                           value="${value}" onchange="updateVariant(${id}, 'value', this.value)">
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeVariant(${id})">
+                        <i class="ri ri-delete-bin-line"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(variantDiv);
+        }
+
+        // Update variant
+        function updateVariant(id, type, value) {
+            if (!currentProduct.variants) {
+                currentProduct.variants = [];
+            }
+
+            const variantIndex = currentProduct.variants.findIndex(v => v.id === id);
+            if (variantIndex === -1) {
+                currentProduct.variants.push({ id, option: '', value: '' });
+            }
+
+            const variant = currentProduct.variants.find(v => v.id === id);
+            variant[type] = value;
+        }
+
+        // Remove variant
+        function removeVariant(id) {
+            document.getElementById(`variant-${id}`).remove();
+            if (currentProduct.variants) {
+                currentProduct.variants = currentProduct.variants.filter(v => v.id !== id);
+            }
+
+            // Show message if no variants left
+            const container = document.getElementById('variantsContainer');
+            if (container.children.length === 0) {
+                container.innerHTML = '<p class="text-muted">No variants added</p>';
+            }
+        }
+
+        // Setup form submission
+        function setupFormSubmission() {
+            document.getElementById('editProductForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveProduct();
+            });
+        }
+
+        // Save product
+        function saveProduct() {
+            const formData = new FormData();
+            const form = document.getElementById('editProductForm');
+
+            // Add form fields
+            formData.append('productId', productId);
+            formData.append('productTitle', document.getElementById('productTitle').value);
+            formData.append('category', document.getElementById('category').value);
+            formData.append('description', document.getElementById('description').value);
+            formData.append('productSku', document.getElementById('productSku').value);
+            formData.append('productPrice', document.getElementById('productPrice').value);
+            formData.append('quantity', document.getElementById('quantity').value);
+            formData.append('weight', document.getElementById('weight').value);
+            formData.append('manufacturer', document.getElementById('manufacturer').value);
+            formData.append('dimensions', document.getElementById('dimensions').value);
+            formData.append('status', document.getElementById('status').value);
+            formData.append('inStock', document.getElementById('inStock').checked);
+
+            // Handle tags
+            const tags = document.getElementById('tags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+            formData.append('tags', JSON.stringify(tags));
+
+            // Handle existing images
+            if (currentProduct && currentProduct.images) {
+                formData.append('existingImages', JSON.stringify(currentProduct.images));
+            }
+
+            // Handle variants
+            if (currentProduct && currentProduct.variants) {
+                const validVariants = currentProduct.variants.filter(v => v.option && v.value);
+                formData.append('variants', JSON.stringify(validVariants));
+            }
+
+            // Handle new image files
+            const newImages = document.getElementById('newImages').files;
+            for (let i = 0; i < newImages.length; i++) {
+                formData.append('newImages', newImages[i]);
+            }
+
+            // Show loading
+            Swal.fire({
+                title: 'Updating Product...',
+                text: 'Please wait while we update the product.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Submit form
+            fetch(`/api/products/${productId}`, {
+                method: 'PUT',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                Swal.close();
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Product updated successfully.',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = '/view-products';
+                    });
+                } else {
+                    Swal.fire('Error', data.message || 'Failed to update product', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Update error:', error);
+                Swal.close();
+                Swal.fire('Error', 'Failed to update product. Please try again.', 'error');
+            });
+        }
+    </script>
+</body>
+
+</html>

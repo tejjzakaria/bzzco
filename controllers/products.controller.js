@@ -131,6 +131,133 @@ const getProductById = async (req, res) => {
   }
 };
 
+const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log('Update request body:', req.body);
+    
+    const {
+      productTitle,
+      description,
+      productSku,
+      productPrice,
+      quantity,
+      weight,
+      manufacturer,
+      dimensions,
+      category,
+      status,
+      inStock,
+      tags,
+      variants,
+      existingImages
+    } = req.body;
+
+    console.log('Extracted category:', category);
+
+    // Find the existing product
+    const existingProduct = await Product.findById(id);
+    if (!existingProduct) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    // Handle images
+    let updatedImages = [];
+    
+    // Add existing images (not removed)
+    if (existingImages) {
+      try {
+        updatedImages = JSON.parse(existingImages);
+      } catch (e) {
+        updatedImages = [];
+      }
+    }
+
+    // Add new uploaded images
+    if (req.files && req.files.length > 0) {
+      const newImageUrls = req.files.map(file => `/assets/img/products/${file.filename}`);
+      updatedImages = [...updatedImages, ...newImageUrls];
+    }
+
+    // Handle tags
+    let parsedTags = [];
+    if (tags) {
+      try {
+        parsedTags = JSON.parse(tags);
+      } catch (e) {
+        parsedTags = [];
+      }
+    }
+
+    // Handle variants
+    let parsedVariants = [];
+    if (variants) {
+      try {
+        parsedVariants = JSON.parse(variants);
+      } catch (e) {
+        parsedVariants = [];
+      }
+    }
+
+    // Prepare update data
+    const updateData = {
+      productTitle,
+      description,
+      productSku,
+      productPrice: parseFloat(productPrice) || 0,
+      quantity: parseInt(quantity) || 0,
+      weight,
+      manufacturer,
+      dimensions,
+      category,
+      status: status || 'Published',
+      inStock: inStock === 'true' || inStock === true,
+      tags: parsedTags,
+      variants: parsedVariants,
+      images: updatedImages,
+      updatedAt: new Date()
+    };
+
+    console.log('Update data:', updateData);
+
+    // Update the product
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true, runValidators: true }
+    );
+
+    res.json({
+      success: true,
+      message: "Product updated successfully",
+      product: updatedProduct
+    });
+
+  } catch (error) {
+    console.log("ERROR UPDATING PRODUCT", error);
+    
+    // Handle mongoose validation errors
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({ 
+        success: false,
+        message: "Validation failed", 
+        details: validationErrors 
+      });
+    }
+
+    // Handle duplicate key error (SKU)
+    if (error.code === 11000) {
+      return res.status(400).json({ 
+        success: false,
+        message: "Product with this SKU already exists" 
+      });
+    }
+
+    res.status(500).json({ success: false, message: "Failed to update product" });
+  }
+};
+
 const updateProductStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -185,5 +312,5 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-export { getAllProducts, addProduct, getProductById, updateProductStatus, deleteProduct };
+export { getAllProducts, addProduct, getProductById, updateProduct, updateProductStatus, deleteProduct };
 

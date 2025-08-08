@@ -2,7 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { getAllProducts, addProduct, getProductById, updateProductStatus, deleteProduct } from '../controllers/products.controller.js';
+import { getAllProducts, addProduct, getProductById, updateProduct, updateProductStatus, deleteProduct } from '../controllers/products.controller.js';
 
 const router = express.Router();
 
@@ -47,6 +47,12 @@ router.get('/view-products', (req, res) => {
 
 router.get('/add-product', (req, res) => {
     res.render('add-product', { currentPage: 'add-product' });
+});
+
+// Edit product page route
+router.get('/edit-product/:id', (req, res) => {
+    console.log('Edit product route hit with ID:', req.params.id);
+    res.render('edit-product', { currentPage: 'edit-product' });
 });
 
 // Image upload endpoint
@@ -227,6 +233,7 @@ router.post('/api/products', upload.array('images', 10), async (req, res) => {
 // Products API routes
 router.get('/api/products', getAllProducts);
 router.get('/api/products/:id', getProductById);
+router.put('/api/products/:id', upload.array('newImages', 10), updateProduct);
 router.patch('/api/products/:id/status', updateProductStatus);
 router.delete('/api/products/:id', deleteProduct);
 
