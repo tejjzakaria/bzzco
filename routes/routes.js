@@ -1,6 +1,7 @@
 import express from 'express';
 import customersRoutes from './customers.routes.js';
 import sellersRoutes from './sellers.routes.js';
+import productsRoutes from './products.routes.js';
 
 const router = express.Router();
 // Home route
@@ -16,15 +17,7 @@ router.get('/dashboard', (req, res) => {
 // Use separated route files
 router.use('/', customersRoutes);
 router.use('/', sellersRoutes);
-
-// Products routes
-router.get('/view-products', (req, res) => {
-    res.render('view-products', { currentPage: 'view-products' });
-});
-
-router.get('/add-product', (req, res) => {
-    res.render('add-product', { currentPage: 'add-product' });
-});
+router.use('/', productsRoutes);
 
 // Categories routes
 router.get('/view-categories', (req, res) => {
