@@ -92,35 +92,20 @@
                 </li>
                 <li class="menu-item <%= currentPage === 'add-product' ? 'active' : '' %>">
                     <a href="/add-product" class="menu-link">
-                        <div>Add new</div>
+                        <div>New product</div>
                     </a>
                 </li>
-
-
-            </ul>
-        </li>
-
-        <li class="menu-item <%= ['view-categories', 'add-category'].includes(currentPage) ? 'active open' : '' %>">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon icon-base ri ri-tv-2-line"></i>
-                <div>Categories</div>
-            </a>
-
-            <ul class="menu-sub">
                 <li class="menu-item <%= currentPage === 'view-categories' ? 'active' : '' %>">
                     <a href="/view-categories" class="menu-link">
-                        <div>Categories list</div>
-                    </a>
-                </li>
-                <li class="menu-item <%= currentPage === 'add-category' ? 'active' : '' %>">
-                    <a href="/add-category" class="menu-link">
-                        <div>Add new</div>
+                        <div>Categories</div>
                     </a>
                 </li>
 
 
             </ul>
         </li>
+
+        
 
         <li class="menu-item <%= ['view-orders', 'add-order'].includes(currentPage) ? 'active open' : '' %>">
             <a href="javascript:void(0);" class="menu-link menu-toggle">

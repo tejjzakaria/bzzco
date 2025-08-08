@@ -11,38 +11,7 @@
     <title>Add Product - Bzz Co.</title>
 
     <meta name="description" content="" />
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&ampdisplay=swap" rel="stylesheet" />
-
-    <link rel="stylesheet" href="/assets/vendor/fonts/iconify-icons.css" />
-
-    <!-- Core CSS -->
-    <link rel="stylesheet" href="/assets/vendor/css/core.css" />
-    <link rel="stylesheet" href="/assets/vendor/css/theme-default.css" />
-    <link rel="stylesheet" href="/assets/css/demo.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/pickr/pickr-themes.css" />
-
-    <!-- Specific CSS for Add Product Page -->
-    <link rel="stylesheet" href="/assets/vendor/libs/quill/typography.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/quill/katex.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/quill/editor.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/select2/select2.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/dropzone/dropzone.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/flatpickr/flatpickr.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/tagify/tagify.css" />
-
-    <!-- Helpers -->
-    <script src="/assets/vendor/js/helpers.js"></script>
-    <script src="/assets/vendor/js/template-customizer.js"></script>
-    <script src="/assets/js/config.js"></script>
+    <%- include("layout/header") %>
 </head>
 
 <body>
@@ -50,7 +19,6 @@
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <!-- Menu -->
-
             <%- include("layout/sidebar") %>
 
                 <div class="menu-mobile-toggler d-xl-none rounded-1">
@@ -65,608 +33,446 @@
                 <!-- Layout container -->
                 <div class="layout-page">
                     <!-- Navbar -->
-
                     <%- include("layout/header") %>
-
                         <!-- / Navbar -->
 
                         <!-- Content wrapper -->
                         <div class="content-wrapper">
                             <!-- Content -->
                             <div class="container-xxl flex-grow-1 container-p-y">
-                                <div class="app-ecommerce">
-                                    <!-- Add Product Form -->
-                                    <form id="addProductForm" enctype="multipart/form-data">
-                                        <!-- Add Product Header -->
-                                        <div
-                                            class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h4 class="mb-1">Add a new Product</h4>
-                                                <p class="mb-0">Create and manage your product inventory</p>
-                                            </div>
-                                            <div class="d-flex align-content-center flex-wrap gap-4">
-                                                <button type="button" class="btn btn-outline-secondary" id="saveDraftBtn">Save as Draft</button>
-                                                <button type="submit" class="btn btn-primary" id="publishBtn">
-                                                    <span class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
-                                                    Publish Product
-                                                </button>
-                                            </div>
+                                <!-- Breadcrumb -->
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="/view-products">Products</a>
+                                        </li>
+                                        <li class="breadcrumb-item active">Add Product</li>
+                                    </ol>
+                                </nav>
+                                <form id="addProductForm" enctype="multipart/form-data" action="/api/products"
+                                    method="POST">
+                                    <!-- Action Buttons -->
+                                    <div class="d-flex justify-content-end gap-2 mb-4">
+                                        <button type="button" class="btn btn-outline-secondary"
+                                            onclick="window.history.back()">
+                                            <i class="ri ri-arrow-left-line me-2"></i>Back
+                                        </button>
+                                        <div>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="ri ri-save-line me-2"></i>Add Product
+                                            </button>
                                         </div>
+                                    </div>
 
-                                        <div class="row">
-                                        <!-- First column-->
-                                        <div class="col-12 col-lg-8">
-                                            <!-- Product Information -->
-                                            <div class="card mb-6">
+                                    <div class="row">
+                                        <!-- Left Column -->
+                                        <div class="col-12 col-lg-6">
+                                            <!-- Basic Product Information -->
+                                            <div class="card mb-4">
                                                 <div class="card-header">
-                                                    <h5 class="card-tile mb-0">Product information</h5>
+                                                    <h5 class="mb-0">Basic Product Information</h5>
                                                 </div>
                                                 <div class="card-body">
-                                                    <div class="form-floating form-floating-outline mb-5">
-                                                        <input type="text" class="form-control"
-                                                            id="ecommerce-product-name" placeholder="Product title"
-                                                            name="productTitle" aria-label="Product title" />
-                                                        <label for="ecommerce-product-name">Name</label>
+                                                    <input type="hidden" id="productId" name="productId">
+
+                                                    <!-- Product Title -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="productTitle">Product Title
+                                                            *</label>
+                                                        <input type="text" class="form-control" id="productTitle"
+                                                            name="productTitle" placeholder="Enter product title"
+                                                            required>
                                                     </div>
 
-                                                    <div class="row gx-5 mb-5">
-                                                        <div class="col">
-                                                            <div class="form-floating form-floating-outline">
-                                                                <input type="number" class="form-control"
-                                                                    id="ecommerce-product-sku" placeholder="00000"
-                                                                    name="productSku" aria-label="Product SKU" />
-                                                                <label for="ecommerce-product-sku">SKU</label>
-                                                            </div>
+                                                    <!-- Category -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="category">Category *</label>
+                                                        <select class="form-select" id="category" name="category"
+                                                            required>
+                                                            <option value="">Select Category</option>
+                                                            <option value="Electronics">Electronics</option>
+                                                            <option value="Clothing">Clothing</option>
+                                                            <option value="Home & Garden">Home & Garden</option>
+                                                            <option value="Sports">Sports</option>
+                                                            <option value="Books">Books</option>
+                                                            <option value="Toys">Toys</option>
+                                                            <option value="Health & Beauty">Health & Beauty</option>
+                                                            <option value="Automotive">Automotive</option>
+                                                            <option value="Office">Office</option>
+                                                            <option value="Household">Household</option>
+                                                            <option value="Management">Management</option>
+                                                            <option value="Food & Beverages">Food & Beverages</option>
+                                                            <option value="Jewelry">Jewelry</option>
+                                                            <option value="Pet Supplies">Pet Supplies</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Description -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="description">Description</label>
+                                                        <textarea class="form-control" id="description"
+                                                            name="description" rows="4"
+                                                            placeholder="Enter product description"></textarea>
+                                                    </div>
+
+                                                    <!-- SKU and Barcode Row -->
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label" for="productSku">SKU *</label>
+                                                            <input type="text" class="form-control" id="productSku"
+                                                                name="productSku" placeholder="Enter SKU" required>
                                                         </div>
-                                                        <div class="col">
-                                                            <div class="form-floating form-floating-outline">
-                                                                <input type="text" class="form-control"
-                                                                    id="ecommerce-product-barcode"
-                                                                    placeholder="0123-4567" name="productBarcode"
-                                                                    aria-label="Product barcode" />
-                                                                <label for="ecommerce-product-name">Barcode</label>
-                                                            </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label"
+                                                                for="productBarcode">Barcode</label>
+                                                            <input type="text" class="form-control" id="productBarcode"
+                                                                name="productBarcode" placeholder="Enter barcode">
                                                         </div>
                                                     </div>
-                                                    <!-- Comment -->
-                                                    <div>
-                                                        <p class="mb-1">Description (Optional)</p>
-                                                        <div class="form-control p-0 pt-1">
-                                                            <div class="comment-toolbar border-0 border-bottom">
-                                                                <div class="d-flex justify-content-start">
-                                                                    <span class="ql-formats me-0">
-                                                                        <button class="ql-bold"></button>
-                                                                        <button class="ql-italic"></button>
-                                                                        <button class="ql-underline"></button>
-                                                                        <button class="ql-list"
-                                                                            value="ordered"></button>
-                                                                        <button class="ql-list" value="bullet"></button>
-                                                                        <button class="ql-link"></button>
-                                                                        <button class="ql-image"></button>
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="comment-editor border-0 pb-1"
-                                                                id="ecommerce-category-description"></div>
+
+                                                    <!-- Manufacturer and Dimensions Row -->
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label"
+                                                                for="manufacturer">Manufacturer</label>
+                                                            <input type="text" class="form-control" id="manufacturer"
+                                                                name="manufacturer" placeholder="Enter manufacturer">
                                                         </div>
-                                                        <!-- Hidden input to store description HTML -->
-                                                        <input type="hidden" name="description" id="productDescriptionHidden">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label"
+                                                                for="dimensions">Dimensions</label>
+                                                            <input type="text" class="form-control" id="dimensions"
+                                                                name="dimensions" placeholder="L x W x H">
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Weight -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="weight">Weight</label>
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control" id="weight"
+                                                                name="weight" placeholder="Enter weight">
+                                                            <span class="input-group-text">kg</span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        <!--
-                                            <div class="card mb-6">
-                                                <input type="file" name="images" id="productImage" class="form-control" accept="image/*">
-                                            </div>-->
-                                            <!-- /Product Information -->
-                                            <!-- Media -->
 
-                                            
-                                            <div class="card mb-6">
-                                                <div
-                                                    class="card-header d-flex justify-content-between align-items-center">
-                                                    <h5 class="mb-0 card-title">Product Image</h5>
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="upload-area p-4 border border-2 border-dashed rounded-3 text-center position-relative" style="min-height: 200px;">
-                                                        <input type="file" name="images" id="imageUpload" class="position-absolute w-100 h-100 opacity-0" style="cursor: pointer; top: 0; left: 0;" accept="image/*" multiple>
-                                                        <div class="upload-content pointer-events-none">
-                                                            <div class="d-flex justify-content-center mb-3">
-                                                                <div class="avatar">
-                                                                    <span class="avatar-initial rounded-3 bg-label-secondary">
-                                                                        <i class="icon-base ri ri-upload-2-line icon-24px"></i>
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            <p class="h4 my-2">Drag and drop your image here</p>
-                                                            <small class="note text-body-secondary d-block fs-6 my-2">or</small>
-                                                            <span class="btn btn-sm btn-outline-primary">Browse image</span>
-                                                        </div>
-                                                        <div id="imagePreview" class="mt-3 d-none">
-                                                            <div class="row g-2" id="previewContainer"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            
-                                            <!-- /Media -->
-                                            <!-- Variants -->
-                                            <div class="card mb-6">
+                                            <!-- Pricing -->
+                                            <div class="card mb-4">
                                                 <div class="card-header">
-                                                    <h5 class="card-title mb-0">Variants</h5>
-                                                </div>
-                                                <div class="card-body">
-                                                    <form class="form-repeater">
-                                                        <div data-repeater-list="variants">
-                                                            <div data-repeater-item>
-                                                                <div class="row gx-5">
-                                                                    <div class="mb-6 col-sm-4">
-                                                                        <div
-                                                                            class="form-floating form-floating-outline">
-                                                                            <select id="select2Basic"
-                                                                                class="form-select form-select-sm"
-                                                                                data-placeholder="Option"
-                                                                                data-allow-clear="true"
-                                                                                name="variantType">
-                                                                                <option value="size" selected>Size
-                                                                                </option>
-                                                                                <option value="color">Color</option>
-                                                                                <option value="weight">Weight</option>
-                                                                                <option value="smell">Smell</option>
-                                                                            </select>
-                                                                            <label for="select2Basic">Option</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="mb-6 col-sm-8">
-                                                                        <div
-                                                                            class="form-floating form-floating-outline">
-                                                                            <input type="text" id="form-repeater-1-2"
-                                                                                class="form-control"
-                                                                                placeholder="Enter size"
-                                                                                name="variantValue" />
-                                                                            <label for="form-repeater-1-2">Value</label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div>
-                                                            <button class="btn btn-primary" data-repeater-create>
-                                                                <i class="icon-base ri ri-add-line icon-16px me-2"></i>
-                                                                Add another option
-                                                            </button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                            <!-- /Variants -->
-                                            <!-- Inventory -->
-                                            <div class="card mb-6">
-                                                <div class="card-header">
-                                                    <h5 class="card-title mb-0">Inventory</h5>
+                                                    <h5 class="mb-0">Pricing</h5>
                                                 </div>
                                                 <div class="card-body">
                                                     <div class="row">
-                                                        <!-- Navigation -->
-                                                        <div class="col-12 col-md-4 mx-auto card-separator">
-                                                            <div
-                                                                class="nav-align-left d-flex justify-content-between flex-column mb-4 mb-md-0 pe-md-3">
-                                                                <ul class="nav nav-pills flex-column">
-                                                                    <li class="nav-item">
-                                                                        <button class="nav-link active"
-                                                                            data-bs-toggle="tab"
-                                                                            data-bs-target="#restock">
-                                                                            <i
-                                                                                class="icon-base ri ri-add-line icon-sm me-2"></i>
-                                                                            <span class="align-middle">Restock</span>
-                                                                        </button>
-                                                                    </li>
-                                                                    <li class="nav-item">
-                                                                        <button class="nav-link" data-bs-toggle="tab"
-                                                                            data-bs-target="#shipping">
-                                                                            <i
-                                                                                class="icon-base ri ri-car-line icon-sm me-2"></i>
-                                                                            <span class="align-middle">Shipping</span>
-                                                                        </button>
-                                                                    </li>
-                                                                    <li class="nav-item">
-                                                                        <button class="nav-link" data-bs-toggle="tab"
-                                                                            data-bs-target="#global-delivery">
-                                                                            <i
-                                                                                class="icon-base ri ri-global-line icon-sm me-2"></i>
-                                                                            <span class="align-middle">Global
-                                                                                Delivery</span>
-                                                                        </button>
-                                                                    </li>
-                                                                    <li class="nav-item">
-                                                                        <button class="nav-link" data-bs-toggle="tab"
-                                                                            data-bs-target="#attributes">
-                                                                            <i
-                                                                                class="icon-base ri ri-link-m icon-sm me-2"></i>
-                                                                            <span class="align-middle">Attributes</span>
-                                                                        </button>
-                                                                    </li>
-                                                                    <li class="nav-item">
-                                                                        <button class="nav-link" data-bs-toggle="tab"
-                                                                            data-bs-target="#advanced">
-                                                                            <i
-                                                                                class="icon-base ri ri-lock-unlock-line icon-sm me-2"></i>
-                                                                            <span class="align-middle">Advanced</span>
-                                                                        </button>
-                                                                    </li>
-                                                                </ul>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label" for="productPrice">Price *</label>
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">$</span>
+                                                                <input type="number" class="form-control"
+                                                                    id="productPrice" name="productPrice"
+                                                                    placeholder="0.00" step="0.01" min="0" required>
                                                             </div>
                                                         </div>
-                                                        <!-- /Navigation -->
-                                                        <!-- Options -->
-                                                        <div class="col-12 col-md-8 pt-6 pt-md-0">
-                                                            <div class="tab-content p-0 pe-xl-0 ps-md-4">
-                                                                <!-- Restock Tab -->
-                                                                <div class="tab-pane fade show active" id="restock"
-                                                                    role="tabpanel">
-                                                                    <h6 class="text-body">Options</h6>
-                                                                    <div class="row mb-4 g-4">
-                                                                        <div
-                                                                            class="col-12 col-sm-8 col-lg-12 col-xxl-8">
-                                                                            <div
-                                                                                class="form-floating form-floating-outline">
-                                                                                <input type="number"
-                                                                                    class="form-control form-control-sm"
-                                                                                    id="ecommerce-product-stock"
-                                                                                    placeholder="Quantity"
-                                                                                    name="quantity"
-                                                                                    aria-label="Quantity" />
-                                                                                <label for="ecommerce-product-stock">Add
-                                                                                    to Stock</label>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-6 col-sm-4 col-lg-6 col-xxl-4">
-                                                                            <button class="btn btn-primary">
-                                                                                <i
-                                                                                    class="icon-base ri ri-check-line icon-16px me-2"></i>Confirm
-                                                                            </button>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h6 class="mb-2 fw-normal">
-                                                                            Product in stock now: <span
-                                                                                class="fw-medium">54</span>
-                                                                        </h6>
-                                                                        <h6 class="mb-2 fw-normal">Product in transit:
-                                                                            <span class="fw-medium">390</span></h6>
-                                                                        <h6 class="mb-2 fw-normal">
-                                                                            Last time restocked: <span
-                                                                                class="fw-medium">24th June, 2023</span>
-                                                                        </h6>
-                                                                        <h6 class="mb-0 fw-normal">
-                                                                            Total stock over lifetime: <span
-                                                                                class="fw-medium">2430</span>
-                                                                        </h6>
-                                                                    </div>
-                                                                </div>
-                                                                <!-- Shipping Tab -->
-                                                                <div class="tab-pane fade" id="shipping"
-                                                                    role="tabpanel">
-                                                                    <h6 class="mb-3 text-body">Shipping Type</h6>
-                                                                    <div>
-                                                                        <div class="form-check mb-4">
-                                                                            <input class="form-check-input" type="radio"
-                                                                                name="shippingType" id="seller" value="seller" />
-                                                                            <label
-                                                                                class="form-check-label d-flex flex-column gap-1"
-                                                                                for="seller">
-                                                                                <span class="h6 mb-0">Fulfilled by
-                                                                                    Seller</span>
-                                                                                <small>You'll be responsible for product
-                                                                                    delivery. Any damage or delay during
-                                                                                    shipping
-                                                                                    may cost you a Damage fee.</small>
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="form-check mb-6">
-                                                                            <input class="form-check-input" type="radio"
-                                                                                name="shippingType" id="companyName" value="company"
-                                                                                checked />
-                                                                            <label
-                                                                                class="form-check-label d-flex flex-column gap-1"
-                                                                                for="companyName">
-                                                                                <span class="h6 mb-0">Fulfilled by
-                                                                                    Company name &nbsp;<span
-                                                                                        class="badge rounded-pill rounded-2 badge-warning bg-label-warning fs-tiny py-1">RECOMMENDED</span></span>
-                                                                                <small>Your product, Our responsibility.
-                                                                                    For a measly fee, we will handle the
-                                                                                    delivery
-                                                                                    process for you.</small>
-                                                                            </label>
-                                                                        </div>
-                                                                        <p class="mb-0">
-                                                                            See our <a
-                                                                                href="javascript:void(0);">Delivery
-                                                                                terms and conditions</a> for details
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                                <!-- Global Delivery Tab -->
-                                                                <div class="tab-pane fade" id="global-delivery"
-                                                                    role="tabpanel">
-                                                                    <h6 class="mb-3 text-body">Global Delivery</h6>
-                                                                    <!-- Worldwide delivery -->
-                                                                    <div class="form-check mb-4">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="globalDelivery" id="worldwide" value="worldwide" />
-                                                                        <label
-                                                                            class="form-check-label d-flex flex-column gap-1"
-                                                                            for="worldwide">
-                                                                            <span class="h6 mb-0">Worldwide
-                                                                                delivery</span>
-                                                                            <small>Only available with Shipping method:
-                                                                                <a href="javascript:void(0);">Fulfilled
-                                                                                    by Company name</a></small>
-                                                                        </label>
-                                                                    </div>
-                                                                    <!-- Global delivery -->
-                                                                    <div class="form-check mb-4">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="globalDelivery" id="selectedCountries" value="selected-countries" checked />
-                                                                        <label class="form-check-label w-75 pe-12 mb-3"
-                                                                            for="selectedCountries">
-                                                                            <span class="h6">Selected Countries</span>
-                                                                        </label>
-                                                                        <div
-                                                                            class="form-floating form-floating-outline">
-                                                                            <input type="text"
-                                                                                class="form-control form-control-sm"
-                                                                                placeholder="Type Country name"
-                                                                                id="country-selected" name="selectedCountries" />
-                                                                            <label
-                                                                                for="country-selected">Countries</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <!-- Local delivery -->
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="globalDelivery" id="local" value="local" />
-                                                                        <label
-                                                                            class="form-check-label d-flex flex-column gap-1"
-                                                                            for="local">
-                                                                            <span class="h6 mb-0">Local delivery</span>
-                                                                            <small>Deliver to your country of residence
-                                                                                :
-                                                                                <a href="javascript:void(0);">Change
-                                                                                    profile address</a></small>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                                <!-- Attributes Tab -->
-                                                                <div class="tab-pane fade" id="attributes"
-                                                                    role="tabpanel">
-                                                                    <h6 class="mb-2 text-body">Attributes</h6>
-                                                                    <div>
-                                                                        <!-- Fragile Product -->
-                                                                        <div class="form-check mb-4">
-                                                                            <input class="form-check-input"
-                                                                                type="checkbox" value="true" name="fragile"
-                                                                                id="fragile" />
-                                                                            <label class="form-check-label"
-                                                                                for="fragile">
-                                                                                <span>Fragile Product</span>
-                                                                            </label>
-                                                                        </div>
-                                                                        <!-- Biodegradable -->
-                                                                        <div class="form-check mb-4">
-                                                                            <input class="form-check-input"
-                                                                                type="checkbox" value="true" name="biodegradable"
-                                                                                id="biodegradable" />
-                                                                            <label class="form-check-label"
-                                                                                for="biodegradable">
-                                                                                <span>Biodegradable</span>
-                                                                            </label>
-                                                                        </div>
-                                                                        <!-- Frozen Product -->
-                                                                        <div class="form-check mb-4">
-                                                                            <input class="form-check-input"
-                                                                                type="checkbox" id="frozen" name="frozen"
-                                                                                value="true" checked />
-                                                                            <label
-                                                                                class="form-check-label w-75 pe-12 mb-3"
-                                                                                for="frozen">
-                                                                                <span class="mb-1">Frozen Product</span>
-                                                                            </label>
-                                                                            <div
-                                                                                class="form-floating form-floating-outline">
-                                                                                <input type="number"
-                                                                                    class="form-control form-control-sm"
-                                                                                    placeholder="In Celsius" name="maxTemperature"
-                                                                                    id="temp" />
-                                                                                <label for="temp">Max. allowed
-                                                                                    Temperature</label>
-                                                                            </div>
-                                                                        </div>
-                                                                        <!-- Exp Date -->
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input"
-                                                                                type="checkbox" value="true" name="hasExpiryDate"
-                                                                                id="expDate" checked />
-                                                                            <label
-                                                                                class="form-check-label w-75 pe-12 mb-3"
-                                                                                for="expDate">
-                                                                                <span class="mb-1">Expiry Date of
-                                                                                    Product</span>
-                                                                            </label>
-                                                                            <div
-                                                                                class="form-floating form-floating-outline">
-                                                                                <input type="date"
-                                                                                    class="product-date form-control" name="expiryDate"
-                                                                                    id="flatpickr-date" />
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <!-- /Attributes Tab -->
-                                                                <!-- Advanced Tab -->
-                                                                <div class="tab-pane fade" id="advanced"
-                                                                    role="tabpanel">
-                                                                    <h6 class="mb-3 text-body">Advanced</h6>
-                                                                    <div class="row">
-                                                                        <!-- Product Id Type -->
-                                                                        <div class="col">
-                                                                            <h6 class="mb-2">Product ID Type</h6>
-                                                                            <div
-                                                                                class="form-floating form-floating-outline">
-                                                                                <select id="product-id"
-                                                                                    class="form-select form-select-sm"
-                                                                                    data-placeholder="ISBN"
-                                                                                    data-allow-clear="true"
-                                                                                    name="productIdType">
-                                                                                    <option value="">ISBN</option>
-                                                                                    <option value="ISBN">ISBN</option>
-                                                                                    <option value="UPC">UPC</option>
-                                                                                    <option value="EAN">EAN</option>
-                                                                                    <option value="JAN">JAN</option>
-                                                                                </select>
-                                                                                <label for="product-id">Id</label>
-                                                                            </div>
-                                                                        </div>
-                                                                        <!-- Product Id -->
-                                                                        <div class="col">
-                                                                            <h6 class="mb-2">Product ID</h6>
-                                                                            <div
-                                                                                class="form-floating form-floating-outline">
-                                                                                <input type="number" id="product-id-1"
-                                                                                    class="form-control form-control-sm"
-                                                                                    placeholder="ISBN Number"
-                                                                                    name="productId" />
-                                                                                <label for="product-id-1">Id
-                                                                                    Number</label>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <!-- /Advanced Tab -->
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label"
+                                                                for="productDiscountedPrice">Discounted Price</label>
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">$</span>
+                                                                <input type="number" class="form-control"
+                                                                    id="productDiscountedPrice"
+                                                                    name="productDiscountedPrice" placeholder="0.00"
+                                                                    step="0.01" min="0">
                                                             </div>
                                                         </div>
-                                                        <!-- /Options-->
+                                                    </div>
+
+                                                    <!-- Tax Settings -->
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="chargeTax"
+                                                            id="chargeTax" checked>
+                                                        <label class="form-check-label" for="chargeTax">
+                                                            Charge tax on this product
+                                                        </label>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- /Inventory -->
+
+                                            <!-- Product Images -->
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <h5 class="card-title mb-0">Product Images</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="images">Upload Images</label>
+                                                        <input type="file" class="form-control" id="images"
+                                                            name="images" multiple accept="image/*">
+                                                        <small class="text-muted">You can select multiple images</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Product Identification -->
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <h5 class="card-title mb-0">Product Identification</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label" for="productIdType">Product ID
+                                                                Type</label>
+                                                            <select class="form-select" id="productIdType"
+                                                                name="productIdType">
+                                                                <option value="">Select ID Type</option>
+                                                                <option value="ISBN">ISBN</option>
+                                                                <option value="UPC">UPC</option>
+                                                                <option value="EAN">EAN</option>
+                                                                <option value="JAN">JAN</option>
+                                                                <option value="GTIN">GTIN</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label" for="productIdNumber">Product ID
+                                                                Number</label>
+                                                            <input type="text" class="form-control" id="productIdNumber"
+                                                                name="productIdNumber" placeholder="Enter ID number">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <!-- /Second column -->
 
-                                        <!-- Second column -->
-                                        <div class="col-12 col-lg-4">
-                                            <!-- Pricing Card -->
-                                            <div class="card mb-6">
+                                        <!-- Right Column -->
+                                        <div class="col-12 col-lg-6">
+                                            <!-- Inventory & Organization -->
+                                            <div class="card mb-4">
                                                 <div class="card-header">
-                                                    <h5 class="card-title mb-0">Pricing</h5>
+                                                    <h5 class="mb-0">Inventory & Organization</h5>
                                                 </div>
                                                 <div class="card-body">
-                                                    <!-- Base Price -->
-                                                    <div class="form-floating form-floating-outline mb-5">
-                                                        <input type="number" class="form-control"
-                                                            id="ecommerce-product-price" placeholder="Price"
-                                                            name="productPrice" aria-label="Product price" />
-                                                        <label for="ecommerce-product-price">Best Price</label>
+                                                    <!-- Quantity -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="quantity">Quantity *</label>
+                                                        <input type="number" class="form-control" id="quantity"
+                                                            name="quantity" placeholder="Enter quantity" min="0"
+                                                            required>
                                                     </div>
 
-                                                    <!-- Discounted Price -->
-                                                    <div class="form-floating form-floating-outline mb-5">
-                                                        <input type="number" class="form-control"
-                                                            id="ecommerce-product-discount-price"
-                                                            placeholder="Discounted Price" name="productDiscountedPrice"
-                                                            aria-label="Product discounted price" />
-                                                        <label for="ecommerce-product-discount-price">Discounted
-                                                            Price</label>
-                                                    </div>
-                                                    <!-- Charge tax check box -->
-                                                    <div class="form-check m-2 me-0 pb-2">
-                                                        <input class="form-check-input" type="checkbox" value="true"
-                                                            id="price-charge-tax" name="chargeTax" checked />
-                                                        <label class="form-check-label" for="price-charge-tax"> Charge
-                                                            tax on this product </label>
-                                                    </div>
-                                                    <!-- Instock switch -->
-                                                    <div
-                                                        class="d-flex justify-content-between align-items-center border-top pt-4">
-                                                        <p class="mb-0">In stock</p>
-                                                        <div class="w-25 d-flex justify-content-end">
-                                                            <div class="form-check form-switch me-n3 mb-0">
-                                                                <input type="checkbox" class="form-check-input"
-                                                                    name="inStock" value="true" checked />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- /Pricing Card -->
-                                            <!-- Organize Card -->
-                                            <div class="card mb-6">
-                                                <div class="card-header">
-                                                    <h5 class="card-title mb-0">Organize</h5>
-                                                </div>
-                                                <div class="card-body">
                                                     <!-- Vendor -->
-                                                    <div class="mb-5 col ecommerce-select2-dropdown">
-                                                        <div class="form-floating form-floating-outline">
-                                                            <select id="vendor" class="form-select form-select-sm"
-                                                                data-placeholder="Select Vendor" name="vendor">
-                                                                <option value="">Select Vendor</option>
-                                                                <option value="men-clothing">Men's Clothing</option>
-                                                                <option value="women-clothing">Women's-clothing</option>
-                                                                <option value="kid-clothing">Kid's-clothing</option>
-                                                            </select>
-                                                            <label for="vendor">Vendor</label>
-                                                        </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="vendor">Vendor</label>
+                                                        <select class="form-select" id="vendor" name="vendor">
+                                                            <option value="">Select Vendor</option>
+                                                            <option value="men-clothing">Men's Clothing</option>
+                                                            <option value="women-clothing">Women's Clothing</option>
+                                                            <option value="kid-clothing">Kid's Clothing</option>
+                                                            <option value="electronics-vendor">Electronics Vendor
+                                                            </option>
+                                                            <option value="home-garden-vendor">Home & Garden Vendor
+                                                            </option>
+                                                        </select>
                                                     </div>
-                                                    <!-- Category -->
-                                                    <div
-                                                        class="mb-5 col ecommerce-select2-dropdown">
-                                                        <div class="form-floating form-floating-outline">
-                                                            <select id="category-org" class="form-select form-select-sm"
-                                                                data-placeholder="Select Category" name="category">
-                                                                <option value="">Select Category</option>
-                                                                <option value="Household">Household</option>
-                                                                <option value="Management">Management</option>
-                                                                <option value="Electronics">Electronics</option>
-                                                                <option value="Office">Office</option>
-                                                                <option value="Automotive">Automotive</option>
-                                                            </select>
-                                                            <label for="category-org">Category</label>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <!-- Status -->
-                                                    <div class="mb-5 col ecommerce-select2-dropdown">
-                                                        <div class="form-floating form-floating-outline">
-                                                            <select id="status-org" class="form-select form-select-sm"
-                                                                data-placeholder="Select Status" name="status">
-                                                                <option value="">Select Status</option>
+
+                                                    <!-- Status and Stock Row -->
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label" for="status">Status</label>
+                                                            <select class="form-select" id="status" name="status">
                                                                 <option value="Published">Published</option>
                                                                 <option value="Scheduled">Scheduled</option>
                                                                 <option value="Inactive">Inactive</option>
                                                             </select>
-                                                            <label for="status-org">Status</label>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label">Stock Status</label>
+                                                            <div class="form-check form-switch mt-2">
+                                                                <input class="form-check-input" type="checkbox"
+                                                                    id="inStock" name="inStock" checked>
+                                                                <label class="form-check-label" for="inStock">In
+                                                                    Stock</label>
+                                                            </div>
                                                         </div>
                                                     </div>
+
                                                     <!-- Tags -->
-                                                    <div>
-                                                        <div class="form-floating form-floating-outline">
-                                                            <input id="ecommerce-product-tags"
-                                                                class="form-control h-auto"
-                                                                name="tags"
-                                                                value="Normal,Standard,Premium"
-                                                                aria-label="Product Tags" />
-                                                            <label for="ecommerce-product-tags">Tags</label>
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="tags">Tags</label>
+                                                        <input type="text" class="form-control" id="tags" name="tags"
+                                                            placeholder="Enter tags separated by commas">
+                                                        <small class="text-muted">Separate multiple tags with
+                                                            commas</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Product Variants -->
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <h5 class="card-title mb-0">Product Variants</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div id="variantsContainer">
+                                                        <div class="variant-item border p-3 mb-3 rounded">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    <label class="form-label">Type</label>
+                                                                    <select class="form-select variant-type"
+                                                                        name="variants[0][type]">
+                                                                        <option value="">Select Type</option>
+                                                                        <option value="size">Size</option>
+                                                                        <option value="color">Color</option>
+                                                                        <option value="weight">Weight</option>
+                                                                        <option value="smell">Smell</option>
+                                                                        <option value="material">Material</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-5">
+                                                                    <label class="form-label">Value</label>
+                                                                    <input type="text"
+                                                                        class="form-control variant-value"
+                                                                        name="variants[0][value]"
+                                                                        placeholder="Enter value">
+                                                                </div>
+                                                                <div class="col-2 d-flex align-items-end">
+                                                                    <button type="button"
+                                                                        class="btn btn-danger btn-sm remove-variant">
+                                                                        <i class="ri ri-delete-bin-line"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <button type="button" class="btn btn-outline-primary btn-sm"
+                                                        id="addVariant">
+                                                        <i class="ri ri-add-line me-2"></i>Add Variant
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Shipping & Delivery -->
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <h5 class="card-title mb-0">Shipping & Delivery</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <!-- Shipping Type -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Shipping Type</label>
+                                                        <div class="form-check mb-2">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="shippingType" id="seller" value="seller">
+                                                            <label class="form-check-label" for="seller">
+                                                                <strong>Fulfilled by Seller</strong><br>
+                                                                <small class="text-muted">You handle delivery</small>
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="shippingType" id="company" value="company"
+                                                                checked>
+                                                            <label class="form-check-label" for="company">
+                                                                <strong>Fulfilled by Company</strong> <span
+                                                                    class="badge bg-warning text-dark">RECOMMENDED</span><br>
+                                                                <small class="text-muted">We handle delivery</small>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Global Delivery -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Global Delivery</label>
+                                                        <div class="form-check mb-2">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="globalDelivery" id="worldwide" value="worldwide">
+                                                            <label class="form-check-label" for="worldwide">
+                                                                <strong>Worldwide</strong>
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check mb-2">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="globalDelivery" id="selectedCountries"
+                                                                value="selected-countries" checked>
+                                                            <label class="form-check-label" for="selectedCountries">
+                                                                <strong>Selected Countries</strong>
+                                                            </label>
+                                                        </div>
+                                                        <div class="mb-2">
+                                                            <input type="text" class="form-control form-control-sm"
+                                                                name="selectedCountries"
+                                                                placeholder="Enter countries separated by commas">
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="globalDelivery" id="local" value="local">
+                                                            <label class="form-check-label" for="local">
+                                                                <strong>Local delivery only</strong>
+                                                            </label>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- /Organize Card -->
+
+                                            <!-- Product Attributes -->
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <h5 class="card-title mb-0">Product Attributes</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <!-- Fragile -->
+                                                    <div class="form-check mb-2">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="attributes[fragile]" id="fragile">
+                                                        <label class="form-check-label" for="fragile">
+                                                            Fragile Product
+                                                        </label>
+                                                    </div>
+
+                                                    <!-- Biodegradable -->
+                                                    <div class="form-check mb-3">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="attributes[biodegradable]" id="biodegradable">
+                                                        <label class="form-check-label" for="biodegradable">
+                                                            Biodegradable
+                                                        </label>
+                                                    </div>
+
+                                                    <!-- Frozen Product -->
+                                                    <div class="mb-3">
+                                                        <div class="form-check mb-2">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="attributes[frozen]" id="frozen">
+                                                            <label class="form-check-label" for="frozen">
+                                                                Frozen Product
+                                                            </label>
+                                                        </div>
+                                                        <div class="frozen-temp-field" style="display: none;">
+                                                            <input type="number" class="form-control form-control-sm"
+                                                                name="attributes[maxTemperature]" id="maxTemperature"
+                                                                placeholder="Max temp (°C)">
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Expiry Date -->
+                                                    <div class="mb-3">
+                                                        <div class="form-check mb-2">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="attributes[hasExpiryDate]" id="hasExpiryDate">
+                                                            <label class="form-check-label" for="hasExpiryDate">
+                                                                Has Expiry Date
+                                                            </label>
+                                                        </div>
+                                                        <div class="expiry-date-field" style="display: none;">
+                                                            <input type="date" class="form-control form-control-sm"
+                                                                name="attributes[expiryDate]" id="expiryDate">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <!-- /Second column -->
                                     </div>
-                                </div>
+                                </form>
                             </div>
                             <!-- / Content -->
 
@@ -690,8 +496,6 @@
     <!-- / Layout wrapper -->
 
     <!-- Core JS -->
-    <!-- build:js assets/vendor/js/core.js -->
-
     <script src="/assets/vendor/libs/jquery/jquery.js"></script>
     <script src="/assets/vendor/libs/popper/popper.js"></script>
     <script src="/assets/vendor/js/bootstrap.js"></script>
@@ -702,101 +506,223 @@
     <script src="/assets/vendor/libs/typeahead-js/typeahead.js"></script>
     <script src="/assets/vendor/js/menu.js"></script>
 
-    <!-- endbuild -->
-
     <!-- Vendors JS -->
-    <script src="/assets/vendor/libs/quill/katex.js"></script>
-    <script src="/assets/vendor/libs/quill/quill.js"></script>
     <script src="/assets/vendor/libs/select2/select2.js"></script>
-    <script src="/assets/vendor/libs/dropzone/dropzone.js"></script>
-    <script src="/assets/vendor/libs/jquery-repeater/jquery-repeater.js"></script>
-    <script src="/assets/vendor/libs/flatpickr/flatpickr.js"></script>
-    <script src="/assets/vendor/libs/tagify/tagify.js"></script>
+    <script src="/assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
 
     <!-- Main JS -->
     <script src="/assets/js/main.js"></script>
 
-    <!-- Page JS -->
-    <script src="/assets/js/app-ecommerce-product-add.js"></script>
-    
-    <!-- Custom Image Upload Script -->
+    <!-- Page specific JS -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const imageUpload = document.getElementById('imageUpload');
-            const previewContainer = document.getElementById('previewContainer');
-            const imagePreview = document.getElementById('imagePreview');
-            const uploadArea = document.querySelector('.upload-area');
-            
-            // Handle file selection
-            imageUpload.addEventListener('change', function(e) {
-                handleFiles(e.target.files);
-            });
-            
-            // Handle drag and drop
-            uploadArea.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                uploadArea.classList.add('border-primary');
-            });
-            
-            uploadArea.addEventListener('dragleave', function(e) {
-                e.preventDefault();
-                uploadArea.classList.remove('border-primary');
-            });
-            
-            uploadArea.addEventListener('drop', function(e) {
-                e.preventDefault();
-                uploadArea.classList.remove('border-primary');
-                handleFiles(e.dataTransfer.files);
-            });
-            
-            function handleFiles(files) {
-                if (files.length === 0) return;
-                
-                previewContainer.innerHTML = '';
-                imagePreview.classList.remove('d-none');
-                
-                Array.from(files).forEach((file, index) => {
-                    if (file.type.startsWith('image/')) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const previewItem = document.createElement('div');
-                            previewItem.className = 'col-md-3 col-sm-4 col-6';
-                            previewItem.innerHTML = `
-                                <div class="card">
-                                    <img src="${e.target.result}" class="card-img-top" style="height: 120px; object-fit: cover;">
-                                    <div class="card-body p-2">
-                                        <small class="text-muted">${file.name}</small>
-                                        <button type="button" class="btn btn-sm btn-outline-danger float-end" onclick="removeImage(${index})">
-                                            <i class="ri-delete-bin-line"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            `;
-                            previewContainer.appendChild(previewItem);
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            }
-            
-            window.removeImage = function(index) {
-                // Create a new FileList without the removed file
-                const dt = new DataTransfer();
-                const files = Array.from(imageUpload.files);
-                files.forEach((file, i) => {
-                    if (i !== index) {
-                        dt.items.add(file);
-                    }
-                });
-                imageUpload.files = dt.files;
-                
-                // Refresh preview
-                handleFiles(imageUpload.files);
-                
-                if (imageUpload.files.length === 0) {
-                    imagePreview.classList.add('d-none');
+        // Image preview functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const imageInput = document.getElementById('images');
+
+            // Create a preview container after the file input
+            const previewContainer = document.createElement('div');
+            previewContainer.id = 'imagePreview';
+            previewContainer.className = 'd-flex flex-wrap gap-2 mt-3';
+            imageInput.parentNode.appendChild(previewContainer);
+
+            imageInput.addEventListener('change', function (e) {
+                const files = e.target.files;
+                previewContainer.innerHTML = ''; // Clear previous previews
+
+                if (files.length > 0) {
+                    Array.from(files).forEach((file, index) => {
+                        if (file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+
+                            reader.onload = function (e) {
+                                const imageDiv = document.createElement('div');
+                                imageDiv.className = 'position-relative d-inline-block';
+                                imageDiv.innerHTML = `
+                                    <img src="${e.target.result}" 
+                                         alt="Preview ${index + 1}" 
+                                         class="img-thumbnail" 
+                                         style="width: 100px; height: 100px; object-fit: cover;">
+                                    <button type="button" 
+                                            class="btn btn-sm btn-danger position-absolute top-0 end-0" 
+                                            style="transform: translate(50%, -50%); border-radius: 50%; width: 25px; height: 25px; padding: 0;"
+                                            onclick="removePreviewImage(this, ${index})">
+                                        <i class="ri-close-line" style="font-size: 12px;"></i>
+                                    </button>
+                                `;
+                                previewContainer.appendChild(imageDiv);
+                            };
+
+                            reader.readAsDataURL(file);
+                        }
+                    });
                 }
+            });
+        });
+
+        // Remove preview image
+        function removePreviewImage(button, index) {
+            const imageDiv = button.parentElement;
+            imageDiv.remove();
+
+            // Update the file input to remove the selected file
+            const imageInput = document.getElementById('images');
+            const dt = new DataTransfer();
+            const files = imageInput.files;
+
+            for (let i = 0; i < files.length; i++) {
+                if (i !== index) {
+                    dt.items.add(files[i]);
+                }
+            }
+
+            imageInput.files = dt.files;
+        }
+
+        // Variant management
+        let variantIndex = 1;
+
+        document.getElementById('addVariant').addEventListener('click', function () {
+            const container = document.getElementById('variantsContainer');
+            const newVariant = document.createElement('div');
+            newVariant.className = 'variant-item border p-3 mb-3 rounded';
+            newVariant.innerHTML = `
+                <div class="row">
+                    <div class="col-5">
+                        <label class="form-label">Type</label>
+                        <select class="form-select variant-type" name="variants[${variantIndex}][type]">
+                            <option value="">Select Type</option>
+                            <option value="size">Size</option>
+                            <option value="color">Color</option>
+                            <option value="weight">Weight</option>
+                            <option value="smell">Smell</option>
+                            <option value="material">Material</option>
+                        </select>
+                    </div>
+                    <div class="col-5">
+                        <label class="form-label">Value</label>
+                        <input type="text" class="form-control variant-value" name="variants[${variantIndex}][value]" 
+                               placeholder="Enter value">
+                    </div>
+                    <div class="col-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger btn-sm remove-variant">
+                            <i class="ri ri-delete-bin-line"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(newVariant);
+            variantIndex++;
+        });
+
+        // Remove variant functionality
+        document.addEventListener('click', function (e) {
+            if (e.target.closest('.remove-variant')) {
+                e.target.closest('.variant-item').remove();
+            }
+        });
+
+        // Show/hide frozen temperature field
+        document.getElementById('frozen').addEventListener('change', function () {
+            const tempField = document.querySelector('.frozen-temp-field');
+            if (this.checked) {
+                tempField.style.display = 'block';
+            } else {
+                tempField.style.display = 'none';
+                document.getElementById('maxTemperature').value = '';
+            }
+        });
+
+        // Show/hide expiry date field
+        document.getElementById('hasExpiryDate').addEventListener('change', function () {
+            const expiryField = document.querySelector('.expiry-date-field');
+            if (this.checked) {
+                expiryField.style.display = 'block';
+            } else {
+                expiryField.style.display = 'none';
+                document.getElementById('expiryDate').value = '';
+            }
+        });
+
+        // Form submission
+        document.getElementById('addProductForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Show loading
+            Swal.fire({
+                title: 'Adding Product...',
+                text: 'Please wait while we add the product.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Create FormData object with all form data
+            const formData = new FormData(this);
+
+            // Convert variants to proper format and add to FormData
+            const variants = [];
+            const variantTypes = document.querySelectorAll('.variant-type');
+            const variantValues = document.querySelectorAll('.variant-value');
+
+            for (let i = 0; i < variantTypes.length; i++) {
+                if (variantTypes[i].value && variantValues[i].value) {
+                    variants.push({
+                        type: variantTypes[i].value,
+                        value: variantValues[i].value
+                    });
+                }
+            }
+            formData.append('variants', JSON.stringify(variants));
+
+            // Convert attributes to proper format and add to FormData
+            const attributes = {
+                fragile: document.getElementById('fragile').checked,
+                biodegradable: document.getElementById('biodegradable').checked,
+                frozen: document.getElementById('frozen').checked,
+                maxTemperature: document.getElementById('maxTemperature').value || undefined,
+                hasExpiryDate: document.getElementById('hasExpiryDate').checked,
+                expiryDate: document.getElementById('expiryDate').value || undefined
             };
+            formData.append('attributes', JSON.stringify(attributes));
+
+            // Convert tags to array and add to FormData
+            const tagsInput = document.getElementById('tags').value;
+            const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()) : [];
+            formData.append('tags', JSON.stringify(tags));
+
+            // Convert selectedCountries to array and add to FormData
+            const countriesInput = document.querySelector('input[name="selectedCountries"]').value;
+            const selectedCountries = countriesInput ? countriesInput.split(',').map(country => country.trim()) : [];
+            formData.append('selectedCountries', JSON.stringify(selectedCountries));
+
+            // Submit form
+            fetch('/api/products', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    Swal.close();
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Product added successfully.',
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = '/view-products';
+                        });
+                    } else {
+                        Swal.fire('Error', data.message || 'Failed to add product', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.close();
+                    Swal.fire('Error', 'Failed to add product. Please try again.', 'error');
+                });
         });
     </script>
 </body>

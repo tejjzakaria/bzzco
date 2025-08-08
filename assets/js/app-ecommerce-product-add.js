@@ -137,25 +137,32 @@
 
   if (addProductForm) {
     // Publish product
-    publishBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      submitProduct(false);
-    });
+    if (publishBtn) {
+      publishBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        submitProduct(false);
+      });
+    }
 
     // Save as draft
-    saveDraftBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      submitProduct(true);
-    });
+    if (saveDraftBtn) {
+      saveDraftBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        submitProduct(true);
+      });
+    }
   }
 
   function submitProduct(isDraft = false) {
     // Show loading state
-    const spinner = publishBtn.querySelector('.spinner-border');
+    const spinner = publishBtn ? publishBtn.querySelector('.spinner-border') : null;
     const btnText = isDraft ? 'Saving...' : 'Publishing...';
     
-    if (!isDraft) {
-      spinner.classList.remove('d-none');
+    if (!isDraft && publishBtn) {
+      // Show spinner if it exists, otherwise create one
+      if (spinner) {
+        spinner.classList.remove('d-none');
+      }
       publishBtn.disabled = true;
       publishBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status"></span>${btnText}`;
     }
@@ -163,7 +170,10 @@
     // Get description from Quill editor
     if (commentEditor) {
       const description = commentEditor.root.innerHTML;
-      document.getElementById('productDescriptionHidden').value = description;
+      const hiddenInput = document.getElementById('productDescriptionHidden');
+      if (hiddenInput) {
+        hiddenInput.value = description;
+      }
     }
 
     // First upload images if any
@@ -210,19 +220,21 @@
     // Add draft status
     formData.append('isDraft', isDraft);
 
-    // Collect variants
-    const variants = [];
-    const variantItems = document.querySelectorAll('[data-repeater-item]');
-    variantItems.forEach(item => {
-      const type = item.querySelector('[name="variantType"]')?.value;
-      const value = item.querySelector('[name="variantValue"]')?.value;
-      if (type && value) {
-        variants.push({ type, value });
-      }
-    });
+    // Collect variants - using the new system with productVariants array
+    let variants = [];
+    
+    // Check if productVariants is available (from the new variant system)
+    if (typeof productVariants !== 'undefined' && Array.isArray(productVariants)) {
+      variants = productVariants
+        .filter(v => v.type && v.values && v.values.length > 0)
+        .map(v => ({ type: v.type, values: v.values }));
+    }
     
     if (variants.length > 0) {
       formData.append('variants', JSON.stringify(variants));
+      console.log('Variants being submitted:', variants);
+    } else {
+      console.log('No variants to submit');
     }
 
     // Collect attributes
@@ -334,12 +346,14 @@
     })
     .finally(() => {
       // Reset button state
-      const spinner = publishBtn.querySelector('.spinner-border');
-      if (spinner) {
-        spinner.classList.add('d-none');
+      if (publishBtn) {
+        const spinner = publishBtn.querySelector('.spinner-border');
+        if (spinner) {
+          spinner.classList.add('d-none');
+        }
+        publishBtn.disabled = false;
+        publishBtn.innerHTML = 'Publish Product';
       }
-      publishBtn.disabled = false;
-      publishBtn.innerHTML = 'Publish Product';
     });
   }
 

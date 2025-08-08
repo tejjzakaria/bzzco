@@ -154,7 +154,7 @@ router.post('/api/products', upload.array('images', 10), async (req, res) => {
         try {
             if (typeof productData.variants === 'string' && productData.variants.trim()) {
                 productData.variants = JSON.parse(productData.variants);
-            } else {
+            } else if (!productData.variants || !Array.isArray(productData.variants)) {
                 productData.variants = [];
             }
         } catch (e) {

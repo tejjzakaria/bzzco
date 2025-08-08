@@ -37,6 +37,31 @@ const addProduct = async (req, res) => {
       tags
     } = req.body;
 
+    // Handle variants - parse if it's a JSON string
+    let parsedVariants = [];
+    if (variants) {
+      try {
+        parsedVariants = typeof variants === 'string' ? JSON.parse(variants) : variants;
+        console.log('Parsed variants:', parsedVariants); // Debug log
+      } catch (e) {
+        console.log('Error parsing variants:', e);
+        parsedVariants = [];
+      }
+    } else {
+      console.log('No variants provided'); // Debug log
+    }
+
+    // Handle tags - parse if it's a JSON string
+    let parsedTags = [];
+    if (tags) {
+      try {
+        parsedTags = typeof tags === 'string' ? JSON.parse(tags) : tags;
+      } catch (e) {
+        console.log('Error parsing tags:', e);
+        parsedTags = [];
+      }
+    }
+
     // Validate required fields
     if (!productTitle || !productSku || !productPrice || !category) {
       return res.status(400).json({ 
@@ -59,7 +84,7 @@ const addProduct = async (req, res) => {
       productSku,
       productBarcode,
       images: images || [],
-      variants: variants || [],
+      variants: parsedVariants || [],
       quantity: quantity || 0,
       inStock: inStock !== undefined ? inStock : true,
       shippingType: shippingType || 'company',
@@ -81,7 +106,7 @@ const addProduct = async (req, res) => {
       vendor,
       category,
       status: status || 'Published',
-      tags: tags || []
+      tags: parsedTags || []
     });
 
     const savedProduct = await newProduct.save();
@@ -134,8 +159,6 @@ const getProductById = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log('Update request body:', req.body);
-    
     const {
       productTitle,
       description,
@@ -152,8 +175,6 @@ const updateProduct = async (req, res) => {
       variants,
       existingImages
     } = req.body;
-
-    console.log('Extracted category:', category);
 
     // Find the existing product
     const existingProduct = await Product.findById(id);
@@ -217,8 +238,6 @@ const updateProduct = async (req, res) => {
       images: updatedImages,
       updatedAt: new Date()
     };
-
-    console.log('Update data:', updateData);
 
     // Update the product
     const updatedProduct = await Product.findByIdAndUpdate(

@@ -25,14 +25,20 @@ const productSchema = mongoose.Schema({
         type: String, // URLs to uploaded images
     }],
     
-    // Variants
+    // Variants - Updated to support flexible variant system
     variants: [{
+        type: {
+            type: String, // variant type like "Size", "Color", "Material", etc.
+        },
+        values: [{
+            type: String // array of values like ["Small", "Medium", "Large"]
+        }],
+        // Backwards compatibility with old format
         option: {
-            type: String, // size, color, weight, smell
-            enum: ['size', 'color', 'weight', 'smell'],
+            type: String, // old format
         },
         value: {
-            type: String,
+            type: String, // old format
         }
     }],
     
