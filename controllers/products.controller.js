@@ -34,7 +34,10 @@ const addProduct = async (req, res) => {
       vendor,
       category,
       status,
-      tags
+      tags,
+      weight,
+      manufacturer,
+      dimensions
     } = req.body;
 
     // Handle variants - parse if it's a JSON string
@@ -106,7 +109,10 @@ const addProduct = async (req, res) => {
       vendor,
       category,
       status: status || 'Published',
-      tags: parsedTags || []
+      tags: parsedTags || [],
+      weight,
+      manufacturer,
+      dimensions
     });
 
     const savedProduct = await newProduct.save();
@@ -166,8 +172,6 @@ const updateProduct = async (req, res) => {
       productPrice,
       quantity,
       weight,
-      manufacturer,
-      dimensions,
       category,
       status,
       inStock,

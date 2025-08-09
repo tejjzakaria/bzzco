@@ -239,14 +239,24 @@
 
     // Collect attributes
     const attributes = {
-      fragile: document.querySelector('[name="fragile"]')?.checked || false,
-      biodegradable: document.querySelector('[name="biodegradable"]')?.checked || false,
-      frozen: document.querySelector('[name="frozen"]')?.checked || false,
-      maxTemperature: document.querySelector('[name="maxTemperature"]')?.value || '',
-      hasExpiryDate: document.querySelector('[name="hasExpiryDate"]')?.checked || false,
-      expiryDate: document.querySelector('[name="expiryDate"]')?.value || ''
+      fragile: document.querySelector('[name="attributes[fragile]"]')?.checked || false,
+      biodegradable: document.querySelector('[name="attributes[biodegradable]"]')?.checked || false,
+      frozen: document.querySelector('[name="attributes[frozen]"]')?.checked || false,
+      maxTemperature: document.querySelector('[name="attributes[frozen]"]')?.checked
+        ? document.querySelector('[name="attributes[maxTemperature]"]')?.value || ''
+        : '',
+      hasExpiryDate: document.querySelector('[name="attributes[hasExpiryDate]"]')?.checked || false,
+      expiryDate: document.querySelector('[name="attributes[hasExpiryDate]"]')?.checked
+        ? document.querySelector('[name="attributes[expiryDate]"]')?.value || ''
+        : ''
     };
     formData.append('attributes', JSON.stringify(attributes));
+
+    // Handle selected countries
+    const selectedCountriesInput = document.querySelector('[name="selectedCountries"]');
+    if (selectedCountriesInput && selectedCountriesInput.value.trim()) {
+      formData.append('selectedCountries', selectedCountriesInput.value.trim());
+    }
 
     // Handle tags - they're already comma-separated, don't stringify
     const tagsInput = document.querySelector('[name="tags"]');

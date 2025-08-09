@@ -133,6 +133,17 @@ const productSchema = mongoose.Schema({
     tags: [{
         type: String,
     }],
+    
+    // Additional Fields
+    weight: {
+        type: Number,
+    },
+    manufacturer: {
+        type: String,
+    },
+    dimensions: {
+        type: String,
+    },
 }, {
     timestamps: true, // adds createdAt and updatedAt fields
 });

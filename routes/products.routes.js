@@ -130,6 +130,9 @@ router.post('/api/products', upload.array('images', 10), async (req, res) => {
     try {
         const productData = req.body;
         
+        // Log the raw request body for debugging
+        console.log('Raw request body:', req.body);
+        
         // Handle uploaded images - check both multipart files and JSON string
         if (req.files && req.files.length > 0) {
             // Images uploaded via multipart form (direct file upload)
@@ -163,15 +166,23 @@ router.post('/api/products', upload.array('images', 10), async (req, res) => {
         }
 
         try {
-            if (typeof productData.selectedCountries === 'string' && productData.selectedCountries.trim()) {
-                productData.selectedCountries = JSON.parse(productData.selectedCountries);
+            if (req.body.selectedCountries) {
+                console.log('Raw selectedCountries:', req.body.selectedCountries);
+                const parsedCountries = JSON.parse(req.body.selectedCountries);
+                productData.selectedCountries = Array.isArray(parsedCountries) ? parsedCountries : [];
             } else {
                 productData.selectedCountries = [];
             }
+            console.log('Final selectedCountries:', productData.selectedCountries);
         } catch (e) {
-            console.log('Error parsing selectedCountries:', e);
+            console.error('Error parsing selectedCountries:', e);
             productData.selectedCountries = [];
         }
+
+        console.log('Incoming selectedCountries:', productData.selectedCountries);
+
+        // Debugging log to confirm the value of selectedCountries after processing it as a string
+        console.log('Processed selectedCountries as string:', productData.selectedCountries);
 
         try {
             if (typeof productData.attributes === 'string' && productData.attributes.trim()) {
@@ -209,6 +220,9 @@ router.post('/api/products', upload.array('images', 10), async (req, res) => {
         if (productData.productIdType === '') {
             delete productData.productIdType;
         }
+
+        // Debugging log before database insertion
+        console.log('Final productData before database insertion:', productData);
 
         // Use the existing addProduct function from controller
         req.body = productData;
