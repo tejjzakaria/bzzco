@@ -40,6 +40,10 @@ const addProduct = async (req, res) => {
       dimensions
     } = req.body;
 
+    console.log('Received inStock:', inStock, 'type:', typeof inStock);
+    console.log('Received chargeTax:', chargeTax, 'type:', typeof chargeTax);
+    console.log('Received variants (raw):', variants, 'type:', typeof variants);
+
     // Handle variants - parse if it's a JSON string
     let parsedVariants = [];
     if (variants) {
@@ -62,6 +66,18 @@ const addProduct = async (req, res) => {
       } catch (e) {
         console.log('Error parsing tags:', e);
         parsedTags = [];
+      }
+    }
+
+    // Handle selectedCountries - parse if it's a JSON string
+    let parsedSelectedCountries = [];
+    if (selectedCountries) {
+      try {
+        parsedSelectedCountries = typeof selectedCountries === 'string' ? JSON.parse(selectedCountries) : selectedCountries;
+        console.log('Parsed selectedCountries:', parsedSelectedCountries); // Debug log
+      } catch (e) {
+        console.log('Error parsing selectedCountries:', e);
+        parsedSelectedCountries = [];
       }
     }
 
@@ -89,10 +105,10 @@ const addProduct = async (req, res) => {
       images: images || [],
       variants: parsedVariants || [],
       quantity: quantity || 0,
-      inStock: inStock !== undefined ? inStock : true,
+      inStock: inStock || 'yes',
       shippingType: shippingType || 'company',
       globalDelivery: globalDelivery || 'local',
-      selectedCountries: selectedCountries || [],
+      selectedCountries: parsedSelectedCountries || [],
       attributes: {
         fragile: attributes?.fragile || false,
         biodegradable: attributes?.biodegradable || false,
@@ -105,7 +121,7 @@ const addProduct = async (req, res) => {
       productId,
       productPrice: parseFloat(productPrice),
       productDiscountedPrice: productDiscountedPrice ? parseFloat(productDiscountedPrice) : undefined,
-      chargeTax: chargeTax !== undefined ? chargeTax : true,
+      chargeTax: chargeTax || 'yes',
       vendor,
       category,
       status: status || 'Published',
@@ -114,6 +130,22 @@ const addProduct = async (req, res) => {
       manufacturer,
       dimensions
     });
+
+    console.log('Product to be saved:', {
+      ...newProduct.toObject(),
+      variants: newProduct.variants
+    });
+
+    console.log('=== PRODUCT SAVE ATTEMPT ===');
+    console.log('Product data being saved:');
+    console.log('- productTitle:', newProduct.productTitle);
+    console.log('- productSku:', newProduct.productSku);
+    console.log('- productPrice:', newProduct.productPrice);
+    console.log('- category:', newProduct.category);
+    console.log('- inStock:', newProduct.inStock);
+    console.log('- chargeTax:', newProduct.chargeTax);
+    console.log('- variants:', JSON.stringify(newProduct.variants, null, 2));
+    console.log('================================');
 
     const savedProduct = await newProduct.save();
     
@@ -125,13 +157,21 @@ const addProduct = async (req, res) => {
 
   } catch (error) {
     console.log("ERROR CREATING PRODUCT", error);
+    console.log("Error name:", error.name);
+    console.log("Error message:", error.message);
     
     // Handle mongoose validation errors
     if (error.name === 'ValidationError') {
+      console.log("Validation errors details:");
+      Object.keys(error.errors).forEach(key => {
+        console.log(`- ${key}: ${error.errors[key].message}`);
+      });
+      
       const validationErrors = Object.values(error.errors).map(err => err.message);
       return res.status(400).json({ 
         error: "Validation failed", 
-        details: validationErrors 
+        details: validationErrors,
+        fieldErrors: error.errors
       });
     }
 
@@ -175,6 +215,7 @@ const updateProduct = async (req, res) => {
       category,
       status,
       inStock,
+      chargeTax,
       tags,
       variants,
       existingImages
@@ -236,7 +277,8 @@ const updateProduct = async (req, res) => {
       dimensions,
       category,
       status: status || 'Published',
-      inStock: inStock === 'true' || inStock === true,
+      inStock: inStock || 'yes',
+      chargeTax: chargeTax || 'yes',
       tags: parsedTags,
       variants: parsedVariants,
       images: updatedImages,

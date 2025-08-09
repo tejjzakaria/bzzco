@@ -48,8 +48,9 @@ const productSchema = mongoose.Schema({
         default: 0,
     },
     inStock: {
-        type: Boolean,
-        default: true,
+        type: String,
+        enum: ['yes', 'no'],
+        default: 'yes',
     },
     
     // Shipping
@@ -113,8 +114,9 @@ const productSchema = mongoose.Schema({
         type: Number,
     },
     chargeTax: {
-        type: Boolean,
-        default: true,
+        type: String,
+        enum: ['yes', 'no'],
+        default: 'yes',
     },
     
     // Organization

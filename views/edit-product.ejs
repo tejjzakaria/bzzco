@@ -330,7 +330,7 @@
             document.getElementById('manufacturer').value = product.manufacturer || '';
             document.getElementById('dimensions').value = product.dimensions || '';
             document.getElementById('status').value = product.status || 'Published';
-            document.getElementById('inStock').checked = product.inStock || false;
+            document.getElementById('inStock').checked = product.inStock === 'yes';
             
             // Handle tags
             if (product.tags && Array.isArray(product.tags)) {
@@ -582,7 +582,7 @@
             formData.append('manufacturer', document.getElementById('manufacturer').value);
             formData.append('dimensions', document.getElementById('dimensions').value);
             formData.append('status', document.getElementById('status').value);
-            formData.append('inStock', document.getElementById('inStock').checked);
+            formData.append('inStock', document.getElementById('inStock').checked ? 'yes' : 'no');
 
             // Handle tags
             const tags = document.getElementById('tags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
