@@ -2,7 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { getAllProducts, addProduct, getProductById, updateProduct, updateProductStatus, deleteProduct } from '../controllers/products.controller.js';
+import { getAllProducts, addProduct, getProductById, updateProduct, updateProductStatus, deleteProduct, getProductStats } from '../controllers/products.controller.js';
 import Seller from '../models/sellers.model.js';
 
 // Debug: Check if Seller model is properly imported
@@ -322,6 +322,7 @@ router.post('/api/products', upload.array('images', 10), async (req, res) => {
 });
 
 // Products API routes
+router.get('/api/products/stats', getProductStats);
 router.get('/api/products', getAllProducts);
 router.get('/api/products/:id', getProductById);
 router.put('/api/products/:id', upload.array('newImages', 10), async (req, res) => {

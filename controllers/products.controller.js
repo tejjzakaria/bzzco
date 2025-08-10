@@ -505,5 +505,89 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-export { getAllProducts, addProduct, getProductById, updateProduct, updateProductStatus, deleteProduct };
+// Add new function to get product statistics
+const getProductStats = async (req, res) => {
+  try {
+    console.log("=== PRODUCT STATS REQUEST STARTED ===");
+    
+    // Get total product count
+    console.log("Fetching total products count...");
+    const totalProducts = await Product.countDocuments();
+    console.log("Total products:", totalProducts);
+    
+    // Get published products count
+    console.log("Fetching published products count...");
+    const publishedProducts = await Product.countDocuments({ status: 'Published' });
+    console.log("Published products:", publishedProducts);
+    
+    // Get products in stock count
+    console.log("Fetching in-stock products count...");
+    const inStockProducts = await Product.countDocuments({ inStock: 'yes' });
+    console.log("In-stock products:", inStockProducts);
+    
+    // Get low stock products (quantity <= 10)
+    console.log("Fetching low stock products count...");
+    const lowStockProducts = await Product.countDocuments({ 
+      quantity: { $lte: 10 }, 
+      inStock: 'yes' 
+    });
+    console.log("Low stock products:", lowStockProducts);
+    
+    // Calculate total inventory value
+    console.log("Calculating inventory value...");
+    const inventoryValueResult = await Product.aggregate([
+      { $match: { status: 'Published', inStock: 'yes' } },
+      { 
+        $group: { 
+          _id: null, 
+          totalValue: { 
+            $sum: { 
+              $multiply: ['$productPrice', '$quantity'] 
+            } 
+          } 
+        } 
+      }
+    ]);
+    
+    const totalInventoryValue = inventoryValueResult.length > 0 ? inventoryValueResult[0].totalValue : 0;
+    console.log("Total inventory value:", totalInventoryValue);
+    
+    // Get category distribution
+    console.log("Fetching category stats...");
+    const categoryStats = await Product.aggregate([
+      { $match: { status: 'Published' } },
+      { $group: { _id: '$category', count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 5 }
+    ]);
+    console.log("Category stats:", categoryStats);
+    
+    const statsResponse = {
+      success: true,
+      stats: {
+        totalProducts,
+        publishedProducts,
+        inStockProducts,
+        lowStockProducts,
+        totalInventoryValue,
+        categoryStats
+      }
+    };
+    
+    console.log("=== PRODUCT STATS RESPONSE ===", statsResponse);
+    res.json(statsResponse);
+  } catch (error) {
+    console.log("ERROR FETCHING PRODUCT STATS", error);
+    console.log("Error name:", error.name);
+    console.log("Error message:", error.message);
+    console.log("Error stack:", error.stack);
+    res.status(500).json({ 
+      success: false, 
+      message: "Failed to fetch product stats",
+      error: error.message 
+    });
+  }
+};
+
+export { getAllProducts, addProduct, getProductById, updateProduct, updateProductStatus, deleteProduct, getProductStats };
 

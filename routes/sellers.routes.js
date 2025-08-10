@@ -1,6 +1,6 @@
 import express from 'express';
 import Seller from '../models/sellers.model.js';
-import { addSeller, getAllSellers, getSellersForDropdown } from '../controllers/sellers.controller.js';
+import { addSeller, getAllSellers } from '../controllers/sellers.controller.js';
 
 const router = express.Router();
 
@@ -40,8 +40,6 @@ router.get('/view-sellers', async (req, res) => {
 // Get all sellers API
 router.get("/api/sellers", getAllSellers);
 
-// Get sellers for dropdown API
-router.get("/api/sellers-dropdown", getSellersForDropdown);
 
 // Get single seller API
 router.get("/api/sellers/:id", async (req, res) => {

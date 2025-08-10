@@ -56,16 +56,16 @@
                                                     <div
                                                         class="d-flex justify-content-between align-items-start card-widget-1 border-end pb-4 pb-sm-0">
                                                         <div>
-                                                            <p class="mb-1">In-store Sales</p>
-                                                            <h4 class="mb-1">$5,345.43</h4>
+                                                            <p class="mb-1">Total Products</p>
+                                                            <h4 class="mb-1" id="totalProductsValue">Loading...</h4>
                                                             <p class="mb-0">
-                                                                <span class="me-2">5k orders</span><span
-                                                                    class="badge rounded-pill bg-label-success">+5.7%</span>
+                                                                <span class="me-2" id="totalProductsLabel">Loading...</span><span
+                                                                    class="badge rounded-pill bg-label-success" id="totalProductsChange">+0%</span>
                                                             </p>
                                                         </div>
                                                         <div class="avatar me-sm-6">
                                                             <span class="avatar-initial rounded-3 text-heading">
-                                                                <i class="icon-base ri ri-home-6-line icon-28px"></i>
+                                                                <i class="icon-base ri ri-shopping-bag-line icon-28px"></i>
                                                             </span>
                                                         </div>
                                                     </div>
@@ -75,16 +75,16 @@
                                                     <div
                                                         class="d-flex justify-content-between align-items-start card-widget-2 border-end pb-4 pb-sm-0">
                                                         <div>
-                                                            <p class="mb-1">Website Sales</p>
-                                                            <h4 class="mb-1">$674,347.12</h4>
+                                                            <p class="mb-1">Inventory Value</p>
+                                                            <h4 class="mb-1" id="inventoryValue">Loading...</h4>
                                                             <p class="mb-0">
-                                                                <span class="me-2">21k orders</span><span
-                                                                    class="badge rounded-pill bg-label-success">+12.4%</span>
+                                                                <span class="me-2" id="inventoryLabel">Loading...</span><span
+                                                                    class="badge rounded-pill bg-label-success" id="inventoryChange">+0%</span>
                                                             </p>
                                                         </div>
                                                         <div class="avatar me-lg-6">
                                                             <span class="avatar-initial rounded-3 text-heading">
-                                                                <i class="icon-base ri ri-computer-line icon-28px"></i>
+                                                                <i class="icon-base ri ri-money-dollar-circle-line icon-28px"></i>
                                                             </span>
                                                         </div>
                                                     </div>
@@ -94,13 +94,16 @@
                                                     <div
                                                         class="d-flex justify-content-between align-items-start border-end pb-4 pb-sm-0 card-widget-3">
                                                         <div>
-                                                            <p class="mb-1">Discount</p>
-                                                            <h4 class="mb-1">$14,235.12</h4>
-                                                            <p class="mb-0">6k orders</p>
+                                                            <p class="mb-1">In Stock</p>
+                                                            <h4 class="mb-1" id="inStockValue">Loading...</h4>
+                                                            <p class="mb-0">
+                                                                <span class="me-2" id="inStockLabel">Loading...</span><span
+                                                                    class="badge rounded-pill bg-label-success" id="inStockChange">+0%</span>
+                                                            </p>
                                                         </div>
                                                         <div class="avatar me-sm-6">
                                                             <span class="avatar-initial rounded-3 text-heading">
-                                                                <i class="icon-base ri ri-gift-line icon-28px"></i>
+                                                                <i class="icon-base ri ri-check-line icon-28px"></i>
                                                             </span>
                                                         </div>
                                                     </div>
@@ -108,17 +111,16 @@
                                                 <div class="col-sm-6 col-lg-3">
                                                     <div class="d-flex justify-content-between align-items-start">
                                                         <div>
-                                                            <p class="mb-1">Affiliate</p>
-                                                            <h4 class="mb-1">$8,345.23</h4>
+                                                            <p class="mb-1">Low Stock</p>
+                                                            <h4 class="mb-1" id="lowStockValue">Loading...</h4>
                                                             <p class="mb-0">
-                                                                <span class="me-2">150 orders</span><span
-                                                                    class="badge rounded-pill bg-label-danger">-3.5%</span>
+                                                                <span class="me-2" id="lowStockLabel">Loading...</span><span
+                                                                    class="badge rounded-pill bg-label-danger" id="lowStockChange">+0%</span>
                                                             </p>
                                                         </div>
                                                         <div class="avatar">
                                                             <span class="avatar-initial rounded-3 text-heading">
-                                                                <i
-                                                                    class="icon-base ri ri-money-dollar-circle-line icon-28px"></i>
+                                                                <i class="icon-base ri ri-alert-line icon-28px"></i>
                                                             </span>
                                                         </div>
                                                     </div>
@@ -227,6 +229,9 @@
         $(document).ready(function () {
             console.log('jQuery document ready fired!');
             
+            // Load product statistics first
+            loadProductStats();
+            
             // Add debugging
             console.log('Table HTML columns:', $('#productsTable thead th').length);
 
@@ -328,6 +333,72 @@
         });
 
         // Manual table population removed - using DataTable AJAX instead
+
+        // Function to load and update product statistics
+        function loadProductStats() {
+            fetch('/api/products/stats')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const stats = data.stats;
+                        
+                        // Update the stats in the UI
+                        updateStatsUI(stats);
+                    } else {
+                        console.error('Failed to load product stats:', data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading product stats:', error);
+                });
+        }
+
+        // Function to update the statistics UI
+        function updateStatsUI(stats) {
+            // Update total products
+            document.querySelector('#totalProductsValue').textContent = stats.totalProducts;
+            document.querySelector('#totalProductsLabel').textContent = `${stats.totalProducts} products`;
+            
+            // Update inventory value
+            const inventoryValue = '$' + stats.totalInventoryValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.querySelector('#inventoryValue').textContent = inventoryValue;
+            document.querySelector('#inventoryLabel').textContent = `${stats.publishedProducts} published`;
+            
+            // Update in-stock products
+            document.querySelector('#inStockValue').textContent = stats.inStockProducts;
+            document.querySelector('#inStockLabel').textContent = `${stats.inStockProducts} in stock`;
+            
+            // Update low stock products
+            document.querySelector('#lowStockValue').textContent = stats.lowStockProducts;
+            document.querySelector('#lowStockLabel').textContent = `${stats.lowStockProducts} low stock`;
+            
+            // Calculate percentage changes (you can implement this based on historical data)
+            // For now, we'll show static positive indicators
+            updatePercentageIndicators(stats);
+        }
+
+        // Function to update percentage indicators (placeholder implementation)
+        function updatePercentageIndicators(stats) {
+            // You can implement logic to calculate percentage changes based on historical data
+            // For now, showing sample indicators
+            const totalChangePercent = '+12.4%';
+            const inventoryChangePercent = '+8.2%';
+            const stockChangePercent = '+5.7%';
+            const lowStockChangePercent = stats.lowStockProducts > 0 ? '-3.5%' : '+0%';
+            
+            document.querySelector('#totalProductsChange').textContent = totalChangePercent;
+            document.querySelector('#inventoryChange').textContent = inventoryChangePercent;
+            document.querySelector('#inStockChange').textContent = stockChangePercent;
+            document.querySelector('#lowStockChange').textContent = lowStockChangePercent;
+            
+            // Update badge classes based on positive/negative change
+            const badges = ['#totalProductsChange', '#inventoryChange', '#inStockChange', '#lowStockChange'];
+            badges.forEach((selector, index) => {
+                const element = document.querySelector(selector);
+                const isPositive = [totalChangePercent, inventoryChangePercent, stockChangePercent, lowStockChangePercent][index].startsWith('+');
+                element.className = `badge rounded-pill ${isPositive ? 'bg-label-success' : 'bg-label-danger'}`;
+            });
+        }
 
         // Fixed the viewProduct function to handle errors properly
         function viewProduct(productId) {
