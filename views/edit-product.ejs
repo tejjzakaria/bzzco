@@ -269,11 +269,15 @@
                                                         <label class="form-label" for="vendor">Vendor</label>
                                                         <select class="select2 form-select" id="vendor" name="vendor">
                                                             <option value="">Select Vendor</option>
-                                                            <option value="men-clothing">Men's Clothing</option>
-                                                            <option value="women-clothing">Women's Clothing</option>
-                                                            <option value="kid-clothing">Kid's Clothing</option>
-                                                            <option value="electronics-vendor">Electronics Vendor</option>
-                                                            <option value="home-garden-vendor">Home & Garden Vendor</option>
+                                                            <% if (sellers && sellers.length > 0) { %>
+                                                                <% sellers.forEach(seller => { %>
+                                                                    <option value="<%= seller._id %>">
+                                                                        <%= seller.full_name %><% if (seller.company) { %> - <%= seller.company %><% } %>
+                                                                    </option>
+                                                                <% }); %>
+                                                            <% } else { %>
+                                                                <option value="" disabled>No sellers available</option>
+                                                            <% } %>
                                                         </select>
                                                     </div>
 
@@ -521,6 +525,48 @@
             $('#category').select2();
         });
 
+        // Initialize vendor select2
+        $(document).ready(function () {
+            $('#vendor').select2({
+                placeholder: 'Select Vendor',
+                allowClear: true
+            });
+        });
+
+        // Function to load sellers dynamically (optional)
+        async function loadSellersDropdown() {
+            try {
+                const response = await fetch('/api/sellers-dropdown');
+                const data = await response.json();
+                
+                if (data.sellers) {
+                    const vendorSelect = document.getElementById('vendor');
+                    // Keep the currently selected value
+                    const currentValue = vendorSelect.value;
+                    // Clear existing options except the first one
+                    vendorSelect.innerHTML = '<option value="">Select Vendor</option>';
+                    
+                    data.sellers.forEach(seller => {
+                        const option = document.createElement('option');
+                        option.value = seller._id;
+                        option.textContent = `${seller.full_name}${seller.company ? ' - ' + seller.company : ''}`;
+                        if (option.value === currentValue) {
+                            option.selected = true;
+                        }
+                        vendorSelect.appendChild(option);
+                    });
+                    
+                    // Refresh Select2 to show new options
+                    $('#vendor').trigger('change');
+                }
+            } catch (error) {
+                console.error('Error loading sellers:', error);
+            }
+        }
+
+        // Uncomment the line below if you want to load sellers dynamically instead of server-side rendering
+        // loadSellersDropdown();
+
         // Initialize Tagify for tags input
         let tagify;
         $(document).ready(function () {
@@ -645,7 +691,13 @@
         function populateForm(product) {
             document.getElementById('productId').value = product._id;
             document.getElementById('productTitle').value = product.productTitle || '';
+            
+            // Set category and trigger Select2 update
+            console.log('Setting category to:', product.category);
             document.getElementById('category').value = product.category || '';
+            $('#category').trigger('change'); // Update Select2 display
+            console.log('Category value after setting:', document.getElementById('category').value);
+            
             document.getElementById('description').value = product.description || '';
             document.getElementById('productSku').value = product.productSku || '';
             document.getElementById('productBarcode').value = product.productBarcode || '';
@@ -658,7 +710,13 @@
             document.getElementById('productIdType').value = product.productIdType || '';
             document.getElementById('productIdNumber').value = product.productId || '';
             document.getElementById('quantity').value = product.quantity || '';
+            
+            // Set vendor and trigger Select2 update
+            console.log('Setting vendor to:', product.vendor);
             document.getElementById('vendor').value = product.vendor || '';
+            $('#vendor').trigger('change'); // Update Select2 display
+            console.log('Vendor value after setting:', document.getElementById('vendor').value);
+            
             document.getElementById('status').value = product.status || 'Published';
             document.getElementById('inStock').checked = product.inStock === 'yes';
             

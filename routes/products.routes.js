@@ -3,6 +3,11 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { getAllProducts, addProduct, getProductById, updateProduct, updateProductStatus, deleteProduct } from '../controllers/products.controller.js';
+import Seller from '../models/sellers.model.js';
+
+// Debug: Check if Seller model is properly imported
+console.log('Seller model imported:', !!Seller);
+console.log('Seller model constructor:', Seller.name);
 
 const router = express.Router();
 
@@ -40,19 +45,83 @@ const upload = multer({
     }
 });
 
+// Debug route to check sellers in database
+router.get('/debug/sellers', async (req, res) => {
+    try {
+        const sellers = await Seller.find({});
+        res.json({
+            count: sellers.length,
+            sellers: sellers
+        });
+    } catch (error) {
+        res.json({
+            error: error.message,
+            sellers: []
+        });
+    }
+});
+
+// API route for sellers dropdown (for dynamic loading)
+router.get('/api/sellers-dropdown', async (req, res) => {
+    try {
+        const sellers = await Seller.find({}, 'full_name company email').sort({ full_name: 1 });
+        res.json({
+            success: true,
+            sellers: sellers
+        });
+    } catch (error) {
+        console.log("ERROR FETCHING SELLERS FOR DROPDOWN API", error);
+        res.status(500).json({
+            success: false,
+            error: "Failed to fetch sellers",
+            sellers: []
+        });
+    }
+});
+
 // Products page routes
 router.get('/view-products', (req, res) => {
     res.render('view-products', { currentPage: 'view-products' });
 });
 
-router.get('/add-product', (req, res) => {
-    res.render('add-product', { currentPage: 'add-product' });
+router.get('/add-product', async (req, res) => {
+    let sellers = [];
+    try {
+        // Fetch sellers for the vendor dropdown
+        console.log('Fetching sellers for add-product page...');
+        sellers = await Seller.find({}, 'full_name company email').sort({ full_name: 1 });
+        console.log('Sellers fetched successfully:', sellers.length, 'sellers found');
+    } catch (error) {
+        console.log("ERROR FETCHING SELLERS FOR ADD-PRODUCT", error);
+        sellers = []; // Ensure sellers is always an array
+    }
+    
+    // Always render with sellers variable defined
+    res.render('add-product', { 
+        currentPage: 'add-product',
+        sellers: sellers || [] // Double ensure it's always an array
+    });
 });
 
 // Edit product page route
-router.get('/edit-product/:id', (req, res) => {
+router.get('/edit-product/:id', async (req, res) => {
     console.log('Edit product route hit with ID:', req.params.id);
-    res.render('edit-product', { currentPage: 'edit-product' });
+    let sellers = [];
+    try {
+        // Fetch sellers for the vendor dropdown
+        console.log('Fetching sellers for edit-product page...');
+        sellers = await Seller.find({}, 'full_name company email').sort({ full_name: 1 });
+        console.log('Sellers fetched successfully:', sellers.length, 'sellers found');
+    } catch (error) {
+        console.log("ERROR FETCHING SELLERS FOR EDIT-PRODUCT", error);
+        sellers = []; // Ensure sellers is always an array
+    }
+    
+    // Always render with sellers variable defined
+    res.render('edit-product', { 
+        currentPage: 'edit-product',
+        sellers: sellers || [] // Double ensure it's always an array
+    });
 });
 
 // Image upload endpoint
