@@ -906,9 +906,15 @@
             const form = event.target;
             const formData = new FormData(form);
             
-            // Remove variant fields that may have been auto-added by the repeater
-            formData.delete('type');
-            formData.delete('values');
+            // Remove all variant-related fields that may have been auto-added by the repeater
+            // The repeater generates field names like variants[0][type], variants[0][values], etc.
+            const keysToDelete = [];
+            for (let [key, value] of formData.entries()) {
+                if (key.startsWith('variants[') || key === 'type' || key === 'values') {
+                    keysToDelete.push(key);
+                }
+            }
+            keysToDelete.forEach(key => formData.delete(key));
 
             // Handle checkbox values explicitly - checkboxes don't get included in FormData when unchecked
             const inStockCheckbox = document.getElementById('inStock');
@@ -975,11 +981,12 @@
             formData.append('variants', JSON.stringify(variants));
             console.log('Added variants to FormData:', JSON.stringify(variants));
             
-            // Debug: Log all FormData entries
-            console.log('FormData entries:');
+            // Debug: Log all FormData entries after cleanup
+            console.log('=== FINAL FORMDATA ENTRIES ===');
             for (let [key, value] of formData.entries()) {
                 console.log(key, ':', value);
             }
+            console.log('=== END FORMDATA DEBUG ===');
 
             try {
                 const response = await fetch(form.action, {
@@ -993,7 +1000,7 @@
                         icon: 'success',
                         title: 'Success',
                         text: 'Product added successfully!',
-                        confirmButtonText: 'OK'
+                        confirmButtonText: 'La7aaafdk'
                     }).then(() => {
                         window.location.href = '/view-products';
                     });

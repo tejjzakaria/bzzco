@@ -105,7 +105,7 @@ const addProduct = async (req, res) => {
       images: images || [],
       variants: parsedVariants || [],
       quantity: quantity || 0,
-      inStock: inStock || 'yes',
+      inStock: (inStock === 'true' || inStock === true || inStock === 'yes') ? 'yes' : 'no',
       shippingType: shippingType || 'company',
       globalDelivery: globalDelivery || 'local',
       selectedCountries: parsedSelectedCountries || [],
@@ -121,7 +121,7 @@ const addProduct = async (req, res) => {
       productId,
       productPrice: parseFloat(productPrice),
       productDiscountedPrice: productDiscountedPrice ? parseFloat(productDiscountedPrice) : undefined,
-      chargeTax: chargeTax || 'yes',
+      chargeTax: (chargeTax === 'true' || chargeTax === true || chargeTax === 'yes') ? 'yes' : 'no',
       vendor,
       category,
       status: status || 'Published',
@@ -205,21 +205,49 @@ const getProductById = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
+    
+    console.log('=== UPDATE PRODUCT REQUEST ===');
+    console.log('Product ID:', id);
+    console.log('Request body:', req.body);
+    console.log('Request files:', req.files);
+    console.log('===============================');
+    
     const {
       productTitle,
       description,
       productSku,
+      productBarcode,
       productPrice,
+      productDiscountedPrice,
       quantity,
       weight,
+      manufacturer,
+      dimensions,
       category,
       status,
       inStock,
       chargeTax,
       tags,
       variants,
-      existingImages
+      existingImages,
+      shippingType,
+      globalDelivery,
+      selectedCountries,
+      attributes,
+      productIdType,
+      productIdNumber,
+      vendor
     } = req.body;
+
+    console.log('inStock value:', inStock, 'type:', typeof inStock);
+    console.log('chargeTax value:', chargeTax, 'type:', typeof chargeTax);
+    
+    // Apply conversion as safety net
+    const safeInStock = (inStock === 'true' || inStock === true || inStock === 'yes') ? 'yes' : 'no';
+    const safeChargeTax = (chargeTax === 'true' || chargeTax === true || chargeTax === 'yes') ? 'yes' : 'no';
+    
+    console.log('Converted inStock:', safeInStock);
+    console.log('Converted chargeTax:', safeChargeTax);
 
     // Find the existing product
     const existingProduct = await Product.findById(id);
@@ -233,8 +261,10 @@ const updateProduct = async (req, res) => {
     // Add existing images (not removed)
     if (existingImages) {
       try {
-        updatedImages = JSON.parse(existingImages);
+        updatedImages = typeof existingImages === 'string' ? JSON.parse(existingImages) : existingImages;
+        console.log('Parsed existing images:', updatedImages);
       } catch (e) {
+        console.log('Error parsing existing images:', e);
         updatedImages = [];
       }
     }
@@ -243,14 +273,17 @@ const updateProduct = async (req, res) => {
     if (req.files && req.files.length > 0) {
       const newImageUrls = req.files.map(file => `/assets/img/products/${file.filename}`);
       updatedImages = [...updatedImages, ...newImageUrls];
+      console.log('Added new images:', newImageUrls);
     }
 
     // Handle tags
     let parsedTags = [];
     if (tags) {
       try {
-        parsedTags = JSON.parse(tags);
+        parsedTags = typeof tags === 'string' ? JSON.parse(tags) : tags;
+        console.log('Parsed tags:', parsedTags);
       } catch (e) {
+        console.log('Error parsing tags:', e);
         parsedTags = [];
       }
     }
@@ -259,68 +292,163 @@ const updateProduct = async (req, res) => {
     let parsedVariants = [];
     if (variants) {
       try {
-        parsedVariants = JSON.parse(variants);
+        parsedVariants = typeof variants === 'string' ? JSON.parse(variants) : variants;
+        console.log('Parsed variants:', parsedVariants);
       } catch (e) {
+        console.log('Error parsing variants:', e);
         parsedVariants = [];
       }
     }
 
-    // Prepare update data
+    // Handle selectedCountries
+    let parsedSelectedCountries = [];
+    if (selectedCountries) {
+      try {
+        parsedSelectedCountries = typeof selectedCountries === 'string' ? JSON.parse(selectedCountries) : selectedCountries;
+        console.log('Parsed selected countries:', parsedSelectedCountries);
+      } catch (e) {
+        console.log('Error parsing selected countries:', e);
+        parsedSelectedCountries = [];
+      }
+    }
+
+    // Handle attributes
+    let parsedAttributes = {};
+    if (attributes) {
+      try {
+        parsedAttributes = typeof attributes === 'string' ? JSON.parse(attributes) : attributes;
+        console.log('Parsed attributes:', parsedAttributes);
+      } catch (e) {
+        console.log('Error parsing attributes:', e);
+        parsedAttributes = {};
+      }
+    }
+
+    // Check for SKU conflicts if SKU is being changed
+    if (productSku && productSku !== existingProduct.productSku) {
+      const skuConflict = await Product.findOne({ 
+        productSku: productSku,
+        _id: { $ne: id } // Exclude current product
+      });
+      if (skuConflict) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Product with this SKU already exists" 
+        });
+      }
+    }
+
+    // Validate required fields
+    if (!productTitle || !productSku || !category) {
+        console.log('Validation failed: Missing required fields');
+        return res.status(400).json({ 
+            success: false,
+            message: "Missing required fields: productTitle, productSku, and category are required" 
+        });
+    }
+
+    // Construct update data object
     const updateData = {
       productTitle,
       description,
-      productSku,
-      productPrice: parseFloat(productPrice) || 0,
+      productBarcode,
+      productPrice: parseFloat(productPrice),
+      productDiscountedPrice: productDiscountedPrice ? parseFloat(productDiscountedPrice) : undefined,
       quantity: parseInt(quantity) || 0,
-      weight,
+      weight: parseFloat(weight) || undefined,
       manufacturer,
       dimensions,
       category,
       status: status || 'Published',
-      inStock: inStock || 'yes',
-      chargeTax: chargeTax || 'yes',
+      inStock: safeInStock,
+      chargeTax: safeChargeTax,
       tags: parsedTags,
       variants: parsedVariants,
       images: updatedImages,
-      updatedAt: new Date()
+      shippingType: shippingType || 'company',
+      globalDelivery: globalDelivery || 'local',
+      selectedCountries: parsedSelectedCountries,
+      attributes: {
+        fragile: parsedAttributes.fragile || false,
+        biodegradable: parsedAttributes.biodegradable || false,
+        frozen: parsedAttributes.frozen || false,
+        maxTemperature: parsedAttributes.maxTemperature,
+        hasExpiryDate: parsedAttributes.hasExpiryDate || false,
+        expiryDate: parsedAttributes.expiryDate
+      },
+      productIdType,
+      productId: productIdNumber,
+      vendor
     };
 
-    // Update the product
-    const updatedProduct = await Product.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true, runValidators: true }
+    // Only include productSku if it's actually changing to avoid unique constraint issues
+    if (productSku && productSku !== existingProduct.productSku) {
+      updateData.productSku = productSku;
+    }
+
+    // Remove undefined values to avoid overwriting with undefined
+    Object.keys(updateData).forEach(key => 
+      updateData[key] === undefined && delete updateData[key]
     );
 
+    console.log('Update data object:', updateData);
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+        id,
+        updateData,
+        { new: true, runValidators: true }
+    );
+
+    if (!updatedProduct) {
+        console.log('Product not found during update');
+        return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    console.log('Product updated successfully:', updatedProduct);
+
     res.json({
-      success: true,
-      message: "Product updated successfully",
-      product: updatedProduct
+        success: true,
+        message: "Product updated successfully",
+        product: updatedProduct
     });
 
   } catch (error) {
-    console.log("ERROR UPDATING PRODUCT", error);
-    
-    // Handle mongoose validation errors
-    if (error.name === 'ValidationError') {
-      const validationErrors = Object.values(error.errors).map(err => err.message);
-      return res.status(400).json({ 
-        success: false,
-        message: "Validation failed", 
-        details: validationErrors 
-      });
-    }
+        console.log("ERROR UPDATING PRODUCT", error);
+        console.log("Error name:", error.name);
+        console.log("Error message:", error.message);
+        console.log("Error stack:", error.stack);
 
-    // Handle duplicate key error (SKU)
-    if (error.code === 11000) {
-      return res.status(400).json({ 
-        success: false,
-        message: "Product with this SKU already exists" 
-      });
-    }
+        // Handle mongoose validation errors
+        if (error.name === 'ValidationError') {
+            console.log("Validation errors details:");
+            Object.keys(error.errors).forEach(key => {
+                console.log(`- ${key}: ${error.errors[key].message}`);
+            });
 
-    res.status(500).json({ success: false, message: "Failed to update product" });
-  }
+            const validationErrors = Object.values(error.errors).map(err => err.message);
+            return res.status(400).json({ 
+                success: false,
+                message: "Validation failed", 
+                details: validationErrors,
+                fieldErrors: error.errors
+            });
+        }
+
+        // Handle duplicate key error (SKU)
+        if (error.code === 11000) {
+            return res.status(400).json({ 
+                success: false,
+                message: "Product with this SKU already exists" 
+            });
+        }
+
+        res.status(500).json({ 
+            success: false, 
+            message: "Failed to update product",
+            error: error.message,
+            details: error.stack
+        });
+    }
 };
 
 const updateProductStatus = async (req, res) => {

@@ -221,6 +221,14 @@ router.post('/api/products', upload.array('images', 10), async (req, res) => {
             delete productData.productIdType;
         }
 
+        // Handle checkbox enum fields specifically
+        if (productData.inStock !== undefined) {
+            productData.inStock = (productData.inStock === 'true' || productData.inStock === true || productData.inStock === 'yes') ? 'yes' : 'no';
+        }
+        if (productData.chargeTax !== undefined) {
+            productData.chargeTax = (productData.chargeTax === 'true' || productData.chargeTax === true || productData.chargeTax === 'yes') ? 'yes' : 'no';
+        }
+
         // Debugging log before database insertion
         console.log('Final productData before database insertion:', productData);
 
@@ -247,7 +255,107 @@ router.post('/api/products', upload.array('images', 10), async (req, res) => {
 // Products API routes
 router.get('/api/products', getAllProducts);
 router.get('/api/products/:id', getProductById);
-router.put('/api/products/:id', upload.array('newImages', 10), updateProduct);
+router.put('/api/products/:id', upload.array('newImages', 10), async (req, res) => {
+    console.log('=== ROUTE PREPROCESSING START ===');
+    console.log('PUT /api/products/:id route called');
+    
+    try {
+        const productData = req.body;
+        
+        // Log the raw request body for debugging
+        console.log('Raw request body for update:', req.body);
+        
+        // Handle uploaded images
+        if (req.files && req.files.length > 0) {
+            const imageUrls = req.files.map(file => `/assets/img/products/${file.filename}`);
+            console.log('New images uploaded:', imageUrls);
+            // Note: existing images are handled in the controller
+        }
+
+        // Parse JSON fields if they come as strings from form data - with error handling
+        try {
+            if (typeof productData.variants === 'string' && productData.variants.trim()) {
+                productData.variants = JSON.parse(productData.variants);
+            } else if (!productData.variants || !Array.isArray(productData.variants)) {
+                productData.variants = [];
+            }
+        } catch (e) {
+            console.log('Error parsing variants:', e);
+            productData.variants = [];
+        }
+
+        try {
+            if (req.body.selectedCountries) {
+                console.log('Raw selectedCountries:', req.body.selectedCountries);
+                const parsedCountries = JSON.parse(req.body.selectedCountries);
+                productData.selectedCountries = Array.isArray(parsedCountries) ? parsedCountries : [];
+            } else {
+                productData.selectedCountries = [];
+            }
+            console.log('Final selectedCountries:', productData.selectedCountries);
+        } catch (e) {
+            console.error('Error parsing selectedCountries:', e);
+            productData.selectedCountries = [];
+        }
+
+        try {
+            if (typeof productData.attributes === 'string' && productData.attributes.trim()) {
+                productData.attributes = JSON.parse(productData.attributes);
+            } else {
+                productData.attributes = {};
+            }
+        } catch (e) {
+            console.log('Error parsing attributes:', e);
+            productData.attributes = {};
+        }
+
+        try {
+            if (typeof productData.tags === 'string' && productData.tags.trim()) {
+                // Handle both JSON array and comma-separated string
+                if (productData.tags.startsWith('[')) {
+                    const tagifyData = JSON.parse(productData.tags);
+                    productData.tags = tagifyData.map(tag => tag.value || tag);
+                } else {
+                    // Split comma-separated tags
+                    productData.tags = productData.tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+                }
+            } else {
+                productData.tags = [];
+            }
+        } catch (e) {
+            console.log('Error parsing tags:', e);
+            productData.tags = [];
+        }
+
+        // Clean up enum fields - remove empty strings for enum fields
+        if (productData.productIdType === '') {
+            delete productData.productIdType;
+        }
+
+        // Handle checkbox enum fields specifically
+        if (productData.inStock !== undefined) {
+            productData.inStock = (productData.inStock === 'true' || productData.inStock === true || productData.inStock === 'yes') ? 'yes' : 'no';
+        }
+        if (productData.chargeTax !== undefined) {
+            productData.chargeTax = (productData.chargeTax === 'true' || productData.chargeTax === true || productData.chargeTax === 'yes') ? 'yes' : 'no';
+        }
+
+        console.log('After checkbox conversion:');
+        console.log('- inStock:', productData.inStock);
+        console.log('- chargeTax:', productData.chargeTax);
+
+        // Log the processed data for debugging
+        console.log('Processed product data for update:', JSON.stringify(productData, null, 2));
+
+        // Use the existing updateProduct function from controller
+        req.body = productData;
+        await updateProduct(req, res);
+
+    } catch (error) {
+        console.log("ERROR UPDATING PRODUCT WITH PREPROCESSING", error);
+        res.status(500).json({ error: "Failed to update product" });
+    }
+});
 router.patch('/api/products/:id/status', updateProductStatus);
 router.delete('/api/products/:id', deleteProduct);
 
