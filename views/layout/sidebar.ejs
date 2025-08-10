@@ -158,6 +158,65 @@
 
         </li>
 
+        <li class="menu-item <%= ['view-product-statuses', 'view-order-statuses', 'view-payment-statuses', 'view-invoice-statuses', 'view-city-statuses', 'view-country-statuses'].includes(currentPage) ? 'active open' : '' %>">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon icon-base ri ri-box-3-line"></i>
+                <div>Statuses</div>
+            </a>
+
+            <ul class="menu-sub">
+                <li class="menu-item <%= currentPage === 'view-customer-statuses' ? 'active' : '' %>">
+                    <a href="/view-customer-statuses" class="menu-link">
+                        <div>Customer statuses</div>
+                    </a>
+                </li>
+
+                <li class="menu-item <%= currentPage === 'view-seller-statuses' ? 'active' : '' %>">
+                    <a href="/view-seller-statuses" class="menu-link">
+                        <div>Seller statuses</div>
+                    </a>
+                </li>
+
+                <li class="menu-item <%= currentPage === 'view-product-statuses' ? 'active' : '' %>">
+                    <a href="/view-product-statuses" class="menu-link">
+                        <div>Product statuses</div>
+                    </a>
+                </li>
+                <li class="menu-item <%= currentPage === 'view-order-statuses' ? 'active' : '' %>">
+                    <a href="/view-order-statuses" class="menu-link">
+                        <div>Order statuses</div>
+                    </a>
+                </li>
+
+                <li class="menu-item <%= currentPage === 'view-order-statuses' ? 'active' : '' %>">
+                    <a href="/view-payment-statuses" class="menu-link">
+                        <div>Payment statuses</div>
+                    </a>
+                </li>
+
+                <li class="menu-item <%= currentPage === 'view-invoice-statuses' ? 'active' : '' %>">
+                    <a href="/view-invoice-statuses" class="menu-link">
+                        <div>Invoice statuses</div>
+                    </a>
+                </li>
+
+                <li class="menu-item <%= currentPage === 'view-city-statuses' ? 'active' : '' %>">
+                    <a href="/view-city-statuses" class="menu-link">
+                        <div>City statuses</div>
+                    </a>
+                </li>
+
+                <li class="menu-item <%= currentPage === 'view-country-statuses' ? 'active' : '' %>">
+                    <a href="/view-country-statuses" class="menu-link">
+                        <div>Country statuses</div>
+                    </a>
+                </li>
+                
+
+
+            </ul>
+        </li>
+
         <li class="menu-item <%= currentPage === 'view-cities' ? 'active' : '' %>">
             <a href="/view-cities" class="menu-link">
                 <i class="menu-icon icon-base ri ri-pin-distance-line"></i>

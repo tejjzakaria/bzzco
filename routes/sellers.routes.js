@@ -99,6 +99,32 @@ router.put("/api/sellers/:id", async (req, res) => {
     }
 });
 
+// Bulk delete sellers API (must come before :id route)
+router.delete("/api/sellers/bulk/delete", async (req, res) => {
+    try {
+        const { sellerIds } = req.body;
+        
+        if (!sellerIds || !Array.isArray(sellerIds) || sellerIds.length === 0) {
+            return res.status(400).json({ success: false, message: "Please provide seller IDs to delete" });
+        }
+        
+        const result = await Seller.deleteMany({ _id: { $in: sellerIds } });
+        
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ success: false, message: "No sellers found to delete" });
+        }
+        
+        res.json({ 
+            success: true, 
+            message: `${result.deletedCount} seller(s) deleted successfully`,
+            deletedCount: result.deletedCount
+        });
+    } catch (error) {
+        console.error("Error bulk deleting sellers:", error);
+        res.status(500).json({ success: false, message: "Failed to delete sellers" });
+    }
+});
+
 // Delete seller API
 router.delete("/api/sellers/:id", async (req, res) => {
     try {

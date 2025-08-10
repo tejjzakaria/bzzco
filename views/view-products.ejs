@@ -132,13 +132,24 @@
 
                                 <!-- Product List Table -->
                                 <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="card-title mb-0">Products</h5>
+                                        <div id="bulkActions" class="d-none">
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="bulkDeleteProducts()">
+                                                <i class="ri ri-delete-bin-line me-1"></i>
+                                                Delete Selected (<span id="selectedCount">0</span>)
+                                            </button>
+                                        </div>
+                                    </div>
                                     
                                     <!-- Updated table structure and style to match app-ecommerce-product-list.js -->
                                     <div class="card-datatable table-responsive position-relative">
                                         <table class="table datatables-products" id="productsTable">
                                             <thead>
                                                 <tr>
-                                                    <th></th>
+                                                    <th>
+                                                        <input type="checkbox" class="form-check-input" id="selectAll">
+                                                    </th>
                                                     <th>Product</th>
                                                     <th>Stock</th>
                                                     <th>SKU</th>
@@ -239,8 +250,24 @@
             if ($.fn.DataTable.isDataTable('#productsTable')) {
                 console.log('Destroying existing DataTable...');
                 $('#productsTable').DataTable().destroy();
-                // Clear only tbody, keep thead intact
-                $('#productsTable tbody').empty();
+                // Clear the entire table content
+                $('#productsTable').empty();
+                // Rebuild the table structure
+                $('#productsTable').html(`
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" class="form-check-input" id="selectAll"></th>
+                            <th>Product</th>
+                            <th>Stock</th>
+                            <th>SKU</th>
+                            <th>Price</th>
+                            <th>Qty</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                `);
             }
 
             // Wait a bit to ensure no other scripts are interfering
@@ -260,8 +287,9 @@
                     { 
                         data: null,
                         orderable: false,
+                        width: "50px",
                         render: function(data, type, row) {
-                            return `<input type="checkbox" class="form-check-input" value="${row.productSku}">`;
+                            return `<input type="checkbox" class="form-check-input product-checkbox" value="${row._id}" data-sku="${row.productSku}">`;
                         }
                     },
                     { 
@@ -283,7 +311,7 @@
                     { 
                         data: 'inStock',
                         render: function(data) {
-                            return data === 'yes' ? '<span class="alert alert-success"><i class="ri ri-check-line"></i></span>' : '<span class="alert alert-danger"><i class="ri ri-close-line"></i></span>';
+                            return data === 'yes' ? '<span class="badge bg-label-success">In stock</span>' : '<span class="badge bg-label-danger">Out of stock</span>';
                         }
                     },
                     { data: 'productSku' },
@@ -325,12 +353,159 @@
                     emptyTable: 'No products found',
                     loadingRecords: 'Loading products...',
                     processing: 'Processing...'
+                },
+                drawCallback: function() {
+                    // Reset bulk selection after table redraw
+                    $('#selectAll').prop('checked', false).prop('indeterminate', false);
+                    updateBulkActionsVisibility();
+                    // Reinitialize event handlers for the new checkboxes
+                    initializeCheckboxHandlers();
                 }                });
                 
                 // Add debugging for column count
                 console.log('DataTable columns configured:', table.columns().count());
+                
+                // Initialize bulk selection functionality
+                initializeBulkSelection();
             }, 100); // Wait 100ms to avoid conflicts
         });
+
+        // Initialize bulk selection functionality
+        function initializeBulkSelection() {
+            // Handle "Select All" checkbox
+            $('#selectAll').off('change').on('change', function() {
+                console.log('Select All clicked, checked:', this.checked);
+                const isChecked = this.checked;
+                $('.product-checkbox').prop('checked', isChecked);
+                updateBulkActionsVisibility();
+            });
+            
+            // Initialize handlers for individual checkboxes
+            initializeCheckboxHandlers();
+        }
+
+        // Initialize handlers for individual product checkboxes
+        function initializeCheckboxHandlers() {
+            // Remove any existing handlers to prevent duplicates
+            $(document).off('change', '.product-checkbox');
+            
+            // Handle individual product checkboxes
+            $(document).on('change', '.product-checkbox', function() {
+                console.log('Product checkbox changed:', this.value, 'checked:', this.checked);
+                updateBulkActionsVisibility();
+                updateSelectAllState();
+            });
+        }
+
+        // Update the visibility of bulk actions based on selected items
+        function updateBulkActionsVisibility() {
+            const selectedCheckboxes = $('.product-checkbox:checked');
+            const bulkActions = $('#bulkActions');
+            const selectedCount = $('#selectedCount');
+            
+            console.log('Selected checkboxes count:', selectedCheckboxes.length);
+            
+            if (selectedCheckboxes.length > 0) {
+                bulkActions.removeClass('d-none');
+                selectedCount.text(selectedCheckboxes.length);
+            } else {
+                bulkActions.addClass('d-none');
+                selectedCount.text('0');
+            }
+        }
+
+        // Update the state of "Select All" checkbox based on individual selections
+        function updateSelectAllState() {
+            const totalCheckboxes = $('.product-checkbox').length;
+            const checkedCheckboxes = $('.product-checkbox:checked').length;
+            const selectAllCheckbox = $('#selectAll')[0];
+            
+            if (checkedCheckboxes === 0) {
+                selectAllCheckbox.indeterminate = false;
+                selectAllCheckbox.checked = false;
+            } else if (checkedCheckboxes === totalCheckboxes) {
+                selectAllCheckbox.indeterminate = false;
+                selectAllCheckbox.checked = true;
+            } else {
+                selectAllCheckbox.indeterminate = true;
+                selectAllCheckbox.checked = false;
+            }
+        }
+
+        // Bulk delete products function
+        function bulkDeleteProducts() {
+            const selectedCheckboxes = $('.product-checkbox:checked');
+            const selectedIds = [];
+            const selectedSKUs = [];
+            
+            selectedCheckboxes.each(function() {
+                selectedIds.push($(this).val());
+                selectedSKUs.push($(this).data('sku'));
+            });
+            
+            if (selectedIds.length === 0) {
+                Swal.fire('No Selection', 'Please select products to delete.', 'warning');
+                return;
+            }
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `You are about to delete ${selectedIds.length} product(s). This action cannot be undone!`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: `Yes, delete ${selectedIds.length} product(s)!`,
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    performBulkDelete(selectedIds, selectedSKUs);
+                }
+            });
+        }
+
+        // Perform the actual bulk delete operation
+        function performBulkDelete(productIds, productSKUs) {
+            const deletePromises = productIds.map(id => 
+                fetch(`/api/products/${id}`, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(data => ({ id, success: data.success, message: data.message }))
+                    .catch(error => ({ id, success: false, message: 'Network error' }))
+            );
+            
+            Promise.all(deletePromises).then(results => {
+                const successful = results.filter(r => r.success);
+                const failed = results.filter(r => !r.success);
+                
+                if (successful.length > 0) {
+                    // Show success message
+                    const successMessage = `${successful.length} product(s) deleted successfully.`;
+                    const failureMessage = failed.length > 0 ? ` ${failed.length} product(s) failed to delete.` : '';
+                    
+                    Swal.fire({
+                        title: 'Bulk Delete Complete',
+                        text: successMessage + failureMessage,
+                        icon: successful.length === productIds.length ? 'success' : 'warning',
+                        timer: 3000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        // Reload the DataTable and update stats
+                        $('#productsTable').DataTable().ajax.reload();
+                        loadProductStats();
+                        
+                        // Reset selection
+                        $('#selectAll').prop('checked', false);
+                        updateBulkActionsVisibility();
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Delete Failed',
+                        text: 'Failed to delete the selected products. Please try again.',
+                        icon: 'error'
+                    });
+                }
+            });
+        }
 
         // Manual table population removed - using DataTable AJAX instead
 
@@ -454,6 +629,8 @@
                             }).then(() => {
                                 // Reload the DataTable instead of the entire page
                                 $('#productsTable').DataTable().ajax.reload();
+                                // Also reload stats to reflect the deletion
+                                loadProductStats();
                             });
                         } else {
                             Swal.fire({
