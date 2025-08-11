@@ -98,32 +98,6 @@ router.put("/api/customers/:id", async (req, res) => {
     }
 });
 
-// Bulk delete customers API (must come before :id route)
-router.delete("/api/customers/bulk/delete", async (req, res) => {
-    try {
-        const { customerIds } = req.body;
-        
-        if (!customerIds || !Array.isArray(customerIds) || customerIds.length === 0) {
-            return res.status(400).json({ success: false, message: "Please provide customer IDs to delete" });
-        }
-        
-        const result = await Customer.deleteMany({ _id: { $in: customerIds } });
-        
-        if (result.deletedCount === 0) {
-            return res.status(404).json({ success: false, message: "No customers found to delete" });
-        }
-        
-        res.json({ 
-            success: true, 
-            message: `${result.deletedCount} customer(s) deleted successfully`,
-            deletedCount: result.deletedCount
-        });
-    } catch (error) {
-        console.error("Error bulk deleting customers:", error);
-        res.status(500).json({ success: false, message: "Failed to delete customers" });
-    }
-});
-
 // Delete customer API
 router.delete("/api/customers/:id", async (req, res) => {
     try {

@@ -2,6 +2,7 @@ import express from 'express';
 import customersRoutes from './customers.routes.js';
 import sellersRoutes from './sellers.routes.js';
 import productsRoutes from './products.routes.js';
+import categoriesRoutes from './categories.routes.js';
 
 const router = express.Router();
 // Home route
@@ -18,15 +19,10 @@ router.get('/dashboard', (req, res) => {
 router.use('/', customersRoutes);
 router.use('/', sellersRoutes);
 router.use('/', productsRoutes);
+router.use('/', categoriesRoutes);
 
-// Categories routes
-router.get('/view-categories', (req, res) => {
-    res.render('view-categories', { currentPage: 'view-categories' });
-});
 
-router.get('/add-category', (req, res) => {
-    res.render('add-category', { currentPage: 'add-category' });
-});
+
 
 // Orders routes
 router.get('/view-orders', (req, res) => {
