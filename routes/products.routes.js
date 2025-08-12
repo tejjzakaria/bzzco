@@ -4,10 +4,19 @@ import path from 'path';
 import fs from 'fs';
 import { getAllProducts, addProduct, getProductById, updateProduct, updateProductStatus, deleteProduct, getProductStats } from '../controllers/products.controller.js';
 import Seller from '../models/sellers.model.js';
+import Category from '../models/categories.model.js'; // Import Category model
 
 // Debug: Check if Seller model is properly imported
 console.log('Seller model imported:', !!Seller);
 console.log('Seller model constructor:', Seller.name);
+
+// Debug: Check if Category model is properly imported
+console.log('Category model imported:', !!Category);
+console.log('Category model constructor:', Category.name);
+
+// Debug: Check database connection status
+import mongoose from 'mongoose';
+console.log('Database connection readyState:', mongoose.connection.readyState);
 
 const router = express.Router();
 
@@ -86,20 +95,31 @@ router.get('/view-products', (req, res) => {
 
 router.get('/add-product', async (req, res) => {
     let sellers = [];
+    let categories = [];
     try {
         // Fetch sellers for the vendor dropdown
         console.log('Fetching sellers for add-product page...');
         sellers = await Seller.find({}, 'full_name company email').sort({ full_name: 1 });
         console.log('Sellers fetched successfully:', sellers.length, 'sellers found');
+
+        // Fetch categories for the category dropdown
+        console.log('Fetching categories for add-product page...');
+        categories = await Category.find({}, 'name').sort({ name: 1 });
+        console.log('Categories fetched successfully:', categories.length, 'categories found');
+
+        // Debug: Log categories array structure
+        console.log('Categories array:', categories);
     } catch (error) {
-        console.log("ERROR FETCHING SELLERS FOR ADD-PRODUCT", error);
+        console.log("ERROR FETCHING DATA FOR ADD-PRODUCT", error);
         sellers = []; // Ensure sellers is always an array
+        categories = []; // Ensure categories is always an array
     }
-    
-    // Always render with sellers variable defined
+
+    // Always render with sellers and categories variables defined
     res.render('add-product', { 
         currentPage: 'add-product',
-        sellers: sellers || [] // Double ensure it's always an array
+        sellers: sellers || [],
+        categories: categories || [] // Double ensure it's always an array
     });
 });
 
