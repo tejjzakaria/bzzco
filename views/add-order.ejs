@@ -1,0 +1,172 @@
+<!doctype html>
+
+<html lang="en" class="layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr" data-skin="default"
+    data-bs-theme="light" data-assets-path="/assets/" data-template="vertical-menu-template">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Add Order - Bzz Co.</title>
+
+    <meta name="description" content="" />
+    <%- include("layout/header") %>
+</head>
+
+<body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <!-- Menu -->
+            <%- include("layout/sidebar") %>
+
+                <div class="menu-mobile-toggler d-xl-none rounded-1">
+                    <a href="javascript:void(0);"
+                        class="layout-menu-toggle menu-link text-large text-bg-secondary p-2 rounded-1">
+                        <i class="ri ri-menu-line icon-base"></i>
+                        <i class="ri ri-arrow-right-s-line icon-base"></i>
+                    </a>
+                </div>
+                <!-- / Menu -->
+
+                <!-- Layout container -->
+                <div class="layout-page">
+                    <!-- Navbar -->
+                    <%- include("layout/header") %>
+                        <!-- / Navbar -->
+
+                        <!-- Content wrapper -->
+                        <div class="content-wrapper">
+                            <!-- Content -->
+                            <div class="container-xxl flex-grow-1 container-p-y">
+                                <!-- Breadcrumb -->
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="/view-orders">Orders</a>
+                                        </li>
+                                        <li class="breadcrumb-item active">Add Order</li>
+                                    </ol>
+                                </nav>
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="card-title">Add New Order</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <form id="addOrderForm">
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="order_number" class="form-label">Order Number</label>
+                                                            <input type="text" class="form-control" id="order_number" name="order_number" required>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="customer_id" class="form-label">Customer ID</label>
+                                                            <input type="text" class="form-control" id="customer_id" name="customer_id" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="product_id" class="form-label">Product ID</label>
+                                                            <input type="text" class="form-control" id="product_id" name="product_id" required>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="quantity" class="form-label">Quantity</label>
+                                                            <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="total_price" class="form-label">Total Price</label>
+                                                            <input type="number" class="form-control" id="total_price" name="total_price" step="0.01" min="0" required>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="payment_method" class="form-label">Payment Method</label>
+                                                            <select class="form-control" id="payment_method" name="payment_method">
+                                                                <option value="">Select Payment Method</option>
+                                                                <option value="Credit Card">Credit Card</option>
+                                                                <option value="Debit Card">Debit Card</option>
+                                                                <option value="PayPal">PayPal</option>
+                                                                <option value="Cash">Cash</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="shipping_address" class="form-label">Shipping Address</label>
+                                                            <textarea class="form-control" id="shipping_address" name="shipping_address" rows="3" required></textarea>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="billing_address" class="form-label">Billing Address</label>
+                                                            <textarea class="form-control" id="billing_address" name="billing_address" rows="3" required></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <button type="submit" class="btn btn-primary">Add Order</button>
+                                                            <a href="/view-orders" class="btn btn-secondary ms-2">Cancel</a>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- / Content -->
+
+                        <%- include("layout/footer") %>
+
+                            <div class="content-backdrop fade"></div>
+                    </div>
+                    <!-- Content wrapper -->
+                </div>
+                <!-- / Layout page -->
+        </div>
+
+        <!-- Overlay -->
+        <div class="layout-overlay layout-menu-toggle"></div>
+
+        <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+        <div class="drag-target"></div>
+    </div>
+    <!-- / Layout wrapper -->
+
+    <!-- Core JS -->
+    <%- include("layout/auth-footer") %>
+
+    <script>
+        document.getElementById('addOrderForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const orderData = Object.fromEntries(formData);
+            
+            try {
+                const response = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                
+                if (response.ok) {
+                    alert('Order added successfully!');
+                    window.location.href = '/view-orders';
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + error.message);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+    </script>
+</body>
+
+</html>

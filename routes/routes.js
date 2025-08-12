@@ -3,6 +3,7 @@ import customersRoutes from './customers.routes.js';
 import sellersRoutes from './sellers.routes.js';
 import productsRoutes from './products.routes.js';
 import categoriesRoutes from './categories.routes.js';
+import ordersRoutes from './orders.routes.js';
 
 const router = express.Router();
 // Home route
@@ -20,6 +21,7 @@ router.use('/', customersRoutes);
 router.use('/', sellersRoutes);
 router.use('/', productsRoutes);
 router.use('/', categoriesRoutes);
+router.use('/', ordersRoutes);
 
 
 
