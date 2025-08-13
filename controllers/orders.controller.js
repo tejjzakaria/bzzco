@@ -217,11 +217,63 @@ const getOrderById = async (req, res) => {
     }
 }
 
+const bulkDeleteOrders = async (req, res) => {
+    const { orderIds } = req.body;
+
+    try {
+        // Validate input
+        if (!orderIds || !Array.isArray(orderIds) || orderIds.length === 0) {
+            return res.status(400).json({ 
+                message: "Order IDs array is required and cannot be empty",
+                success: false 
+            });
+        }
+
+        // Validate each order ID format (basic MongoDB ObjectId validation)
+        const invalidIds = orderIds.filter(id => !id || typeof id !== 'string' || id.length !== 24);
+        if (invalidIds.length > 0) {
+            return res.status(400).json({ 
+                message: "Invalid order ID format detected",
+                success: false 
+            });
+        }
+
+        console.log(`Attempting to delete ${orderIds.length} orders: ${orderIds.join(', ')}`);
+
+        // Delete multiple orders
+        const deleteResult = await Order.deleteMany({
+            _id: { $in: orderIds }
+        });
+
+        console.log(`Bulk delete result: ${deleteResult.deletedCount} orders deleted`);
+
+        if (deleteResult.deletedCount === 0) {
+            return res.status(404).json({ 
+                message: "No orders found to delete",
+                success: false 
+            });
+        }
+
+        res.status(200).json({ 
+            message: `Successfully deleted ${deleteResult.deletedCount} order(s)`,
+            deletedCount: deleteResult.deletedCount,
+            success: true 
+        });
+    } catch (error) {
+        console.error("Error in bulk delete orders:", error);
+        res.status(500).json({ 
+            message: "Internal server error",
+            success: false 
+        });
+    }
+}
+
 export {
     getAllOrders,
     addOrder,
     updateOrder,
     deleteOrder,
-    getOrderById
+    getOrderById,
+    bulkDeleteOrders
 };
 

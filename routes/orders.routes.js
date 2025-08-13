@@ -6,7 +6,8 @@ import {getAllOrders,
     addOrder,
     updateOrder,
     deleteOrder,
-    getOrderById} from '../controllers/orders.controller.js';
+    getOrderById,
+    bulkDeleteOrders} from '../controllers/orders.controller.js';
 
 const router = express.Router();
 
@@ -128,8 +129,9 @@ router.get('/edit-order/:orderId', async (req, res) => {
 
 // API routes
 router.get('/api/orders', getAllOrders);
-router.get('/api/orders/:orderId', getOrderById);
 router.post('/api/orders', addOrder);
+router.post('/api/orders/bulk-delete', bulkDeleteOrders);
+router.get('/api/orders/:orderId', getOrderById);
 router.put('/api/orders/:orderId', updateOrder);
 router.delete('/api/orders/:orderId', deleteOrder);
 

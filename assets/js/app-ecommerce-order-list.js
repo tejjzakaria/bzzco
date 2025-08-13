@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
       columns: [
         // columns according to JSON
         { data: '_id' },
-        { data: '_id', orderable: false, render: DataTable.render.select() },
+        { data: '_id' }, // checkbox column
         { data: 'order_number' },
         { data: 'createdAt' },
         { data: null }, // customer data (will be handled in columnDefs)
@@ -67,11 +67,9 @@ document.addEventListener('DOMContentLoaded', function (e) {
           orderable: false,
           searchable: false,
           responsivePriority: 3,
-          checkboxes: true,
           render: function () {
             return '<input type="checkbox" class="dt-checkboxes form-check-input">';
-          },
-          checkboxes: { selectAllRender: '<input type="checkbox" class="form-check-input">' }
+          }
         },
         {
           // Order ID
@@ -264,6 +262,10 @@ document.addEventListener('DOMContentLoaded', function (e) {
           }
         }
       ],
+      rowCallback: function(row, data) {
+        // Add data-order-id attribute to the row for bulk operations
+        row.setAttribute('data-order-id', data._id);
+      },
       select: { style: 'multi', selector: 'td:nth-child(2)' },
       order: [3, 'asc'],
       layout: {
@@ -532,6 +534,46 @@ document.addEventListener('DOMContentLoaded', function (e) {
             return false;
           }
         }
+      }
+    });
+
+    // Add event listener for when DataTable finishes loading
+    dt_products.on('draw', function() {
+      console.log('DataTable draw complete'); // Debug log
+      // Reset select all checkbox state when table redraws
+      const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+      if (selectAllCheckbox) {
+        selectAllCheckbox.checked = false;
+      }
+      updateBulkDeleteButton();
+    });
+
+    // Event delegation for individual checkboxes
+    document.addEventListener('change', function(e) {
+      if (e.target && e.target.classList.contains('dt-checkboxes')) {
+        console.log('Individual checkbox changed:', e.target.checked); // Debug log
+        updateBulkDeleteButton();
+      }
+    });
+
+    // Handle "select all" functionality
+    document.addEventListener('change', function(e) {
+      if (e.target && e.target.id === 'selectAllCheckbox') {
+        console.log('Select all checkbox clicked:', e.target.checked); // Debug log
+        const isChecked = e.target.checked;
+        
+        // Wait a bit for the table to be ready, then select checkboxes
+        setTimeout(() => {
+          const allCheckboxes = document.querySelectorAll('.datatables-order tbody .dt-checkboxes');
+          console.log('Found checkboxes:', allCheckboxes.length); // Debug log
+          
+          allCheckboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+            checkbox.dispatchEvent(new Event('change')); // Trigger change event for each checkbox
+          });
+
+          updateBulkDeleteButton();
+        }, 100);
       }
     });
 
@@ -824,6 +866,112 @@ document.addEventListener('DOMContentLoaded', function (e) {
         }
       });
     }
+  }
+
+  // Bulk delete functionality
+  let bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+  console.log('Bulk delete button found:', bulkDeleteBtn); // Debug log
+  
+  if (!bulkDeleteBtn) {
+    console.error('Bulk delete button not found! Check if the element exists in the DOM.');
+    return;
+  }
+  
+  // Show/hide bulk delete button based on selection
+  function updateBulkDeleteButton() {
+    console.log('updateBulkDeleteButton called'); // Debug log
+    const selectedCheckboxes = document.querySelectorAll('.datatables-order tbody .dt-checkboxes:checked');
+    const selectedCount = selectedCheckboxes.length;
+    console.log('Selected checkboxes count:', selectedCount); // Debug log
+    console.log('Bulk delete button element:', bulkDeleteBtn); // Debug log
+
+    if (selectedCount > 0) {
+      console.log('Showing bulk delete button'); // Debug log
+      bulkDeleteBtn.classList.remove('d-none');
+      bulkDeleteBtn.innerHTML = `<i class="ri ri-delete-bin-line me-1"></i>Delete Selected (${selectedCount})`;
+    } else {
+      console.log('Hiding bulk delete button'); // Debug log
+      bulkDeleteBtn.classList.add('d-none');
+    }
+  }
+
+  // Bulk delete button click handler
+  if (bulkDeleteBtn) {
+    bulkDeleteBtn.addEventListener('click', function() {
+      const selectedCheckboxes = document.querySelectorAll('.datatables-order tbody .dt-checkboxes:checked');
+      const selectedIds = Array.from(selectedCheckboxes).map(checkbox => {
+        return checkbox.closest('tr').dataset.orderId; // Get the order ID from the row data
+      });
+
+      console.log('Selected IDs:', selectedIds); // Debug log
+
+      if (selectedIds.length > 0) {
+        // Show confirmation dialog with SweetAlert
+        Swal.fire({
+          title: 'Are you sure?',
+          text: `You are about to delete ${selectedIds.length} order(s). This action cannot be undone!`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: `Yes, delete ${selectedIds.length} order(s)!`,
+          cancelButtonText: 'Cancel',
+          buttonsStyling: true,
+          customClass: {
+            actions: 'swal2-actions-gap',
+            confirmButton: 'btn btn-danger me-1',
+            cancelButton: 'btn btn-secondary'
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Send selected IDs to the backend for deletion
+            fetch('/api/orders/bulk-delete', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ orderIds: selectedIds })
+            })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (data.success) {
+                // Refresh the table
+                const dtInstance = $(dt_order_table).DataTable();
+                dtInstance.ajax.reload();
+                updateBulkDeleteButton();
+                
+                Swal.fire({
+                  title: 'Deleted!',
+                  text: `${selectedIds.length} order(s) have been deleted successfully.`,
+                  icon: 'success',
+                  timer: 2000,
+                  showConfirmButton: false
+                });
+              } else {
+                Swal.fire({
+                  title: 'Error!',
+                  text: data.message || 'Failed to delete some orders.',
+                  icon: 'error'
+                });
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              Swal.fire({
+                title: 'Error!',
+                text: error.message || 'An error occurred while deleting orders.',
+                icon: 'error'
+              });
+            });
+          }
+        });
+      }
+    });
   }
 
   // Filter form control to default size

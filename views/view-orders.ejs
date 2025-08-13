@@ -59,12 +59,14 @@
                                     <div class="d-flex flex-column justify-content-center">
                                         <h4 class="mb-1">Orders Management</h4>
                                         <p class="mb-0">View and manage all orders</p>
-                                    </div>
-                                    <div class="d-flex align-content-center flex-wrap gap-4">
-                                        <a href="/add-order" class="btn btn-primary">
-                                            <i class="ri ri-add-line me-1"></i>Add New Order
-                                        </a>
-                                    </div>
+                                    </div>                    <div class="d-flex align-content-center flex-wrap gap-4">
+                        <button id="bulkDeleteBtn" class="btn btn-outline-danger d-none">
+                            <i class="ri ri-delete-bin-line me-1"></i>Delete Selected
+                        </button>
+                        <a href="/add-order" class="btn btn-primary">
+                            <i class="ri ri-add-line me-1"></i>Add New Order
+                        </a>
+                    </div>
                                 </div>
 
                                 <!-- Order List Widget -->
@@ -145,7 +147,7 @@
                                             <thead>
                                                 <tr>
                                                     <th></th>
-                                                    <th></th>
+                                                    <th><input type="checkbox" id="selectAllCheckbox" class="form-check-input"></th>
                                                     <th>order</th>
                                                     <th>date</th>
                                                     <th>customers</th>
