@@ -23,18 +23,6 @@ router.use('/', productsRoutes);
 router.use('/', categoriesRoutes);
 router.use('/', ordersRoutes);
 
-
-
-
-// Orders routes
-router.get('/view-orders', (req, res) => {
-    res.render('view-orders', { currentPage: 'view-orders' });
-});
-
-router.get('/add-order', (req, res) => {
-    res.render('add-order', { currentPage: 'add-order' });
-});
-
 // Finances routes
 router.get('/view-payments', (req, res) => {
     res.render('view-payments', { currentPage: 'view-payments' });

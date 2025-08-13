@@ -150,6 +150,6 @@ const productSchema = mongoose.Schema({
     timestamps: true, // adds createdAt and updatedAt fields
 });
 
-const Product = mongoose.model("Product", productSchema);
+const Product = mongoose.model("Products", productSchema);
 
 export default Product;

@@ -50,5 +50,4 @@ const addCustomer = async (req, res) => {
     }
   };
   
-
 export { addCustomer, getAllCustomers };

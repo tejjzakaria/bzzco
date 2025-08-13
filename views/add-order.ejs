@@ -40,133 +40,932 @@
                         <div class="content-wrapper">
                             <!-- Content -->
                             <div class="container-xxl flex-grow-1 container-p-y">
-                                <!-- Breadcrumb -->
-                                <nav aria-label="breadcrumb">
-                                    <ol class="breadcrumb">
-                                        <li class="breadcrumb-item">
-                                            <a href="/view-orders">Orders</a>
-                                        </li>
-                                        <li class="breadcrumb-item active">Add Order</li>
-                                    </ol>
-                                </nav>
+                                <div class="app-ecommerce">
+                                    <!-- Add Order -->
+                                    <div
+                                        class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h4 class="mb-1">Add New Order</h4>
+                                            <p class="mb-0">Create a new order for customers</p>
+                                        </div>
+                                        <div class="d-flex align-content-center flex-wrap gap-4">
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                onclick="window.location.href='/view-orders'">Cancel</button>
+                                            <button type="submit" form="addOrderForm" class="btn btn-primary">Add
+                                                Order</button>
+                                        </div>
+                                    </div>
 
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h5 class="card-title">Add New Order</h5>
+                                    <div class="row">
+                                        <!-- Order Form -->
+                                        <div class="col-12 col-lg-8">
+                                            <div class="card mb-6">
+                                                <div class="card-header">
+                                                    <h5 class="card-title mb-0">Order Information</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <form id="addOrderForm">
+                                                        <div class="row">
+                                                            <div class="col-md-4 mb-6">
+                                                                <label class="form-label" for="order_number">Order
+                                                                    Number</label>
+                                                                <div class="input-group">
+                                                                    <input type="text" class="form-control"
+                                                                        id="order_number" name="order_number"
+                                                                        placeholder="ORD-001"  readonly />
+                                                                    <button type="button"
+                                                                        class="btn btn-outline-secondary"
+                                                                        id="regenerateOrderNumber"
+                                                                        title="Generate New Order Number">
+                                                                        <i class="ri ri-refresh-line"></i>
+                                                                    </button>
+                                                                </div>
+                                                                <small class="form-text text-muted">Order number is
+                                                                    auto-generated and unique</small>
+                                                            </div>
+                                                            <div class="col-md-4 mb-6">
+                                                                <label class="form-label"
+                                                                    for="customer_id">Customer</label>
+                                                                <select class="form-select" id="customer_id"
+                                                                    name="customer_id" >
+                                                                    <option value="">Select Customer</option>
+                                                                    <option value="guest">Guest Customer (No
+                                                                        Registration)</option>
+                                                                    <optgroup label="Registered Customers">
+                                                                        <% if (typeof customers !=='undefined' &&
+                                                                            customers && customers.length> 0) { %>
+                                                                            <% customers.forEach(customer=> { %>
+                                                                                <option value="<%= customer._id %>">
+                                                                                    <%= customer.full_name %> (<%=
+                                                                                            customer.email %>)
+                                                                                </option>
+                                                                                <% }); %>
+                                                                                    <% } else { %>
+                                                                                        <option disabled>No customers
+                                                                                            available</option>
+                                                                                        <% } %>
+                                                                    </optgroup>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-4 mb-6">
+                                                                <label class="form-label" for="status">Order
+                                                                    Status</label>
+                                                                <select class="form-select" id="order_status" name="status">
+                                                                    <option value="">Select Status</option>
+                                                                    
+                                                                    <option value="Pending" selected>Pending</option>
+                                                                    <option value="Processing">Processing</option>
+                                                                    <option value="Shipped">Shipped</option>
+                                                                    <option value="Delivered">Delivered</option>
+                                                                    <option value="Cancelled">Cancelled</option>
+                                                                </select>
+                                                            </div>
+
+                                                            
+                                                        
+                                                        </div>
+
+                                                        <!-- Guest Customer Information (hidden by default) -->
+
+                                                        <div id="guestCustomerInfo" class="row alert alert-dark mx-1"
+                                                            style="display: none;">
+
+                                                            <div class="col-12 mb-4">
+                                                                <div class="alert alert-solid-info d-flex align-items-center flex-wrap row-gap-2">
+                                                                    <span class="alert-icon rounded">
+                                                                    <i class="ri ri-information-line"></i></span>
+                                                                    <strong>Guest Customer Information:</strong>
+                                                                    Please
+                                                                    provide basic details for the guest customer
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-4 mb-6">
+                                                                    <label class="form-label" for="guest_name">Guest
+                                                                        Name</label>
+                                                                    <input type="text" class="form-control"
+                                                                        id="guest_name" name="guest_name"
+                                                                        placeholder="Customer's full name"
+                                                                        value="John Guest" />
+                                                                </div>
+                                                                <div class="col-md-4 mb-6">
+                                                                    <label class="form-label" for="guest_email">Guest
+                                                                        Email</label>
+                                                                    <input type="email" class="form-control"
+                                                                        id="guest_email" name="guest_email"
+                                                                        placeholder="customer@email.com"
+                                                                        value="john.guest@email.com" />
+                                                                </div>
+                                                                <div class="col-md-4 mb-6">
+                                                                    <label class="form-label" for="guest_phone">Guest
+                                                                        Phone</label>
+                                                                    <input type="tel" class="form-control"
+                                                                        id="guest_phone" name="guest_phone"
+                                                                        placeholder="+1 (555) 123-4567"
+                                                                        value="+1 (555) 123-4567" />
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+
+                                                        <div class="row">
+                                                            <div class="col-12 mb-6">
+                                                                <label class="form-label">Products</label>
+                                                                <div class="card">
+                                                                    <div
+                                                                        class="card-header d-flex justify-content-between align-items-center">
+                                                                        <h6 class="mb-0">Order Items</h6>
+                                                                        <button type="button"
+                                                                            class="btn btn-sm btn-primary"
+                                                                            id="addProductBtn">
+                                                                            <i class="ri-add-line me-1"></i>Add Product
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="card-body">
+                                                                        <div id="productsList">
+                                                                            <!-- Initial product row -->
+                                                                            <div class="product-item border rounded p-3 mb-3"
+                                                                                data-index="0">
+                                                                                <div class="row align-items-end">
+                                                                                    <div class="col-md-5 mb-3">
+                                                                                        <label
+                                                                                            class="form-label">Product</label>                                                                        <select
+                                                                            class="form-select product-select"
+                                                                            name="products[0][product_id]"
+                                                                            >
+                                                                                            <option value="">Select
+                                                                                                Product</option>
+                                                                                            <% if (typeof products
+                                                                                                !=='undefined' &&
+                                                                                                products &&
+                                                                                                products.length> 0) { %>
+                                                                                                <%
+                                                                                                    products.forEach(product=>
+                                                                                                    { %>
+                                                                                                    <option
+                                                                                                        value="<%= product._id %>"
+                                                                                                        data-price="<%= product.productPrice %>">
+                                                                                                        <%= product.productTitle
+                                                                                                            %> - $<%=
+                                                                                                                product.productPrice
+                                                                                                                %>
+                                                                                                    </option>
+                                                                                                    <% }); %>
+                                                                                                        <% } else { %>
+                                                                                                            <option
+                                                                                                                disabled>
+                                                                                                                No
+                                                                                                                products
+                                                                                                                available
+                                                                                                            </option>
+                                                                                                            <% } %>
+                                                                                                                <!-- Product options will be populated dynamically -->
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <div class="col-md-2 mb-3">
+                                                                                        <label
+                                                                                            class="form-label">Quantity</label>                                                                        <input type="number"
+                                                                            class="form-control quantity-input"
+                                                                            name="products[0][quantity]"
+                                                                            placeholder="1" min="1"
+                                                                            value="1"  />
+                                                                                    </div>
+                                                                                    <div class="col-md-3 mb-3">
+                                                                                        <label class="form-label">Unit
+                                                                                            Price</label>
+                                                                                        <div class="input-group">
+                                                                                            <span
+                                                                                                class="input-group-text">$</span>                                                                            <input type="number"
+                                                                                class="form-control unit-price-input"
+                                                                                name="products[0][unit_price]"
+                                                                                placeholder="0.00"
+                                                                                min="0" step="0.01"
+                                                                                 />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-2 mb-3">
+                                                                                        <button type="button"
+                                                                                            class="btn btn-outline-danger btn-sm remove-product-btn"
+                                                                                            style="display: none; height: 48px;">
+                                                                                            <i
+                                                                                                class="ri ri-delete-bin-line"></i>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-12">
+                                                                                        <small class="text-muted">
+                                                                                            Subtotal: $<span
+                                                                                                class="item-subtotal">0.00</span>
+                                                                                        </small>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div
+                                                                            class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                                                                            <strong>Total Amount: $<span
+                                                                                    id="orderTotal">0.00</span></strong>
+                                                                            <small class="text-muted"><span
+                                                                                    id="totalItems">1</span>
+                                                                                item(s)</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+
+                                                        <div class="row">
+                                                            <!-- Shipping Address -->
+                                                            <div class="col-md-6 mb-6">
+                                                                <h6 class="mb-3">Shipping Address</h6>
+                                                                
+                                                                <div class="mb-3">
+                                                                    <label class="form-label" for="shipping_street">Street Address</label>
+                                                                    <input type="text" class="form-control" id="shipping_street"
+                                                                        name="shipping_street" 
+                                                                        placeholder="Enter street address"
+                                                                        value="123 Main Street, Apt 4B" required>
+                                                                </div>
+                                                                
+                                                                <div class="row">
+                                                                    <div class="col-md-6 mb-3">
+                                                                        <label class="form-label" for="shipping_city">City</label>
+                                                                        <input type="text" class="form-control" id="shipping_city"
+                                                                            name="shipping_city" 
+                                                                            placeholder="Enter city"
+                                                                            value="New York" required>
+                                                                    </div>
+                                                                    <div class="col-md-6 mb-3">
+                                                                        <label class="form-label" for="shipping_postal_code">Postal Code</label>
+                                                                        <input type="text" class="form-control" id="shipping_postal_code"
+                                                                            name="shipping_postal_code" 
+                                                                            placeholder="Enter postal code"
+                                                                            value="10001" required>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="mb-3">
+                                                                    <label class="form-label" for="shipping_country">Country</label>
+                                                                    <select class="form-select" id="shipping_country" name="shipping_country" required>
+                                                                        <option value="">Select Country</option>
+                                                                        <option value="United States" selected>United States</option>
+                                                                        <option value="Canada">Canada</option>
+                                                                        <option value="United Kingdom">United Kingdom</option>
+                                                                        <option value="Germany">Germany</option>
+                                                                        <option value="France">France</option>
+                                                                        <option value="Australia">Australia</option>
+                                                                        <option value="Japan">Japan</option>
+                                                                        <option value="India">India</option>
+                                                                        <option value="Brazil">Brazil</option>
+                                                                        <option value="Mexico">Mexico</option>
+                                                                        <option value="Other">Other</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Billing Address -->
+                                                            <div class="col-md-6 mb-6">
+                                                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                                                    <h6 class="mb-0">Billing Address</h6>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" id="same_as_shipping" checked>
+                                                                        <label class="form-check-label" for="same_as_shipping">
+                                                                            Same as shipping
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="mb-3">
+                                                                    <label class="form-label" for="billing_street">Street Address</label>
+                                                                    <input type="text" class="form-control" id="billing_street"
+                                                                        name="billing_street" 
+                                                                        placeholder="Enter street address"
+                                                                        value="123 Main Street, Apt 4B" required>
+                                                                </div>
+                                                                
+                                                                <div class="row">
+                                                                    <div class="col-md-6 mb-3">
+                                                                        <label class="form-label" for="billing_city">City</label>
+                                                                        <input type="text" class="form-control" id="billing_city"
+                                                                            name="billing_city" 
+                                                                            placeholder="Enter city"
+                                                                            value="New York" required>
+                                                                    </div>
+                                                                    <div class="col-md-6 mb-3">
+                                                                        <label class="form-label" for="billing_postal_code">Postal Code</label>
+                                                                        <input type="text" class="form-control" id="billing_postal_code"
+                                                                            name="billing_postal_code" 
+                                                                            placeholder="Enter postal code"
+                                                                            value="10001" required>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="mb-3">
+                                                                    <label class="form-label" for="billing_country">Country</label>
+                                                                    <select class="form-select" id="billing_country" name="billing_country" required>
+                                                                        <option value="">Select Country</option>
+                                                                        <option value="United States" selected>United States</option>
+                                                                        <option value="Canada">Canada</option>
+                                                                        <option value="United Kingdom">United Kingdom</option>
+                                                                        <option value="Germany">Germany</option>
+                                                                        <option value="France">France</option>
+                                                                        <option value="Australia">Australia</option>
+                                                                        <option value="Japan">Japan</option>
+                                                                        <option value="India">India</option>
+                                                                        <option value="Brazil">Brazil</option>
+                                                                        <option value="Mexico">Mexico</option>
+                                                                        <option value="Other">Other</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-md-6 mb-6">
+                                                                <label class="form-label" for="payment_method">Payment
+                                                                    Method</label>
+                                                                <select class="form-select" id="payment_method"
+                                                                    name="payment_method">
+                                                                    <option value="">Select Payment Method</option>
+                                                                    <option value="Credit Card" selected>Credit Card</option>
+                                                                    <option value="Debit Card">Debit Card</option>
+                                                                    <option value="PayPal">PayPal</option>
+                                                                    <option value="Bank Transfer">Bank Transfer</option>
+                                                                    <option value="Cash on Delivery">Cash on Delivery
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6 mb-6">
+                                                                <label class="form-label" for="payment_status">Payment
+                                                                    Status</label>
+                                                                <select class="form-select" id="payment_status"
+                                                                    name="payment_status">
+                                                                    <option value="">Select Payment Status</option>
+                                                                    <option value="Unpaid" selected>Unpaid</option>
+                                                                    <option value="Paid">Paid</option>
+                                                                    <option value="Partially Paid">Partially Paid
+                                                                    </option>
+                                                                    <option value="Refunded">Refunded</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
                                             </div>
-                                            <div class="card-body">
-                                                <form id="addOrderForm">
-                                                    <div class="row">
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="order_number" class="form-label">Order Number</label>
-                                                            <input type="text" class="form-control" id="order_number" name="order_number" required>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="customer_id" class="form-label">Customer ID</label>
-                                                            <input type="text" class="form-control" id="customer_id" name="customer_id" required>
+                                        </div>
+
+                                        <!-- Order Summary -->
+                                        <div class="col-12 col-lg-4">
+                                            <div class="card mb-6">
+                                                <div class="card-header">
+                                                    <h5 class="card-title mb-0">Order Summary</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span class="w-px-100 text-heading">Customer:</span>
+                                                        <span id="summary-customer">Not selected</span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span class="w-px-100 text-heading">Items:</span>
+                                                        <span id="summary-items">0 items</span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span class="w-px-100 text-heading">Status:</span>
+                                                        <span id="summary-status">Pending</span>
+                                                    </div>
+                                                    <hr class="my-4">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span class="w-px-100 text-heading">Total:</span>
+                                                        <span class="fw-medium" id="summary-total">$0.00</span>
+                                                    </div>
+
+                                                    <div class="mt-3">
+                                                        <h6 class="mb-2">Products:</h6>
+                                                        <div id="summary-products">
+                                                            <small class="text-muted">No products selected</small>
                                                         </div>
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="product_id" class="form-label">Product ID</label>
-                                                            <input type="text" class="form-control" id="product_id" name="product_id" required>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="quantity" class="form-label">Quantity</label>
-                                                            <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="total_price" class="form-label">Total Price</label>
-                                                            <input type="number" class="form-control" id="total_price" name="total_price" step="0.01" min="0" required>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="payment_method" class="form-label">Payment Method</label>
-                                                            <select class="form-control" id="payment_method" name="payment_method">
-                                                                <option value="">Select Payment Method</option>
-                                                                <option value="Credit Card">Credit Card</option>
-                                                                <option value="Debit Card">Debit Card</option>
-                                                                <option value="PayPal">PayPal</option>
-                                                                <option value="Cash">Cash</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="shipping_address" class="form-label">Shipping Address</label>
-                                                            <textarea class="form-control" id="shipping_address" name="shipping_address" rows="3" required></textarea>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="billing_address" class="form-label">Billing Address</label>
-                                                            <textarea class="form-control" id="billing_address" name="billing_address" rows="3" required></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-12">
-                                                            <button type="submit" class="btn btn-primary">Add Order</button>
-                                                            <a href="/view-orders" class="btn btn-secondary ms-2">Cancel</a>
-                                                        </div>
-                                                    </div>
-                                                </form>
+                                                </div>
+                                            </div>
+
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h5 class="card-title mb-0">Order Notes</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p class="card-text">
+                                                        <small class="text-muted">
+                                                            • Order number must be unique<br>
+                                                            • All required fields must be filled<br>
+                                                            • Total price will be calculated automatically if needed
+                                                        </small>
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <!-- / Content -->
                         </div>
-                        <!-- / Content -->
+                        <!-- / Content wrapper -->
 
                         <%- include("layout/footer") %>
 
                             <div class="content-backdrop fade"></div>
-                    </div>
-                    <!-- Content wrapper -->
                 </div>
-                <!-- / Layout page -->
+                <!-- Content wrapper -->
         </div>
+        <!-- / Layout page -->
+    </div>
 
-        <!-- Overlay -->
-        <div class="layout-overlay layout-menu-toggle"></div>
+    <!-- Overlay -->
+    <div class="layout-overlay layout-menu-toggle"></div>
 
-        <!-- Drag Target Area To SlideIn Menu On Small Screens -->
-        <div class="drag-target"></div>
+    <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+    <div class="drag-target"></div>
     </div>
     <!-- / Layout wrapper -->
 
     <!-- Core JS -->
     <%- include("layout/auth-footer") %>
 
-    <script>
-        document.getElementById('addOrderForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const orderData = Object.fromEntries(formData);
-            
-            try {
-                const response = await fetch('/api/orders', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(orderData)
-                });
-                
-                if (response.ok) {
-                    alert('Order added successfully!');
-                    window.location.href = '/view-orders';
-                } else {
-                    const error = await response.json();
-                    alert('Error: ' + error.message);
-                }
-            } catch (error) {
-                alert('Error: ' + error.message);
+        <!-- Vendors JS -->
+        <script src="/assets/vendor/libs/select2/select2.js"></script>
+        <!-- SweetAlert2 -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>
+            let productIndex = 1; // Start from 1 since we have index 0 initially
+
+            // Initialize Select2 (matching add-product.ejs style)
+            $(document).ready(function () {
+                generateOrderNumber();
+                initializeSelect2Elements();
+                setupEventListeners();
+                updateOrderSummary();
+            });
+
+            // Generate unique order number
+            function generateOrderNumber() {
+                // Get current timestamp and random number for uniqueness
+                const timestamp = Date.now();
+                const random = Math.floor(Math.random() * 1000);
+                const orderNumber = `ORD-${timestamp.toString().slice(-6)}${random.toString().padStart(3, '0')}`;
+
+                document.getElementById('order_number').value = orderNumber;
             }
-        });
-    </script>
+
+            // Alternative method using localStorage for sequential numbering
+            function generateSequentialOrderNumber() {
+                // Get the last order number from localStorage, or start from 1
+                let lastOrderNum = localStorage.getItem('lastOrderNumber') || 0;
+                lastOrderNum = parseInt(lastOrderNum) + 1;
+
+                // Save the new number back to localStorage
+                localStorage.setItem('lastOrderNumber', lastOrderNum);
+
+                // Format as ORD-000001, ORD-000002, etc.
+                const orderNumber = `ORD-${lastOrderNum.toString().padStart(6, '0')}`;
+                document.getElementById('order_number').value = orderNumber;
+            }
+
+            function initializeSelect2Elements() {
+                $('#customer_id').select2({
+                    placeholder: 'Select Customer',
+                    allowClear: true
+                });
+
+                $('#status').select2();
+
+                $('#payment_method').select2({
+                    placeholder: 'Select Payment Method',
+                    allowClear: true
+                });
+
+                $('#payment_status').select2({
+                    placeholder: 'Select Payment Status',
+                    allowClear: true
+
+                });
+
+                // Initialize product selects
+                $('.product-select').select2({
+                    placeholder: 'Select Product',
+                    allowClear: true
+                });
+
+                $('#order_status').select2({
+                    placeholder: 'Select status',
+                    allowClear: true
+                });
+
+                // Initialize address country selects
+                $('#shipping_country').select2({
+                    placeholder: 'Select Country',
+                    allowClear: true
+                });
+
+                $('#billing_country').select2({
+                    placeholder: 'Select Country',
+                    allowClear: true
+                });
+            }
+
+            function setupEventListeners() {
+                // Regenerate order number button
+                $('#regenerateOrderNumber').on('click', function () {
+                    generateOrderNumber();
+                });
+
+                // Add product button
+                $('#addProductBtn').on('click', addProductRow);
+
+                // Remove product button (delegated event)
+                $(document).on('click', '.remove-product-btn', function () {
+                    removeProductRow($(this));
+                });
+
+                // Product selection change (delegated event)
+                $(document).on('change', '.product-select', function () {
+                    updateItemSubtotal($(this).closest('.product-item'));
+                    updateOrderSummary();
+                });
+
+                // Quantity or price change (delegated event)
+                $(document).on('input', '.quantity-input, .unit-price-input', function () {
+                    updateItemSubtotal($(this).closest('.product-item'));
+                    updateOrderSummary();
+                });
+
+                // Status change
+                $('#status').on('change', function () {
+                    updateOrderSummary();
+                });
+
+                // Same as shipping checkbox
+                $('#same_as_shipping').on('change', function () {
+                    if ($(this).is(':checked')) {
+                        copyShippingToBilling();
+                    }
+                });
+
+                // Update billing when shipping changes if "same as shipping" is checked
+                $('input[name^="shipping_"], select[name^="shipping_"]').on('input change', function () {
+                    if ($('#same_as_shipping').is(':checked')) {
+                        copyShippingToBilling();
+                    }
+                });
+            }
+
+            // Copy shipping address to billing address
+            function copyShippingToBilling() {
+                $('#billing_street').val($('#shipping_street').val());
+                $('#billing_city').val($('#shipping_city').val());
+                $('#billing_postal_code').val($('#shipping_postal_code').val());
+                $('#billing_country').val($('#shipping_country').val()).trigger('change');
+            }
+
+            function addProductRow() {
+                const productOptions = `
+        <option value="">Select Product</option>
+        <% if (typeof products !== 'undefined' && products && products.length > 0) { %>
+            <% products.forEach(product => { %>
+                <option value="<%= product._id %>" data-price="<%= product.productPrice %>">
+                    <%= product.productTitle %> - $<%= product.productPrice %>
+                </option>
+            <% }); %>
+        <% } else { %>
+            <option disabled>No products available</option>
+        <% } %>
+    `;
+
+                const newRow = `
+        <div class="product-item border rounded p-3 mb-3" data-index="${productIndex}">
+            <div class="row align-items-end">
+                <div class="col-md-5 mb-3">
+                    <label class="form-label">Product</label>
+                    <select class="form-select product-select" name="products[${productIndex}][product_id]" required>
+                        ${productOptions}
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Quantity</label>
+                    <input type="number" class="form-control quantity-input" name="products[${productIndex}][quantity]" placeholder="1" min="1" value="1" required />
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Unit Price</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control unit-price-input" name="products[${productIndex}][unit_price]" placeholder="0.00" min="0" step="0.01" required />
+                    </div>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <button type="button" class="btn btn-outline-danger btn-sm remove-product-btn" style="height: 48px;">
+                        <i class="ri ri-delete-bin-line"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <small class="text-muted">
+                        Subtotal: $<span class="item-subtotal">0.00</span>
+                    </small>
+                </div>
+            </div>
+        </div>
+    `;
+
+                $('#productsList').append(newRow);
+
+                // Initialize Select2 for the new product select
+                $(`[name="products[${productIndex}][product_id]"]`).select2({
+                    placeholder: 'Select Product',
+                    allowClear: true
+                });
+
+                productIndex++;
+                updateRemoveButtons();
+                updateOrderSummary();
+            }
+
+            // Add auto-fill price functionality when product is selected
+            $(document).on('change', '.product-select', function () {
+                const selectedOption = $(this).find('option:selected');
+                const price = selectedOption.data('price');
+                const $item = $(this).closest('.product-item');
+
+                if (price) {
+                    $item.find('.unit-price-input').val(price);
+                }
+
+                updateItemSubtotal($item);
+                updateOrderSummary();
+            });
+
+            function removeProductRow($button) {
+                $button.closest('.product-item').remove();
+                updateRemoveButtons();
+                updateOrderSummary();
+            }
+
+            function updateRemoveButtons() {
+                const productItems = $('.product-item');
+                if (productItems.length > 1) {
+                    $('.remove-product-btn').show();
+                } else {
+                    $('.remove-product-btn').hide();
+                }
+            }
+
+            function updateItemSubtotal($item) {
+                const quantity = parseFloat($item.find('.quantity-input').val()) || 0;
+                const unitPrice = parseFloat($item.find('.unit-price-input').val()) || 0;
+                const subtotal = quantity * unitPrice;
+
+                $item.find('.item-subtotal').text(subtotal.toFixed(2));
+            }
+
+            // Handle customer selection change (updated for Select2)
+            $('#customer_id').on('change', function () {
+                const guestInfo = document.getElementById('guestCustomerInfo');
+                const guestInputs = guestInfo.querySelectorAll('input');
+
+                if (this.value === 'guest') {
+                    guestInfo.style.display = 'block';
+                    // Make guest fields required when guest is selected
+                    guestInputs.forEach(input => {
+                        if (input.id === 'guest_name' || input.id === 'guest_email') {
+                            input.required = true;
+                        }
+                    });
+                } else {
+                    guestInfo.style.display = 'none';
+                    // Remove required attribute when not guest
+                    guestInputs.forEach(input => {
+                        input.required = false;
+                        input.value = ''; // Clear values
+                    });
+                }
+
+                // Update order summary
+                updateOrderSummary();
+            });
+
+            // Update order summary function (updated for multiple products)
+            function updateOrderSummary() {
+                // Update customer
+                const customerSelect = $('#customer_id');
+                const summaryCustomer = document.getElementById('summary-customer');
+
+                if (customerSelect.val() === 'guest') {
+                    const guestName = document.getElementById('guest_name').value || 'Guest Customer';
+                    summaryCustomer.textContent = guestName;
+                } else if (customerSelect.val() === '' || customerSelect.val() === null) {
+                    summaryCustomer.textContent = 'Not selected';
+                } else {
+                    summaryCustomer.textContent = customerSelect.find('option:selected').text();
+                }
+
+                // Update status
+                const statusSelect = $('#status');
+                const summaryStatus = document.getElementById('summary-status');
+                summaryStatus.textContent = statusSelect.find('option:selected').text();
+
+                // Calculate totals and update products summary
+                let totalAmount = 0;
+                let totalItems = 0;
+                let productsSummary = '';
+
+                $('.product-item').each(function () {
+                    const $item = $(this);
+                    const productSelect = $item.find('.product-select');
+                    const quantity = parseFloat($item.find('.quantity-input').val()) || 0;
+                    const unitPrice = parseFloat($item.find('.unit-price-input').val()) || 0;
+                    const subtotal = quantity * unitPrice;
+
+                    if (productSelect.val() && quantity > 0 && unitPrice > 0) {
+                        totalAmount += subtotal;
+                        totalItems += quantity;
+
+                        const productName = productSelect.find('option:selected').text();
+                        if (productName !== 'Select Product') {
+                            productsSummary += `
+                            <div class="d-flex justify-content-between mb-1">
+                                <small>${productName} (${quantity}x)</small>
+                                <small>$${subtotal.toFixed(2)}</small>
+                            </div>
+                        `;
+                        }
+                    }
+
+                    // Update individual item subtotal
+                    updateItemSubtotal($item);
+                });
+
+                // Update summary
+                document.getElementById('summary-items').textContent = `${totalItems} item(s)`;
+                document.getElementById('summary-total').textContent = '$' + totalAmount.toFixed(2);
+                document.getElementById('orderTotal').textContent = totalAmount.toFixed(2);
+                document.getElementById('totalItems').textContent = $('.product-item').length;
+
+                // Update products summary
+                const summaryProductsDiv = document.getElementById('summary-products');
+                if (productsSummary) {
+                    summaryProductsDiv.innerHTML = productsSummary;
+                } else {
+                    summaryProductsDiv.innerHTML = '<small class="text-muted">No products selected</small>';
+                }
+            }
+
+            // Update summary when guest name changes
+            document.getElementById('guest_name').addEventListener('input', updateOrderSummary);
+
+            document.getElementById('addOrderForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+                const orderData = Object.fromEntries(formData);
+
+                // Collect products data for array-based model
+                const products = [];
+                $('.product-item').each(function () {
+                    const $item = $(this);
+                    const productId = $item.find('.product-select').val();
+                    const quantity = parseInt($item.find('.quantity-input').val()) || 0;
+                    const unitPrice = parseFloat($item.find('.unit-price-input').val()) || 0;
+
+                    if (productId && quantity > 0 && unitPrice > 0) {
+                        products.push({
+                            product_id: productId,
+                            quantity: quantity,
+                            unit_price: unitPrice,
+                            total_price: quantity * unitPrice
+                        });
+                    }
+                });
+
+                // Calculate total order amount
+                const totalAmount = products.reduce((sum, product) => sum + product.total_price, 0);
+
+                // Clean up form data and prepare for submission
+                const cleanOrderData = {
+                    order_number: orderData.order_number,
+                    products: products,
+                    total_price: totalAmount,
+                    status: orderData.status,
+                    shipping_address: {
+                        street: orderData.shipping_street,
+                        city: orderData.shipping_city,
+                        postal_code: orderData.shipping_postal_code,
+                        country: orderData.shipping_country
+                    },
+                    billing_address: {
+                        street: orderData.billing_street,
+                        city: orderData.billing_city,
+                        postal_code: orderData.billing_postal_code,
+                        country: orderData.billing_country
+                    },
+                    payment_method: orderData.payment_method,
+                    payment_status: orderData.payment_status
+                };
+
+                // Handle customer data differently for guest vs registered customers
+                if (orderData.customer_id === 'guest') {
+                    // For guest customers, don't include customer_id, add guest info instead
+                    cleanOrderData.customer_type = 'guest';
+                    cleanOrderData.guest_name = orderData.guest_name;
+                    cleanOrderData.guest_email = orderData.guest_email;
+                    cleanOrderData.guest_phone = orderData.guest_phone;
+                } else {
+                    // For registered customers, include customer_id
+                    cleanOrderData.customer_type = 'registered';
+                    cleanOrderData.customer_id = orderData.customer_id;
+                }
+
+                // Validate that at least one product is selected
+                if (products.length === 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Missing Products',
+                        text: 'Please add at least one product to the order.',
+                        confirmButtonColor: '#696cff'
+                    });
+                    return;
+                }
+
+                // Validate address fields
+                const requiredAddressFields = [
+                    { field: 'shipping_street', name: 'Shipping Street Address' },
+                    { field: 'shipping_city', name: 'Shipping City' },
+                    { field: 'shipping_postal_code', name: 'Shipping Postal Code' },
+                    { field: 'shipping_country', name: 'Shipping Country' },
+                    { field: 'billing_street', name: 'Billing Street Address' },
+                    { field: 'billing_city', name: 'Billing City' },
+                    { field: 'billing_postal_code', name: 'Billing Postal Code' },
+                    { field: 'billing_country', name: 'Billing Country' }
+                ];
+
+                for (const { field, name } of requiredAddressFields) {
+                    if (!orderData[field] || orderData[field].trim() === '') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Missing Address Information',
+                            text: `Please fill in the ${name} field.`,
+                            confirmButtonColor: '#696cff'
+                        });
+                        return;
+                    }
+                }
+
+                // Debug: Log the data being sent
+                console.log('Order data being sent:', cleanOrderData);
+
+                try {
+                    const response = await fetch('/api/orders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(cleanOrderData)
+                    });
+
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Order Created!',
+                            text: 'Order has been added successfully!',
+                            confirmButtonColor: '#696cff',
+                            timer: 2000,
+                            timerProgressBar: true
+                        }).then(() => {
+                            window.location.href = '/view-orders';
+                        });
+                    } else {
+                        const error = await response.json();
+                        console.error('Server error response:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Order Failed',
+                            text: error.message || 'Unknown error occurred',
+                            confirmButtonColor: '#696cff'
+                        });
+                    }
+                } catch (error) {
+                    console.error('Network error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Network Error',
+                        text: 'Failed to connect to server. Please try again.',
+                        confirmButtonColor: '#696cff'
+                    });
+                }
+            });
+        </script>
 </body>
 
 </html>

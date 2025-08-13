@@ -1,0 +1,341 @@
+<!doctype html>
+
+<html lang="en" class="layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr" data-skin="default"
+    data-bs-theme="light" data-assets-path="/assets/" data-template="vertical-menu-template">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Edit Order - Bzz Co.</title>
+
+    <meta name="description" content="" />
+    <%- include("layout/header") %>
+</head>
+
+<body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <!-- Menu -->
+            <%- include("layout/sidebar") %>
+
+                <div class="menu-mobile-toggler d-xl-none rounded-1">
+                    <a href="javascript:void(0);"
+                        class="layout-menu-toggle menu-link text-large text-bg-secondary p-2 rounded-1">
+                        <i class="ri ri-menu-line icon-base"></i>
+                        <i class="ri ri-arrow-right-s-line icon-base"></i>
+                    </a>
+                </div>
+                <!-- / Menu -->
+
+                <!-- Layout container -->
+                <div class="layout-page">
+                    <!-- Navbar -->
+                    <%- include("layout/header") %>
+                        <!-- / Navbar -->
+
+                        <!-- Content wrapper -->
+                        <div class="content-wrapper">
+                            <!-- Content -->
+                            <div class="container-xxl flex-grow-1 container-p-y">
+                                <!-- Breadcrumb -->
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="/view-orders">Orders</a>
+                                        </li>
+                                        <li class="breadcrumb-item active">Edit Order</li>
+                                    </ol>
+                                </nav>
+                                <form id="editOrderForm">
+                                    <input type="hidden" id="order_id" name="order_id" value="<%= order._id %>">
+                                    
+                                    <!-- Action Buttons -->
+                                    <div class="d-flex justify-content-end gap-2 mb-4">
+                                        <button type="button" class="btn btn-outline-secondary"
+                                            onclick="window.location.href='/view-orders'">
+                                            <i class="ri ri-arrow-left-line me-2"></i>Back
+                                        </button>
+                                        <div>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="ri ri-save-line me-2"></i>Update Order
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <!-- Left Column -->
+                                        <div class="col-12 col-lg-6">
+                                            <!-- Order Information -->
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <h5 class="mb-0">Order Information</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <!-- Order Number -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="order_number">Order Number</label>
+                                                        <input type="text" class="form-control"
+                                                            id="order_number" name="order_number"
+                                                            value="<%= order.order_number %>" readonly />
+                                                        <small class="form-text text-muted">Order number cannot be changed</small>
+                                                    </div>
+
+                                                    <!-- Status Row -->
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label" for="status">Order Status *</label>
+                                                            <select class="form-select" id="status" name="status" required>
+                                                                <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                                                                <option value="Processing" <%= order.status === 'Processing' ? 'selected' : '' %>>Processing</option>
+                                                                <option value="Shipped" <%= order.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                                                <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                                                <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label" for="payment_status">Payment Status *</label>
+                                                            <select class="form-select" id="payment_status" name="payment_status" required>
+                                                                <option value="Unpaid" <%= order.payment_status === 'Unpaid' ? 'selected' : '' %>>Unpaid</option>
+                                                                <option value="Paid" <%= order.payment_status === 'Paid' ? 'selected' : '' %>>Paid</option>
+                                                                <option value="Pending" <%= order.payment_status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                                                                <option value="Failed" <%= order.payment_status === 'Failed' ? 'selected' : '' %>>Failed</option>
+                                                                <option value="Refunded" <%= order.payment_status === 'Refunded' ? 'selected' : '' %>>Refunded</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Payment Method -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="payment_method">Payment Method *</label>
+                                                        <select class="form-select" id="payment_method" name="payment_method" required>
+                                                            <option value="Credit Card" <%= order.payment_method === 'Credit Card' ? 'selected' : '' %>>Credit Card</option>
+                                                            <option value="Debit Card" <%= order.payment_method === 'Debit Card' ? 'selected' : '' %>>Debit Card</option>
+                                                            <option value="PayPal" <%= order.payment_method === 'PayPal' ? 'selected' : '' %>>PayPal</option>
+                                                            <option value="Bank Transfer" <%= order.payment_method === 'Bank Transfer' ? 'selected' : '' %>>Bank Transfer</option>
+                                                            <option value="Cash on Delivery" <%= order.payment_method === 'Cash on Delivery' ? 'selected' : '' %>>Cash on Delivery</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Customer Information -->
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <h5 class="mb-0">Customer Information</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="alert alert-info">
+                                                        <% if (order.customer_type === 'guest') { %>
+                                                            <strong>Guest Customer:</strong> <%= order.guest_name %><br>
+                                                            <strong>Email:</strong> <%= order.guest_email %><br>
+                                                            <% if (order.guest_phone) { %>
+                                                                <strong>Phone:</strong> <%= order.guest_phone %>
+                                                            <% } %>
+                                                        <% } else if (order.customer_id) { %>
+                                                            <strong>Registered Customer:</strong> <%= order.customer_id.full_name %><br>
+                                                            <strong>Email:</strong> <%= order.customer_id.email %>
+                                                        <% } else { %>
+                                                            <strong>Unknown Customer</strong>
+                                                        <% } %>
+                                                    </div>
+                                                    <small class="form-text text-muted">Customer information cannot be changed</small>
+                                                </div>
+                                            </div>
+
+                                            <!-- Order Items -->
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <h5 class="mb-0">Order Items</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-borderless" id="productsTable">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Product</th>
+                                                                    <th class="text-center">Quantity</th>
+                                                                    <th class="text-end">Unit Price</th>
+                                                                    <th class="text-end">Subtotal</th>
+                                                                    <th class="text-center">Actions</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="productTableBody">
+                                                                <% if (order.products && order.products.length > 0) { %>
+                                                                    <% order.products.forEach((item, index) => { %>
+                                                                        <tr class="product-row" data-index="<%= index %>">
+                                                                            <td>
+                                                                                <div class="d-flex flex-column">
+                                                                                    <h6 class="mb-1"><%= item.product_id ? item.product_id.productTitle : 'Unknown Product' %></h6>
+                                                                                    <small class="text-muted">Product ID: <%= item.product_id ? item.product_id._id : 'N/A' %></small>
+                                                                                    <input type="hidden" name="products[<%= index %>][product_id]" value="<%= item.product_id ? item.product_id._id : '' %>">
+                                                                                </div>
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                <input type="number" class="form-control text-center quantity-input" 
+                                                                                       name="products[<%= index %>][quantity]" 
+                                                                                       value="<%= item.quantity %>" 
+                                                                                       min="1" style="width: 80px; margin: 0 auto;">
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                <input type="number" class="form-control text-end price-input" 
+                                                                                       name="products[<%= index %>][unit_price]" 
+                                                                                       value="<%= item.unit_price %>" 
+                                                                                       step="0.01" min="0" style="width: 120px; margin-left: auto;">
+                                                                            </td>
+                                                                            <td class="text-end subtotal"><%= (item.quantity * item.unit_price).toFixed(2) %></td>
+                                                                            <td class="text-center">
+                                                                                <button type="button" class="btn btn-sm btn-outline-danger remove-product" title="Remove Product">
+                                                                                    <i class="ri ri-delete-bin-line"></i>
+                                                                                </button>
+                                                                            </td>
+                                                                        </tr>
+                                                                    <% }); %>
+                                                                <% } %>
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <td colspan="5">
+                                                                        <button type="button" class="btn btn-outline-primary" id="addProductBtn">
+                                                                            <i class="ri ri-add-line me-1"></i>Add Product
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Right Column -->
+                                        <div class="col-12 col-lg-6">
+                                            <!-- Order Summary -->
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <h5 class="mb-0">Order Summary</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                                        <span class="text-heading">Total Amount:</span>
+                                                        <h5 class="mb-0" id="totalAmount">$<%= order.total_price ? order.total_price.toFixed(2) : '0.00' %></h5>
+                                                    </div>
+                                                    <input type="hidden" id="total_price" name="total_price" value="<%= order.total_price %>">
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Shipping Address -->
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <h5 class="mb-0">Shipping Address</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <!-- Street Address -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="shipping_street">Street Address *</label>
+                                                        <input type="text" class="form-control" id="shipping_street" 
+                                                               name="shipping_address[street]" value="<%= order.shipping_address && order.shipping_address.street ? order.shipping_address.street : '' %>" required>
+                                                    </div>
+                                                    
+                                                    <!-- City and Postal Code Row -->
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label" for="shipping_city">City *</label>
+                                                            <input type="text" class="form-control" id="shipping_city" 
+                                                                   name="shipping_address[city]" value="<%= order.shipping_address && order.shipping_address.city ? order.shipping_address.city : '' %>" required>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label" for="shipping_postal_code">Postal Code *</label>
+                                                            <input type="text" class="form-control" id="shipping_postal_code" 
+                                                                   name="shipping_address[postal_code]" value="<%= order.shipping_address && order.shipping_address.postal_code ? order.shipping_address.postal_code : '' %>" required>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <!-- Country -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="shipping_country">Country *</label>
+                                                        <input type="text" class="form-control" id="shipping_country" 
+                                                               name="shipping_address[country]" value="<%= order.shipping_address && order.shipping_address.country ? order.shipping_address.country : '' %>" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Billing Address -->
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <h5 class="mb-0">Billing Address</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <!-- Same as Shipping Checkbox -->
+                                                    <div class="form-check mb-3">
+                                                        <input class="form-check-input" type="checkbox" id="sameAsShipping">
+                                                        <label class="form-check-label" for="sameAsShipping">
+                                                            Same as shipping address
+                                                        </label>
+                                                    </div>
+                                                    
+                                                    <div id="billingAddressFields">
+                                                        <!-- Street Address -->
+                                                        <div class="mb-3">
+                                                            <label class="form-label" for="billing_street">Street Address *</label>
+                                                            <input type="text" class="form-control" id="billing_street" 
+                                                                   name="billing_address[street]" value="<%= order.billing_address && order.billing_address.street ? order.billing_address.street : '' %>" required>
+                                                        </div>
+                                                        
+                                                        <!-- City and Postal Code Row -->
+                                                        <div class="row">
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="form-label" for="billing_city">City *</label>
+                                                                <input type="text" class="form-control" id="billing_city" 
+                                                                       name="billing_address[city]" value="<%= order.billing_address && order.billing_address.city ? order.billing_address.city : '' %>" required>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="form-label" for="billing_postal_code">Postal Code *</label>
+                                                                <input type="text" class="form-control" id="billing_postal_code" 
+                                                                       name="billing_address[postal_code]" value="<%= order.billing_address && order.billing_address.postal_code ? order.billing_address.postal_code : '' %>" required>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <!-- Country -->
+                                                        <div class="mb-3">
+                                                            <label class="form-label" for="billing_country">Country *</label>
+                                                            <input type="text" class="form-control" id="billing_country" 
+                                                                   name="billing_address[country]" value="<%= order.billing_address && order.billing_address.country ? order.billing_address.country : '' %>" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- / Content -->
+
+                            <!-- Footer -->
+                            <%- include("layout/footer") %>
+                                <!-- / Footer -->
+
+                                <div class="content-backdrop fade"></div>
+                        </div>
+                        <!-- Content wrapper -->
+                </div>
+                <!-- / Layout page -->
+        </div>
+
+        <!-- Overlay -->
+        <div class="layout-overlay layout-menu-toggle"></div>
+
+        <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+        <div class="drag-target"></div>
+    </div>
+    <!-- / Layout wrapper -->
+
+    <%- include("layout/auth-footer") %>
+
+    <!-- Page JS -->
+    <script src="/assets/js/edit-order.js"></script>
+</body>
+
+</html>

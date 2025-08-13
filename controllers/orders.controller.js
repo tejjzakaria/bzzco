@@ -1,9 +1,17 @@
 import Order from "../models/orders.model.js";
+import Product from "../models/products.model.js";
+import Customer from "../models/customers.model.js";
 
 
 const getAllOrders = async (req, res) => {
     try {
-        const orders = await Order.find().populate('customer_id', 'full_name email').populate('product_id', 'name price');
+        const orders = await Order.find()
+            .populate('customer_id', 'full_name email')
+            .populate({
+                path: 'products.product_id',
+                select: 'productTitle productPrice'
+            })
+            .sort({ createdAt: -1 });
         res.status(200).json(orders);
     } catch (error) {
         console.error("Error fetching orders:", error);
@@ -12,49 +20,163 @@ const getAllOrders = async (req, res) => {
 }
 
 const addOrder = async (req, res) => {
-    const { order_number, customer_id, product_id, quantity, total_price, shipping_address, billing_address, payment_method } = req.body;
+    const { 
+        order_number, 
+        customer_id, 
+        customer_type,
+        guest_name,
+        guest_email,
+        guest_phone,
+        products, 
+        total_price, 
+        status,
+        shipping_address, 
+        billing_address, 
+        payment_method,
+        payment_status
+    } = req.body;
 
-    if (!order_number || !customer_id || !product_id || !quantity || !total_price || !shipping_address || !billing_address) {
+    // Validate required fields
+    if (!order_number || !products || !products.length || !total_price || !shipping_address || !billing_address) {
         return res.status(400).json({ message: "All fields are required" });
     }
 
+    // Validate customer information
+    if (customer_type === 'guest') {
+        if (!guest_name || !guest_email) {
+            return res.status(400).json({ message: "Guest name and email are required for guest customers" });
+        }
+    } else if (customer_type === 'registered') {
+        if (!customer_id) {
+            return res.status(400).json({ message: "Customer ID is required for registered customers" });
+        }
+    } else {
+        return res.status(400).json({ message: "Customer type must be either 'guest' or 'registered'" });
+    }
+
     try {
-        const newOrder = new Order({
+        // Create order data
+        const orderData = {
             order_number,
-            customer_id,
-            product_id,
-            quantity,
+            products,
             total_price,
+            status: status || 'Pending',
             shipping_address,
             billing_address,
-            payment_method
-        });
+            payment_method,
+            payment_status: payment_status || 'Unpaid'
+        };
 
+        // Add customer information based on type
+        if (customer_type === 'guest') {
+            orderData.customer_type = 'guest';
+            orderData.guest_name = guest_name;
+            orderData.guest_email = guest_email;
+            orderData.guest_phone = guest_phone;
+        } else {
+            orderData.customer_type = 'registered';
+            orderData.customer_id = customer_id;
+        }
+
+        const newOrder = new Order(orderData);
         await newOrder.save();
-        res.status(201).json(newOrder);
+        
+        res.status(201).json({ message: "Order created successfully", order: newOrder });
     } catch (error) {
         console.error("Error adding order:", error);
-        res.status(500).json({ message: "Internal server error" });
+        if (error.code === 11000) {
+            res.status(400).json({ message: "Order number already exists" });
+        } else {
+            res.status(500).json({ message: "Internal server error" });
+        }
     }
 }
 
 const updateOrder = async (req, res) => {
     const { orderId } = req.params;
-    const { status, payment_status } = req.body;
+    const { 
+        status, 
+        payment_status, 
+        payment_method,
+        products,
+        total_price,
+        shipping_address,
+        billing_address
+    } = req.body;
 
     try {
+        // Validate required fields
+        if (!products || !products.length || !total_price || !shipping_address || !billing_address) {
+            return res.status(400).json({ 
+                message: "Products, total price, and addresses are required",
+                success: false 
+            });
+        }
+
+        // Validate products array
+        for (let i = 0; i < products.length; i++) {
+            const product = products[i];
+            if (!product.product_id || !product.quantity || !product.unit_price) {
+                return res.status(400).json({ 
+                    message: `Product at index ${i} is missing required fields`,
+                    success: false 
+                });
+            }
+            
+            // Convert to numbers
+            product.quantity = parseInt(product.quantity);
+            product.unit_price = parseFloat(product.unit_price);
+            
+            if (product.quantity <= 0 || product.unit_price <= 0) {
+                return res.status(400).json({ 
+                    message: `Product at index ${i} has invalid quantity or price`,
+                    success: false 
+                });
+            }
+        }
+
+        // Validate that the order exists
+        const existingOrder = await Order.findById(orderId);
+        if (!existingOrder) {
+            return res.status(404).json({ 
+                message: "Order not found",
+                success: false 
+            });
+        }
+
+        // Update the order
         const updatedOrder = await Order.findByIdAndUpdate(
             orderId,
-            { status, payment_status },
-            { new: true }
-        );
-        if (!updatedOrder) {
-            return res.status(404).json({ message: "Order not found" });
-        }
-        res.status(200).json(updatedOrder);
+            { 
+                status, 
+                payment_status,
+                payment_method,
+                products,
+                total_price: parseFloat(total_price),
+                shipping_address,
+                billing_address,
+                updatedAt: new Date()
+            },
+            { new: true, runValidators: true }
+        ).populate('customer_id', 'full_name email phone_number')
+         .populate({
+             path: 'products.product_id',
+             select: 'productTitle productPrice productSku'
+         });
+
+        console.log(`Order ${orderId} updated successfully`);
+        
+        res.status(200).json({ 
+            message: "Order updated successfully",
+            order: updatedOrder,
+            success: true 
+        });
     } catch (error) {
         console.error("Error updating order:", error);
-        res.status(500).json({ message: "Internal server error" });
+        res.status(500).json({ 
+            message: "Internal server error",
+            success: false 
+        });
     }
 }
 
@@ -77,14 +199,21 @@ const getOrderById = async (req, res) => {
     const { orderId } = req.params;
 
     try {
-        const order = await Order.findById(orderId).populate('customer_id', 'full_name email').populate('product_id', 'name price');
+        const order = await Order.findById(orderId)
+            .populate('customer_id', 'full_name email phone_number')
+            .populate({
+                path: 'products.product_id',
+                select: 'productTitle productPrice productSku category'
+            });
+        
         if (!order) {
-            return res.status(404).json({ message: "Order not found" });
+            return res.status(404).json({ message: "Order not found", success: false });
         }
-        res.status(200).json(order);
+        
+        res.status(200).json({ order: order, success: true });
     } catch (error) {
         console.error("Error fetching order:", error);
-        res.status(500).json({ message: "Internal server error" });
+        res.status(500).json({ message: "Internal server error", success: false });
     }
 }
 
