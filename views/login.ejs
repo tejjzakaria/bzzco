@@ -1,0 +1,209 @@
+<!doctype html>
+
+<html lang="en" class="layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr" data-skin="default"
+    data-bs-theme="light" data-assets-path="/assets/" data-template="vertical-menu-template">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Dashboard - Bzz Co.</title>
+
+    <meta name="description" content="" />
+    <%- include("layout/auth-header") %>
+</head>
+
+<body>
+    <div class="position-relative">
+        <div class="authentication-wrapper authentication-basic container-p-y p-4 p-sm-0">
+            <div class="authentication-inner py-6">
+                <!-- Login -->
+                <div class="card p-md-7 p-1">
+                    <!-- Logo -->
+                    <div class="app-brand justify-content-center mt-5">
+                        <a href="" class="app-brand-link gap-2">
+                            <img src="/assets/img/bzzco_logo.png" alt="Logo" class="app-brand-logo demo" width="120">
+                        </a>
+                    </div>
+                    <!-- /Logo -->
+
+                    <div class="card-body mt-1">
+                        <h4 class="mb-1">Welcome! 👋</h4>
+                        <p class="mb-5">Please sign-in to your account.</p>
+
+                        <!-- Alert container for messages -->
+                        <div id="alertContainer"></div>
+
+                        <form id="formAuthentication" class="mb-5">
+                            <div class="form-floating form-floating-outline mb-5 form-control-validation">
+                                <input type="email" class="form-control" id="email" name="email"
+                                    placeholder="Enter your email" autofocus required />
+                                <label for="email">Email</label>
+                            </div>
+                            <div class="mb-5">
+                                <div class="form-password-toggle form-control-validation">
+                                    <div class="input-group input-group-merge">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="password" id="password" class="form-control" name="password"
+                                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                                required />
+                                            <label for="password">Password</label>
+                                        </div>
+                                        <span class="input-group-text cursor-pointer"><i
+                                                class="icon-base ri ri-eye-off-line icon-20px"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-5 d-flex justify-content-between mt-5">
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" id="remember-me" />
+                                    <label class="form-check-label" for="remember-me"> Remember Me </label>
+                                </div>
+                                <a href="/forgot-password" class="float-end mb-1 mt-2">
+                                    <span>Forgot Password?</span>
+                                </a>
+                            </div>
+                            <div class="mb-5">
+                                <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
+                            </div>
+                        </form>
+
+                        <p class="text-center mb-5">
+                            <span>New on our platform?</span>
+                            <a href="/sign-up">
+                                <span>Create an account</span>
+                            </a>
+                        </p>
+
+                        <div class="divider my-5">
+                            <div class="divider-text">or</div>
+                        </div>
+
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-facebook">
+                                <i class="icon-base ri ri-facebook-fill icon-18px"></i>
+                            </a>
+
+                            <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-twitter">
+                                <i class="icon-base ri ri-twitter-fill icon-18px"></i>
+                            </a>
+
+                            <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-github">
+                                <i class="icon-base ri ri-github-fill icon-18px"></i>
+                            </a>
+
+                            <a href="javascript:;" class="btn btn-icon btn-lg rounded-pill btn-text-google-plus">
+                                <i class="icon-base ri ri-google-fill icon-18px"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Login -->
+                <img alt="mask" src="/assets/img/illustrations/auth-basic-login-mask-light.png"
+                    class="authentication-image d-none d-lg-block"
+                    data-app-light-img="illustrations/auth-basic-login-mask-light.png"
+                    data-app-dark-img="illustrations/auth-basic-login-mask-dark.png" />
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- Include Token Manager -->
+    <script src="/assets/js/token-manager.js"></script>
+    
+    <script>
+        console.log('Script loaded');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded');
+            
+            const form = document.getElementById('formAuthentication');
+            console.log('Form found:', form);
+            
+            if (form) {
+                form.addEventListener('submit', async (e) => {
+                    console.log('Form submitted');
+                    e.preventDefault();
+                    
+                    // Clear previous alerts
+                    const alertContainer = document.getElementById('alertContainer');
+                    alertContainer.innerHTML = '';
+
+                    const formData = new FormData(e.target);
+                    const email = formData.get('email');
+                    const password = formData.get('password');
+                    
+                    console.log('Email:', email, 'Password length:', password.length);
+
+                    // Show loading state
+                    const submitButton = e.target.querySelector('button[type="submit"]');
+                    const originalText = submitButton.textContent;
+                    submitButton.textContent = 'Signing in...';
+                    submitButton.disabled = true;
+
+                    try {
+                        console.log('Making API request...');
+                        const response = await fetch('/api/auth/login', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                email,
+                                password,
+                            }),
+                        });
+
+                        console.log('Response status:', response.status);
+                        const data = await response.json();
+                        console.log('Response data:', data);
+
+                        if (response.ok) {
+                            // Login successful
+                            alertContainer.innerHTML = `
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    ${data.message}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            `;
+                            
+                            // Start a new session with the token
+                            window.tokenManager.startSession(data.access_token);
+                            
+                            // Redirect after a short delay
+                            setTimeout(() => {
+                                window.location.href = '/dashboard';
+                            }, 1500);
+                        } else {
+                            // Login failed
+                            alertContainer.innerHTML = `
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    ${data.error}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            `;
+                        }
+                    } catch (err) {
+                        console.error('Network error:', err);
+                        alertContainer.innerHTML = `
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                Network error: ${err.message}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        `;
+                    } finally {
+                        // Reset button state
+                        submitButton.textContent = originalText;
+                        submitButton.disabled = false;
+                    }
+                });
+            } else {
+                console.error('Form not found!');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

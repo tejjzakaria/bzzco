@@ -1,9 +1,9 @@
-// main.js
 import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import session from 'express-session';
-import routes from './routes/routes.js'; // ✅ import router
+import routes from './routes/routes.js';
+import { auth0Middleware } from './middleware/auth0.middleware.js';
 
 dotenv.config();
 
@@ -17,8 +17,10 @@ app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 app.use('/assets', express.static('assets'));
 
+app.use('/', routes);
+
 app.use(session({
-  secret: 'secret key',
+  secret: process.env.BETTER_AUTH_SECRET || 'secret key',
   saveUninitialized: true,
   resave: false,
 }));
@@ -31,8 +33,22 @@ app.use((req, res, next) => {
 
 app.set('view engine', 'ejs');
 
-// ✅ Use the imported router
-app.use('', routes);
+app.use(auth0Middleware);
+
+// Routes
+app.get('/profile', (req, res) => {
+  if (!req.oidc.isAuthenticated()) {
+    return res.redirect('/login');
+  }
+  res.render('profile', { user: req.oidc.user });
+});
+
+
+
+// Default redirect
+app.get('/', (req, res) => {
+  res.redirect('/login');
+});
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -45,7 +61,7 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 // MongoDB connection
-mongoose.connect(process.env.CONNECTION_STRING_MONGODB)
+mongoose.connect(process.env.CONNECTION_STRING_MONGODB || process.env.MONGODB_URI)
   .then(() => {
     console.log('CONNECTED TO DB');
     app.listen(PORT, () => {

@@ -4,16 +4,25 @@ import sellersRoutes from './sellers.routes.js';
 import productsRoutes from './products.routes.js';
 import categoriesRoutes from './categories.routes.js';
 import ordersRoutes from './orders.routes.js';
+import authRoutes from './auth.routes.js';
+import { optionalVerifyToken } from '../middleware/jwt.middleware.js';
 
 const router = express.Router();
 // Home route
-router.get('/', (req, res) => {
-    res.render('index');
+router.get('/login', (req, res) => {
+    res.render('login');
 });
 
-// Dashboard route
-router.get('/dashboard', (req, res) => {
-    res.render('dashboard', { currentPage: 'dashboard' });
+router.get('/sign-up', (req, res) => {
+    res.render('register');
+});
+
+
+// Dashboard route (protected)
+router.get('/dashboard', optionalVerifyToken, (req, res) => {
+    // If user is authenticated, pass user info to template
+    const user = req.user || null;
+    res.render('dashboard', { currentPage: 'dashboard', user });
 });
 
 // Use separated route files
@@ -22,6 +31,18 @@ router.use('/', sellersRoutes);
 router.use('/', productsRoutes);
 router.use('/', categoriesRoutes);
 router.use('/', ordersRoutes);
+router.use('/api/auth', authRoutes);
+
+router.get('/view-customers', (req, res) => {
+    res.render('view-customers', { currentPage: 'view-customers' });
+});
+
+router.get('/view-sellers', (req, res) => {
+    res.render('view-sellers', { currentPage: 'view-sellers' });
+});
+
+
+
 
 // Finances routes
 router.get('/view-payments', (req, res) => {
