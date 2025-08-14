@@ -1,0 +1,1148 @@
+<!doctype html>
+
+<html lang="en" class="layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr" data-skin="default"
+    data-bs-theme="light" data-assets-path="/assets/" data-template="vertical-menu-template">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>All Users - Bzz Co.</title>
+
+    <meta name="description" content="" />
+    <%- include("layout/header") %>
+</head>
+
+<body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <!-- Menu -->
+
+            <%- include("layout/sidebar") %>
+
+                <div class="menu-mobile-toggler d-xl-none rounded-1">
+                    <a href="javascript:void(0);"
+                        class="layout-menu-toggle menu-link text-large text-bg-secondary p-2 rounded-1">
+                        <i class="ri ri-menu-line icon-base"></i>
+                        <i class="ri ri-arrow-right-s-line icon-base"></i>
+                    </a>
+                </div>
+                <!-- / Menu -->
+
+                <!-- Layout container -->
+                <div class="layout-page">
+                    <!-- Navbar -->
+
+                    <%- include("layout/header") %>
+
+                        <!-- / Navbar -->
+
+                        <!-- Content wrapper -->
+                        <div class="content-wrapper">
+                            <!-- Content -->
+
+                            <div class="container-xxl flex-grow-1 container-p-y">
+                                <div class="row g-6 mb-6">
+
+
+                                    <div class="col-xl-4 col-lg-6 col-md-6">
+                                        <div class="card h-100">
+                                            <div class="card-body d-flex justify-content-between">
+
+                                                <div class="card-info">
+                                                    <div class="me-1">
+                                                        <p class="text-heading mb-1">Admins</p>
+                                                        <div class="d-flex align-items-center">
+                                                            <h4 class="mb-1 me-2" id="adminUsers">0</h4>
+                                                        </div>
+                                                        <small class="mb-0">Total admin users</small>
+                                                    </div>
+                                                </div>
+                                                <div class="avatar">
+                                                    <div class="avatar-initial bg-label-danger rounded-3">
+                                                        <div class="icon-base ri ri-shield-user-line icon-26px"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-xl-4 col-lg-6 col-md-6">
+                                        <div class="card h-100">
+                                            <div class="card-body d-flex justify-content-between">
+
+                                                <div class="card-info">
+                                                    <div class="me-1">
+                                                        <p class="text-heading mb-1">Sellers</p>
+                                                        <div class="d-flex align-items-center">
+                                                            <h4 class="mb-1 me-2" id="sellerUsers">0</h4>
+                                                        </div>
+                                                        <small class="mb-0">Total seller users</small>
+                                                    </div>
+                                                </div>
+                                                <div class="avatar">
+                                                    <div class="avatar-initial bg-label-warning rounded-3">
+                                                        <div class="icon-base ri ri-store-2-line icon-26px"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-xl-4 col-lg-6 col-md-6">
+                                        <div class="card h-100">
+                                            <div class="card-body d-flex justify-content-between">
+
+
+
+
+
+                                                <div class="card-info">
+                                                    <div class="me-1">
+                                                        <p class="text-heading mb-1">Customers</p>
+                                                        <div class="d-flex align-items-center">
+                                                            <h4 class="mb-1 me-2" id="customerUsers">0</h4>
+                                                        </div>
+                                                        <small class="mb-0">Total customer users</small>
+                                                    </div>
+                                                </div>
+                                                <div class="avatar">
+                                                    <div class="avatar-initial bg-label-primary rounded-3">
+                                                        <div class="icon-base ri ri-user-3-line icon-26px"></div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Users List Table -->
+                                <div class="card">
+                                    <div class="card-header border-bottom">
+                                        <h5 class="card-title mb-3">Search Filter</h5>
+                                        <div class="d-flex justify-content-between align-items-center row gx-5 gy-3">
+                                            <div class="col-md-4 user_role">
+                                                <label class="form-label" for="UserRole">Role</label>
+                                            </div>
+                                            <div class="col-md-4 user_plan">
+                                                <label class="form-label" for="UserPlan">Email Status</label>
+                                            </div>
+                                            <div class="col-md-4 user_status">
+                                                <label class="form-label" for="FilterStatus">Login Status</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-datatable table-responsive">
+                                        <table class="datatables-users table">
+                                            <thead class="border-top">
+                                                <tr>
+                                                    <th></th>
+                                                    <th>
+                                                        <input type="checkbox" class="form-check-input">
+                                                    </th>
+                                                    <th>User</th>
+                                                    <th>Email</th>
+                                                    <th>Role</th>
+                                                    <th>Email Verified</th>
+                                                    <th>Last Login</th>
+                                                    <th>Logins Count</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- / Content -->
+
+                            <!-- Footer -->
+                            <%- include("layout/footer") %>
+                                <!-- / Footer -->
+
+                                <div class="content-backdrop fade"></div>
+                        </div>
+                        <!-- Content wrapper -->
+                </div>
+                <!-- / Layout page -->
+        </div>
+
+        <!-- Overlay -->
+        <div class="layout-overlay layout-menu-toggle"></div>
+
+        <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+        <div class="drag-target"></div>
+    </div>
+    <!-- / Layout wrapper -->
+
+
+    <!-- DataTables Initialization -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let borderColor, bodyBg, headingColor;
+
+            // Get config colors if available
+            if (typeof config !== 'undefined') {
+                borderColor = config.colors.borderColor;
+                bodyBg = config.colors.bodyBg;
+                headingColor = config.colors.headingColor;
+            }
+
+            // Variable declaration for table
+            const dt_user_table = document.querySelector('.datatables-users'),
+                statusObj = {
+                    verified: { title: 'Verified', class: 'bg-label-success' },
+                    unverified: { title: 'Unverified', class: 'bg-label-warning' }
+                };
+
+            // Users datatable
+            if (dt_user_table) {
+                const dt_user = new DataTable(dt_user_table, {
+                    ajax: {
+                        url: '/api/auth/admin/users',
+                        headers: {
+                            'Authorization': 'Bearer ' + (localStorage.getItem('access_token') || '')
+                        },
+                        dataSrc: function (json) {
+                            // Update stats
+                            if (json.users) {
+                                updateStats(json.users);
+                            }
+                            return json.users || [];
+                        },
+                        error: function (xhr, error, code) {
+                            console.error('DataTable Ajax Error:', error, code);
+                            if (xhr.status === 401) {
+                                alert('Authentication required. Please login again.');
+                                window.location.href = '/login';
+                            }
+                        }
+                    },
+                    columns: [
+                        // columns according to JSON
+                        { data: 'id' },
+                        { data: 'id', orderable: false, render: DataTable.render.select() },
+                        { data: 'name' },
+                        { data: 'email' },
+                        { data: 'role' },
+                        { data: 'email_verified' },
+                        { data: 'last_login' },
+                        { data: 'logins_count' },
+                        { data: null, orderable: false, searchable: false } // Actions column
+                    ],
+                    columnDefs: [
+                        {
+                            // For Responsive
+                            className: 'control',
+                            searchable: false,
+                            orderable: false,
+                            responsivePriority: 2,
+                            targets: 0,
+                            render: function (data, type, full, meta) {
+                                return '';
+                            }
+                        },
+                        {
+                            // For Checkboxes
+                            targets: 1,
+                            orderable: false,
+                            searchable: false,
+                            responsivePriority: 4,
+                            checkboxes: true,
+                            render: function () {
+                                return '<input type="checkbox" class="dt-checkboxes form-check-input">';
+                            },
+                            checkboxes: {
+                                selectAllRender: '<input type="checkbox" class="form-check-input">'
+                            }
+                        },
+                        {
+                            targets: 2,
+                            responsivePriority: 4,
+                            render: function (data, type, full, meta) {
+                                var name = full['name'] || 'No Name';
+                                var email = full['email'];
+                                var picture = full['picture'];
+                                var output;
+
+                                // For Avatar - use picture if available, otherwise create initials
+                                if (picture) {
+                                    output = '<img src="' + picture + '" alt="Avatar" class="rounded-circle" width="32" height="32">';
+                                } else {
+                                    var stateNum = Math.floor(Math.random() * 6);
+                                    var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
+                                    var state = states[stateNum];
+                                    var initials = (name.match(/\b\w/g) || []).map(char => char.toUpperCase());
+                                    initials = ((initials.shift() || '') + (initials.pop() || '')).toUpperCase();
+                                    output = '<span class="avatar-initial rounded-circle bg-label-' + state + '">' + initials + '</span>';
+                                }
+
+                                // Creates full output for row
+                                var row_output =
+                                    '<div class="d-flex justify-content-start align-items-center user-name">' +
+                                    '<div class="avatar-wrapper">' +
+                                    '<div class="avatar me-3">' +
+                                    output +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="d-flex flex-column">' +
+                                    '<span class="fw-medium">' + name + '</span>' +
+                                    '<small class="text-muted">' + (full['nickname'] || '') + '</small>' +
+                                    '</div>' +
+                                    '</div>';
+                                return row_output;
+                            }
+                        },
+                        {
+                            // User email
+                            targets: 3,
+                            render: function (data, type, full, meta) {
+                                let email = full['email'];
+                                return '<span>' + email + '</span>';
+                            }
+                        },
+                        {
+                            // Role
+                            targets: 4,
+                            render: function (data, type, full, meta) {
+                                let role = full['role'] || 'customer';
+                                let badgeClass = '';
+
+                                switch (role) {
+                                    case 'admin':
+                                        badgeClass = 'bg-label-danger';
+                                        break;
+                                    case 'seller':
+                                        badgeClass = 'bg-label-warning';
+                                        break;
+                                    case 'customer':
+                                    default:
+                                        badgeClass = 'bg-label-primary';
+                                        break;
+                                }
+
+                                return '<span class="badge ' + badgeClass + ' text-capitalize">' + role + '</span>';
+                            }
+                        },
+                        {
+                            // Email Verified
+                            targets: 5,
+                            render: function (data, type, full, meta) {
+                                const verified = full['email_verified'];
+                                const badgeClass = verified ? 'bg-label-success' : 'bg-label-warning';
+                                const text = verified ? 'Verified' : 'Unverified';
+                                return '<span class="badge ' + badgeClass + '">' + text + '</span>';
+                            }
+                        },
+                        {
+                            // Last Login
+                            targets: 6,
+                            render: function (data, type, full, meta) {
+                                const lastLogin = full['last_login'];
+                                if (lastLogin) {
+                                    const date = new Date(lastLogin);
+                                    return '<span class="text-heading">' + date.toLocaleDateString() + '<br><small class="text-muted">' + date.toLocaleTimeString() + '</small></span>';
+                                } else {
+                                    return '<span class="text-muted">Never</span>';
+                                }
+                            }
+                        },
+                        {
+                            // Logins Count
+                            targets: 7,
+                            render: function (data, type, full, meta) {
+                                const count = full['logins_count'] || 0;
+                                return '<span class="text-heading">' + count + '</span>';
+                            }
+                        },
+                        {
+                            targets: -1,
+                            title: 'Actions',
+                            searchable: false,
+                            orderable: false,
+                            render: (data, type, full, meta) => {
+                                const userId = full['id'];
+                                return `
+                                    <div class="d-flex align-items-center">
+                                        <a href="javascript:;" class="btn btn-sm btn-icon btn-text-secondary rounded-pill waves-effect delete-record" data-user-id="${userId}" title="Delete User">
+                                            <i class="icon-base ri ri-delete-bin-7-line icon-18px"></i>
+                                        </a>
+                                        <a href="javascript:;" class="btn btn-sm btn-icon btn-text-secondary rounded-pill waves-effect" onclick="viewUserDetails('${userId}')" title="View Details">
+                                            <i class="icon-base ri ri-eye-line icon-18px"></i>
+                                        </a>
+                                    </div>
+                                `;
+                            }
+                        }
+                    ],
+                    select: {
+                        style: 'multi',
+                        selector: 'td:nth-child(2)'
+                    },
+                    order: [[6, 'desc']], // Order by last login
+                    layout: {
+                        topStart: {
+                            rowClass: 'row m-2 my-0 mt-0 justify-content-between',
+                            features: [
+                                {
+                                    buttons: {
+                                        buttons: [
+                                            {
+                                                extend: 'collection',
+                                                className: 'btn btn-label-secondary dropdown-toggle mx-4 waves-effect waves-light',
+                                                text: '<i class="icon-base ri ri-upload-2-line icon-18px me-2"></i>Export',
+                                                buttons: [
+                                                    {
+                                                        extend: 'print',
+                                                        title: 'Users',
+                                                        text: '<i class="icon-base ri ri-printer-line me-2" ></i>Print',
+                                                        className: 'dropdown-item',
+                                                        exportOptions: {
+                                                            columns: [2, 3, 4, 5, 6, 7],
+                                                            format: {
+                                                                body: function (inner, coldex, rowdex) {
+                                                                    if (inner.length <= 0) return inner;
+                                                                    var el = $.parseHTML(inner);
+                                                                    var result = '';
+                                                                    $.each(el, function (index, item) {
+                                                                        if (item.classList !== undefined && item.classList.contains('user-name')) {
+                                                                            result = result + item.lastChild.firstChild.textContent;
+                                                                        } else if (item.innerText === undefined) {
+                                                                            result = result + item.textContent;
+                                                                        } else result = result + item.innerText;
+                                                                    });
+                                                                    return result;
+                                                                }
+                                                            }
+                                                        },
+                                                        customize: function (win) {
+                                                            // Custom styling for print
+                                                            $(win.document.body)
+                                                                .css('color', headingColor)
+                                                                .css('border-color', borderColor)
+                                                                .css('background-color', bodyBg);
+                                                            $(win.document.body)
+                                                                .find('table')
+                                                                .addClass('compact')
+                                                                .css('color', 'inherit')
+                                                                .css('border-color', 'inherit')
+                                                                .css('background-color', 'inherit');
+                                                        }
+                                                    },
+                                                    {
+                                                        extend: 'csv',
+                                                        title: 'Users',
+                                                        text: '<i class="icon-base ri ri-file-text-line me-2" ></i>Csv',
+                                                        className: 'dropdown-item',
+                                                        exportOptions: {
+                                                            columns: [2, 3, 4, 5, 6, 7],
+                                                            format: {
+                                                                body: function (inner, coldex, rowdex) {
+                                                                    if (inner.length <= 0) return inner;
+                                                                    var el = $.parseHTML(inner);
+                                                                    var result = '';
+                                                                    $.each(el, function (index, item) {
+                                                                        if (item.classList !== undefined && item.classList.contains('user-name')) {
+                                                                            result = result + item.lastChild.firstChild.textContent;
+                                                                        } else if (item.innerText === undefined) {
+                                                                            result = result + item.textContent;
+                                                                        } else result = result + item.innerText;
+                                                                    });
+                                                                    return result;
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        extend: 'excel',
+                                                        title: 'Users',
+                                                        text: '<i class="icon-base ri ri-file-excel-2-line me-2"></i>Excel',
+                                                        className: 'dropdown-item',
+                                                        exportOptions: {
+                                                            columns: [2, 3, 4, 5, 6, 7],
+                                                            format: {
+                                                                body: function (inner, coldex, rowdex) {
+                                                                    if (inner.length <= 0) return inner;
+                                                                    var el = $.parseHTML(inner);
+                                                                    var result = '';
+                                                                    $.each(el, function (index, item) {
+                                                                        if (item.classList !== undefined && item.classList.contains('user-name')) {
+                                                                            result = result + item.lastChild.firstChild.textContent;
+                                                                        } else if (item.innerText === undefined) {
+                                                                            result = result + item.textContent;
+                                                                        } else result = result + item.innerText;
+                                                                    });
+                                                                    return result;
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        extend: 'pdf',
+                                                        title: 'Users',
+                                                        text: '<i class="icon-base ri ri-file-pdf-line me-2"></i>Pdf',
+                                                        className: 'dropdown-item',
+                                                        exportOptions: {
+                                                            columns: [2, 3, 4, 5, 6, 7],
+                                                            format: {
+                                                                body: function (inner, coldex, rowdex) {
+                                                                    if (inner.length <= 0) return inner;
+                                                                    var el = $.parseHTML(inner);
+                                                                    var result = '';
+                                                                    $.each(el, function (index, item) {
+                                                                        if (item.classList !== undefined && item.classList.contains('user-name')) {
+                                                                            result = result + item.lastChild.firstChild.textContent;
+                                                                        } else if (item.innerText === undefined) {
+                                                                            result = result + item.textContent;
+                                                                        } else result = result + item.innerText;
+                                                                    });
+                                                                    return result;
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        extend: 'copy',
+                                                        title: 'Users',
+                                                        text: '<i class="icon-base ri ri-file-copy-line me-2"></i>Copy',
+                                                        className: 'dropdown-item',
+                                                        exportOptions: {
+                                                            columns: [2, 3, 4, 5, 6, 7],
+                                                            format: {
+                                                                body: function (inner, coldex, rowdex) {
+                                                                    if (inner.length <= 0) return inner;
+                                                                    var el = $.parseHTML(inner);
+                                                                    var result = '';
+                                                                    $.each(el, function (index, item) {
+                                                                        if (item.classList !== undefined && item.classList.contains('user-name')) {
+                                                                            result = result + item.lastChild.firstChild.textContent;
+                                                                        } else if (item.innerText === undefined) {
+                                                                            result = result + item.textContent;
+                                                                        } else result = result + item.innerText;
+                                                                    });
+                                                                    return result;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        topEnd: {
+                            features: [
+                                {
+                                    search: {
+                                        placeholder: 'Search users'
+                                    }
+                                },
+                                {
+                                    buttons: {
+                                        buttons: [
+                                            {
+                                                text: '<i class="icon-base ri ri-add-line ri-16px me-0 me-sm-2 align-baseline"></i><span class="d-none d-sm-inline-block">Refresh</span>',
+                                                className: 'add-new btn btn-primary waves-effect waves-light',
+                                                action: function (e, dt, node, config) {
+                                                    dt.ajax.reload();
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        bottomStart: {
+                            rowClass: 'row mx-3 justify-content-between',
+                            features: ['info']
+                        },
+                        bottomEnd: 'paging'
+                    },
+                    language: {
+                        paginate: {
+                            next: '<i class="icon-base ri ri-arrow-right-s-line scaleX-n1-rtl icon-22px"></i>',
+                            previous: '<i class="icon-base ri ri-arrow-left-s-line scaleX-n1-rtl icon-22px"></i>',
+                            first: '<i class="icon-base ri ri-skip-back-mini-line scaleX-n1-rtl icon-22px"></i>',
+                            last: '<i class="icon-base ri ri-skip-forward-mini-line scaleX-n1-rtl icon-22px"></i>'
+                        }
+                    },
+                    // For responsive popup
+                    responsive: {
+                        details: {
+                            display: DataTable.Responsive.display.modal({
+                                header: function (row) {
+                                    const data = row.data();
+                                    return 'Details of ' + data['name'];
+                                }
+                            }),
+                            type: 'column',
+                            renderer: function (api, rowIdx, columns) {
+                                const data = columns
+                                    .map((col, i) => {
+                                        return col.columnIndex !== 6
+                                            ? '<tr data-dt-row="' +
+                                            col.rowIdx +
+                                            '" data-dt-column="' +
+                                            col.columnIndex +
+                                            '">' +
+                                            '<td>' +
+                                            col.title +
+                                            ':' +
+                                            '</td> ' +
+                                            '<td>' +
+                                            col.data +
+                                            '</td>' +
+                                            '</tr>'
+                                            : '';
+                                    })
+                                    .join('');
+
+                                if (data) {
+                                    const div = document.createElement('div');
+                                    div.classList.add('table-responsive');
+                                    const table = document.createElement('table');
+                                    div.appendChild(table);
+                                    table.classList.add('table');
+                                    const tbody = document.createElement('tbody');
+                                    tbody.innerHTML = data;
+                                    table.appendChild(tbody);
+                                    return div;
+                                }
+                                return false;
+                            }
+                        }
+                    },
+                    initComplete: function () {
+                        const api = this.api();
+
+                        // Helper function to create a select dropdown and append options
+                        const createFilter = (columnIndex, containerClass, selectId, defaultOptionText) => {
+                            const column = api.column(columnIndex);
+                            const select = document.createElement('select');
+                            select.id = selectId;
+                            select.className = 'form-select text-capitalize';
+                            select.innerHTML = `<option value="">${defaultOptionText}</option>`;
+                            document.querySelector(containerClass).appendChild(select);
+
+                            // Add event listener for filtering
+                            select.addEventListener('change', () => {
+                                const val = select.value ? `^${select.value}$` : '';
+                                column.search(val, true, false).draw();
+                            });
+
+                            // Populate options based on unique column data
+                            const uniqueData = Array.from(new Set(column.data().toArray())).sort();
+                            uniqueData.forEach(d => {
+                                const option = document.createElement('option');
+                                option.value = d;
+                                option.textContent = d;
+                                select.appendChild(option);
+                            });
+                        };
+
+                        // Role filter
+                        createFilter(4, '.user_role', 'UserRole', 'Select Role');
+
+                        // Email verified filter
+                        const emailFilter = document.createElement('select');
+                        emailFilter.id = 'UserPlan';
+                        emailFilter.className = 'form-select text-capitalize';
+                        emailFilter.innerHTML = '<option value="">Select Email Status</option><option value="true">Verified</option><option value="false">Unverified</option>';
+                        document.querySelector('.user_plan').appendChild(emailFilter);
+                        emailFilter.addEventListener('change', () => {
+                            const val = emailFilter.value;
+                            api.column(5).search(val, false, false).draw();
+                        });
+
+                        // Login status filter (based on logins count)
+                        const loginFilter = document.createElement('select');
+                        loginFilter.id = 'FilterStatus';
+                        loginFilter.className = 'form-select text-capitalize';
+                        loginFilter.innerHTML = '<option value="">Select Login Status</option><option value="0">Never Logged In</option><option value=">0">Has Logged In</option>';
+                        document.querySelector('.user_status').appendChild(loginFilter);
+                        loginFilter.addEventListener('change', () => {
+                            const val = loginFilter.value;
+                            if (val === '0') {
+                                api.column(7).search('^0$', true, false).draw();
+                            } else if (val === '>0') {
+                                api.column(7).search('^(?!0$).*', true, false).draw();
+                            } else {
+                                api.column(7).search('', true, false).draw();
+                            }
+                        });
+                    }
+                });
+                // Make DataTable instance globally accessible for reloads
+                window.dt_user = dt_user;
+
+                // Update stats function
+                function updateStats(users) {
+                    const adminUsers = users.filter(user => user.role === 'admin').length;
+                    const sellerUsers = users.filter(user => user.role === 'seller').length;
+                    const customerUsers = users.filter(user => user.role === 'customer' || !user.role).length;
+                    document.getElementById('adminUsers').textContent = adminUsers;
+                    document.getElementById('sellerUsers').textContent = sellerUsers;
+                    document.getElementById('customerUsers').textContent = customerUsers;
+                }
+
+                // View user details function
+                window.viewUserDetails = function (userId) {
+                    // Find user data from the table
+                    const rowData = dt_user.rows().data().toArray().find(user => user.id === userId);
+                    if (rowData) {
+                        // Get role badge class
+                        let roleBadgeClass = '';
+                        switch (rowData.role) {
+                            case 'admin':
+                                roleBadgeClass = 'bg-label-danger';
+                                break;
+                            case 'seller':
+                                roleBadgeClass = 'bg-label-warning';
+                                break;
+                            case 'customer':
+                            default:
+                                roleBadgeClass = 'bg-label-primary';
+                                break;
+                        }
+
+                        // Get avatar or initials
+                        let avatarHtml = '';
+                        if (rowData.picture) {
+                            avatarHtml = `<img src="${rowData.picture}" alt="Avatar" class="rounded-circle mb-3" width="90" height="90" style="object-fit: cover; border: 4px solid #fff; box-shadow: 0 8px 24px rgba(105, 108, 255, 0.2);">`;
+                        } else {
+                            const stateNum = Math.floor(Math.random() * 6);
+                            const states = ['success', 'danger', 'warning', 'info', 'dark', 'primary'];
+                            const state = states[stateNum];
+                            const name = rowData.name || rowData.email || 'User';
+                            const initials = (name.match(/\b\w/g) || ['U']).map(char => char.toUpperCase());
+                            const displayInitials = ((initials.shift() || 'U') + (initials.pop() || '')).toUpperCase();
+                            avatarHtml = `<div class="avatar avatar-xl mb-3"><span class="avatar-initial rounded-circle bg-label-${state} fs-2">${displayInitials}</span></div>`;
+                        }
+
+                        const userDetails = `
+                            <div class="user-details-modal text-start">
+                                <div class="text-center mb-4 p-4" style="background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%); border-radius: 16px; border: 1px solid #e8eaff;">
+                                    ${avatarHtml}
+                                    <h5 class="mb-2 text-dark">${rowData.name || 'Unknown User'}</h5>
+                                    <span class="badge ${roleBadgeClass} text-capitalize mb-2" style="font-size: 0.9rem; padding: 0.5rem 1rem;">${rowData.role || 'customer'}</span>
+                                    <p class="text-muted mb-0 fs-6">${rowData.nickname || 'No nickname set'}</p>
+                                </div>
+                                
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <div class="card border">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <div class="flex-shrink-0">
+                                                        <div class="avatar avatar-sm bg-label-primary rounded d-flex align-items-center justify-content-center">
+                                                            <i class="ri ri-mail-line"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-3">
+                                                        <h6 class="mb-1 text-dark">Email Address</h6>
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <span class="fw-medium text-primary">${rowData.email}</span>
+                                                            <span class="badge ${rowData.email_verified ? 'bg-label-success' : 'bg-label-warning'} ms-2">
+                                                                <i class="ri ${rowData.email_verified ? 'ri-check-line' : 'ri-alert-line'} me-1"></i>
+                                                                ${rowData.email_verified ? 'Verified' : 'Unverified'}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="card border h-100">
+                                            <div class="card-body p-4 text-center">
+                                                <div class="avatar avatar-md bg-label-success rounded mb-3 mx-auto d-flex align-items-center justify-content-center">
+                                                    <i class="ri ri-calendar-line"></i>
+                                                </div>
+                                                <h6 class="mb-2 text-dark">Account Created</h6>
+                                                <p class="fw-medium mb-1">${new Date(rowData.created_at).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })}</p>
+                                                <small class="text-muted">${new Date(rowData.created_at).toLocaleTimeString('en-US', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="card border h-100">
+                                            <div class="card-body p-4 text-center">
+                                                <div class="avatar avatar-md bg-label-info rounded mb-3 mx-auto d-flex align-items-center justify-content-center">
+                                                    <i class="ri ri-time-line"></i>
+                                                </div>
+                                                <h6 class="mb-2 text-dark">Last Login</h6>
+                                                <p class="fw-medium mb-1">${rowData.last_login ? new Date(rowData.last_login).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        }) : 'Never logged in'}</p>
+                                                <small class="text-muted">${rowData.last_login ? new Date(rowData.last_login).toLocaleTimeString('en-US', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }) : 'Account not yet activated'}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="card border h-100">
+                                            <div class="card-body p-4 text-center">
+                                                <div class="avatar avatar-md bg-label-warning rounded mb-3 mx-auto d-flex align-items-center justify-content-center">
+                                                    <i class="ri ri-login-circle-line"></i>
+                                                </div>
+                                                <h6 class="mb-2 text-dark">Total Logins</h6>
+                                                <h4 class="text-primary fw-bold mb-1">${rowData.logins_count || 0}</h4>
+                                                <small class="text-muted">Login sessions</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="card border h-100">
+                                            <div class="card-body p-4 text-center">
+                                                <div class="avatar avatar-md bg-label-secondary rounded mb-3 mx-auto d-flex align-items-center justify-content-center">
+                                                    <i class="ri ri-user-line"></i>
+                                                </div>
+                                                <h6 class="mb-2 text-dark">Display Name</h6>
+                                                <p class="fw-medium mb-1">${rowData.nickname || 'Not set'}</p>
+                                                <small class="text-muted">Public identifier</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <div class="card border">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="flex-shrink-0">
+                                                        <div class="avatar avatar-sm bg-label-danger rounded d-flex align-items-center justify-content-center">
+                                                            <i class="ri ri-fingerprint-line"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-3" style="min-width: 0;">
+                                                        <h6 class="mb-1 text-dark">User Identifier</h6>
+                                                        <code class="small d-block user-id-code" style="word-break: break-all; word-wrap: break-word; overflow-wrap: break-word; white-space: pre-wrap; max-width: 100%; overflow: hidden;">${rowData.id}</code>
+                                                        <small class="text-muted">Unique Auth0 user ID</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+                        Swal.fire({
+                            title: '<div class="mt-4"></div>',
+                            html: userDetails,
+                            width: '750px',
+                            padding: '2rem',
+                            showConfirmButton: true,
+                            confirmButtonText: '<div class="d-flex align-items-center justify-content-center gap-2"><i class="ri ri-check-line"></i><span>Close</span></div>',
+                            confirmButtonColor: '#696cff',
+                            background: '#fff',
+                            customClass: {
+                                popup: 'swal-user-details-popup',
+                                title: 'swal-user-details-title',
+                                htmlContainer: 'swal-user-details-content'
+                            },
+                            showCloseButton: true,
+                            allowOutsideClick: true,
+                            allowEscapeKey: true,
+                            didOpen: () => {
+                                // Add enhanced custom styles
+                                const style = document.createElement('style');
+                                style.textContent = `
+                                    .swal-user-details-popup {
+                                        border-radius: 16px !important;
+                                        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12) !important;
+                                        border: 1px solid rgba(105, 108, 255, 0.1) !important;
+                                        overflow-x: hidden !important;
+                                        max-width: 750px !important;
+                                    }
+                                    .swal-user-details-title {
+                                        color: #5a5fe7 !important;
+                                        font-weight: 600 !important;
+                                        font-size: 1.75rem !important;
+                                        margin-bottom: 1.5rem !important;
+                                    }
+                                    .swal-user-details-content {
+                                        padding: 0 !important;
+                                        text-align: left !important;
+                                        overflow-x: hidden !important;
+                                        max-width: 100% !important;
+                                    }
+                                    .swal-user-details-popup .user-details-modal .card {
+                                        background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%) !important;
+                                        border: 1px solid #e8eaff !important;
+                                        border-radius: 12px !important;
+                                        box-shadow: 0 4px 12px rgba(105, 108, 255, 0.08) !important;
+                                        transition: all 0.3s ease !important;
+                                    }
+                                    .swal-user-details-popup .user-details-modal .card:hover {
+                                        transform: translateY(-2px) !important;
+                                        box-shadow: 0 8px 20px rgba(105, 108, 255, 0.15) !important;
+                                    }
+                                    .swal-user-details-popup .avatar-xl {
+                                        width: 90px !important;
+                                        height: 90px !important;
+                                        border: 4px solid #fff !important;
+                                        box-shadow: 0 8px 24px rgba(105, 108, 255, 0.2) !important;
+                                    }
+                                    .swal-user-details-popup .avatar-initial {
+                                        font-size: 2.5rem !important;
+                                        font-weight: 600 !important;
+                                    }
+                                    .swal-user-details-popup .badge {
+                                        font-size: 0.9rem !important;
+                                        padding: 0.5rem 1rem !important;
+                                        border-radius: 8px !important;
+                                        font-weight: 500 !important;
+                                    }
+                                    .swal-user-details-popup h5 {
+                                        color: #2c3e50 !important;
+                                        font-weight: 600 !important;
+                                    }
+                                    .swal-user-details-popup .swal2-html-container {
+                                        overflow-x: hidden !important;
+                                        overflow-y: auto !important;
+                                    }
+                                    .swal-user-details-popup .user-details-modal {
+                                        overflow-x: hidden !important;
+                                        max-width: 100% !important;
+                                    }
+                                    .swal-user-details-popup .row {
+                                        margin-left: 0 !important;
+                                        margin-right: 0 !important;
+                                        max-width: 100% !important;
+                                    }
+                                    .swal-user-details-popup .col-12, 
+                                    .swal-user-details-popup .col-md-6 {
+                                        padding-left: 0.75rem !important;
+                                        padding-right: 0.75rem !important;
+                                        max-width: 100% !important;
+                                        box-sizing: border-box !important;
+                                    }
+                                    .swal2-close {
+                                        color: #697a8d !important;
+                                        font-size: 1.5rem !important;
+                                    }
+                                    .swal2-close:hover {
+                                        color: #5a5fe7 !important;
+                                    }
+                                    .swal-delete-popup {
+                                        border-radius: 16px !important;
+                                        box-shadow: 0 20px 60px rgba(211, 51, 51, 0.15) !important;
+                                    }
+                                    .swal-info-popup {
+                                        border-radius: 16px !important;
+                                        box-shadow: 0 20px 60px rgba(105, 108, 255, 0.15) !important;
+                                    }
+                                `;
+                                document.head.appendChild(style);
+                            }
+                        });
+                    }
+                };
+
+                //? Enhanced delete functionality with confirmation
+                function deleteRecord(userId, event) {
+                    // Find user data for more context in the confirmation
+                    const rowData = dt_user.rows().data().toArray().find(user => user.id === userId);
+                    const userName = rowData ? (rowData.name || rowData.email) : 'this user';
+
+                    Swal.fire({
+                        title: '<i class="ri ri-delete-bin-line text-danger me-2"></i>Delete User Account',
+                        html: `
+                            <div class="text-start">
+                                <div class="alert alert-danger d-flex align-items-center mb-3" role="alert">
+                                    <i class="ri ri-alert-line me-2"></i>
+                                    <strong>Warning: This action cannot be undone!</strong>
+                                </div>
+                                <p class="mb-3">You are about to permanently delete <strong>${userName}</strong> from Auth0.</p>
+                                <div class="border rounded p-3 bg-light">
+                                    <h6 class="text-danger mb-2"><i class="ri ri-information-line me-1"></i>This will:</h6>
+                                    <ul class="text-muted mb-0 small">
+                                        <li>Remove the user from Auth0 completely</li>
+                                        <li>Invalidate all their active sessions</li>
+                                        <li>Make their account unrecoverable</li>
+                                        <li>Remove access to all associated resources</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        `,
+                        icon: 'warning',
+                        width: '600px',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: '<i class="ri ri-delete-bin-line me-1"></i>Yes, Delete User',
+                        cancelButtonText: '<i class="ri ri-close-line me-1"></i>Cancel',
+                        customClass: {
+                            popup: 'swal-delete-popup',
+                            confirmButton: 'btn btn-danger',
+                            cancelButton: 'btn btn-secondary'
+                        },
+                        buttonsStyling: false,
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire({
+                                title: '<i class="ri ri-loader-4-line text-primary me-2"></i>Deleting User...',
+                                html: '<div class="text-center">Please wait while the user is being deleted.</div>',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                showConfirmButton: false,
+                                willOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
+                            fetch(`/api/auth/admin/users/${encodeURIComponent(userId)}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Authorization': 'Bearer ' + (localStorage.getItem('access_token') || ''),
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                            .then(async response => {
+                                if (!response.ok) {
+                                    const errorData = await response.json().catch(() => ({}));
+                                    throw new Error(errorData.error || errorData.details || 'Failed to delete user');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '<i class="ri ri-check-line text-success me-2"></i>User Deleted',
+                                    html: `<div class="text-center">User <strong>${userName}</strong> was deleted successfully.</div>`,
+                                    confirmButtonColor: '#696cff',
+                                    customClass: { popup: 'swal-info-popup' }
+                                }).then(() => {
+                                    // Always reload the DataTable after success
+                                    if (window.dt_user && typeof window.dt_user.ajax === 'object' && typeof window.dt_user.ajax.reload === 'function') {
+                                        window.dt_user.ajax.reload(null, false);
+                                    } else if (window.dt_user && typeof window.dt_user.ajax === 'function') {
+                                        window.dt_user.ajax.reload();
+                                    } else if (typeof $ !== 'undefined' && $('.datatables-users').length) {
+                                        $('.datatables-users').DataTable().ajax.reload();
+                                    }
+                                });
+                            })
+                            .catch(error => {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '<i class="ri ri-close-line text-danger me-2"></i>Delete Failed',
+                                    html: `<div class="text-center">${error.message || 'Failed to delete user.'}</div>`,
+                                    confirmButtonColor: '#d33',
+                                    customClass: { popup: 'swal-delete-popup' }
+                                });
+                            });
+                        }
+                    });
+                }
+
+                function bindActionEvents() {
+                    const userListTable = document.querySelector('.datatables-users');
+                    const modal = document.querySelector('.dtr-bs-modal');
+
+                    if (userListTable && userListTable.classList.contains('collapsed')) {
+                        if (modal) {
+                            modal.addEventListener('click', function (event) {
+                                const target = event.target.closest('.delete-record');
+                                if (target) {
+                                    const userId = target.getAttribute('data-user-id');
+                                    deleteRecord(userId, event);
+                                }
+                            });
+                        }
+                    } else {
+                        const tableBody = userListTable?.querySelector('tbody');
+                        if (tableBody) {
+                            tableBody.addEventListener('click', function (event) {
+                                const target = event.target.closest('.delete-record');
+                                if (target) {
+                                    const userId = target.getAttribute('data-user-id');
+                                    deleteRecord(userId, event);
+                                }
+                            });
+                        }
+                    }
+                }
+
+                // Initial event binding
+                bindActionEvents();
+
+                // Re-bind events when modal is shown or hidden
+                document.addEventListener('show.bs.modal', function (event) {
+                    if (event.target.classList.contains('dtr-bs-modal')) {
+                        bindActionEvents();
+                    }
+                });
+
+                document.addEventListener('hide.bs.modal', function (event) {
+                    if (event.target.classList.contains('dtr-bs-modal')) {
+                        bindActionEvents();
+                    }
+                });
+            }
+
+            // Filter form control to default size
+            // ? setTimeout used for user-list table initialization
+            setTimeout(() => {
+                const elementsToModify = [
+                    { selector: '.dt-buttons .btn', classToRemove: 'btn-secondary' },
+                    { selector: '.dt-length .form-select', classToAdd: 'ms-0' },
+                    { selector: '.dt-length', classToAdd: 'mb-md-4 mb-0' },
+                    {
+                        selector: '.dt-layout-end',
+                        classToRemove: 'justify-content-between',
+                        classToAdd: 'd-flex gap-md-4 justify-content-md-between justify-content-center gap-md-2 flex-wrap mt-0'
+                    },
+                    { selector: '.dt-layout-start', classToAdd: 'mt-md-0 mt-5' },
+                    {
+                        selector: '.dt-layout-start .dt-buttons',
+                        classToAdd: 'd-md-flex d-block gap-4 justify-content-center'
+                    },
+                    {
+                        selector: '.dt-layout-end .dt-buttons',
+                        classToAdd: 'd-md-flex d-block gap-4 mb-md-0 mb-5 justify-content-center'
+                    },
+                    { selector: '.dt-layout-table', classToRemove: 'row mt-2' },
+                    { selector: '.dt-layout-full', classToRemove: 'col-md col-12' },
+                    { selector: '.dt-layout-full .table', classToAdd: 'table-responsive' }
+                ];
+
+                elementsToModify.forEach(({ selector, classToRemove, classToAdd }) => {
+                    document.querySelectorAll(selector).forEach(element => {
+                        if (classToRemove) {
+                            classToRemove.split(' ').forEach(className => element.classList.remove(className));
+                        }
+                        if (classToAdd) {
+                            classToAdd.split(' ').forEach(className => element.classList.add(className));
+                        }
+                    });
+                });
+            }, 100);
+        });
+    </script>
+</body>
+
+</html>

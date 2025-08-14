@@ -57,8 +57,9 @@ router.get('/view-sellers', (req, res) => {
     res.render('admin/view-sellers', { currentPage: 'view-sellers' });
 });
 
-
-
+router.get('/view-users', (req, res) => {
+    res.render('admin/view-users', { currentPage: 'view-users' });
+});
 
 // Finances routes
 router.get('/view-payments', (req, res) => {
