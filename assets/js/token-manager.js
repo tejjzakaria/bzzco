@@ -285,7 +285,12 @@ class TokenManager {
     // Method to make authenticated requests
     async makeAuthenticatedRequest(url, options = {}) {
         const token = this.getToken();
+        console.log('Making authenticated request to:', url);
+        console.log('Token exists:', !!token);
+        console.log('Token preview:', token ? token.substring(0, 20) + '...' : 'No token');
+        
         if (!token) {
+            console.error('No token available for authenticated request');
             window.location.href = '/login';
             return null;
         }
@@ -296,16 +301,22 @@ class TokenManager {
             ...options.headers
         };
 
+        console.log('Request headers:', headers);
+
         try {
             const response = await fetch(url, {
                 ...options,
                 headers
             });
 
+            console.log('Response received:', response.status, response.statusText);
+
             // Handle token expiration in API responses
             if (response.status === 401) {
                 const data = await response.json();
+                console.log('401 response data:', data);
                 if (data.expired) {
+                    console.log('Token expired, handling expiration');
                     this.handleTokenExpired();
                     return null;
                 }
@@ -316,6 +327,63 @@ class TokenManager {
             console.error('Authenticated request failed:', error);
             return null;
         }
+    }
+
+    // Get user profile and redirect based on role
+    async redirectToRoleDashboard() {
+        console.log('=== Starting redirectToRoleDashboard ===');
+        try {
+            console.log('Making request to /api/auth/profile...');
+            const response = await this.makeAuthenticatedRequest('/api/auth/profile');
+            
+            console.log('Profile response received:', response);
+            console.log('Response status:', response?.status);
+            console.log('Response ok:', response?.ok);
+            
+            if (response && response.ok) {
+                const data = await response.json();
+                console.log('=== FULL PROFILE DATA ===');
+                console.log(JSON.stringify(data, null, 2));
+                console.log('=== END PROFILE DATA ===');
+                
+                const userRole = data.user?.role;
+                console.log('Extracted user role:', userRole);
+                console.log('Type of user role:', typeof userRole);
+                
+                // Redirect based on role
+                console.log('Checking role for redirect...');
+                if (userRole === 'admin') {
+                    console.log('✅ ADMIN role detected - redirecting to /admin/dashboard');
+                    window.location.href = '/admin/dashboard';
+                } else if (userRole === 'seller') {
+                    console.log('✅ SELLER role detected - redirecting to /seller/dashboard');
+                    window.location.href = '/seller/dashboard';
+                } else if (userRole === 'customer') {
+                    console.log('✅ CUSTOMER role detected - redirecting to /customer/dashboard');
+                    window.location.href = '/customer/dashboard';
+                } else {
+                    console.log('❌ UNKNOWN/NULL role detected:', userRole, '- redirecting to /customer/dashboard (default)');
+                    window.location.href = '/customer/dashboard';
+                }
+            } else {
+                // Fallback to default dashboard if profile fetch fails
+                console.error('❌ Failed to fetch user profile');
+                console.error('Response status:', response?.status);
+                if (response) {
+                    const errorText = await response.text();
+                    console.error('Response text:', errorText);
+                }
+                console.log('Redirecting to default dashboard');
+                window.location.href = '/dashboard';
+            }
+        } catch (error) {
+            console.error('❌ Error getting user profile:', error);
+            console.error('Error stack:', error.stack);
+            // Fallback to default dashboard
+            console.log('Redirecting to default dashboard due to error');
+            window.location.href = '/dashboard';
+        }
+        console.log('=== End redirectToRoleDashboard ===');
     }
 }
 

@@ -25,7 +25,7 @@ router.get('/add-order', async (req, res) => {
         
         console.log(`Fetched ${customers.length} customers and ${products.length} products for dropdown`);
         
-        res.render('add-order', { 
+        res.render('admin/add-order', { 
             title: 'Add New Order',
             currentPage: 'add-order',
             customers: customers,
@@ -33,7 +33,7 @@ router.get('/add-order', async (req, res) => {
         });
     } catch (error) {
         console.error('Error loading add order page:', error);
-        res.render('add-order', { 
+        res.render('admin/add-order', { 
             title: 'Add New Order',
             currentPage: 'add-order',
             customers: [], // Empty array as fallback
@@ -63,14 +63,14 @@ router.get('/view-orders', async (req, res) => {
         
         console.log('Order statistics:', stats);
         
-        res.render('view-orders', { 
+        res.render('admin/view-orders', { 
             title: 'View Orders',
             currentPage: 'view-orders',
             stats: stats
         });
     } catch (error) {
         console.error('Error loading orders statistics:', error);
-        res.render('view-orders', { 
+        res.render('admin/view-orders', { 
             title: 'View Orders',
             currentPage: 'view-orders',
             stats: {
@@ -112,7 +112,7 @@ router.get('/edit-order/:orderId', async (req, res) => {
         
         console.log(`Fetched order: ${order.order_number} with ${order.products.length} products`);
         
-        res.render('edit-order', { 
+        res.render('admin/edit-order', { 
             title: 'Edit Order',
             currentPage: 'edit-order',
             order: order,
@@ -120,7 +120,7 @@ router.get('/edit-order/:orderId', async (req, res) => {
         });
     } catch (error) {
         console.error('Error loading edit order page:', error);
-        res.status(500).render('error', { 
+        res.status(500).render('admin/error', { 
             title: 'Server Error',
             message: 'Failed to load the edit order page. Please try again.'
         });

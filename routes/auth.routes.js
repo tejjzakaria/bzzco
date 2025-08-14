@@ -17,8 +17,50 @@ router.get('/verify', verifyToken, (req, res) => {
     });
 });
 
+// Route to get user profile with role information
+router.get('/profile', verifyToken, async (req, res) => {
+    try {
+        const userId = req.user.sub;
+        console.log('Fetching profile for user ID:', userId);
+        
+        const userResponse = await auth0Client.users.get({ id: userId });
+        
+        // The Auth0 client returns data wrapped in a 'data' property
+        const user = userResponse.data || userResponse;
+        
+        console.log('Auth0 user data:', {
+            user_id: user.user_id,
+            email: user.email,
+            name: user.name,
+            user_metadata: user.user_metadata,
+            app_metadata: user.app_metadata
+        });
+        
+        const userProfile = {
+            id: user.user_id,
+            name: user.name,
+            email: user.email,
+            role: user.app_metadata?.role || user.user_metadata?.role || 'customer',
+            created_at: user.created_at,
+            last_login: user.last_login
+        };
+
+        console.log('Returning user profile:', userProfile);
+        res.status(200).json({ user: userProfile });
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ error: 'Failed to fetch user profile' });
+    }
+});
+
 router.post('/sign-up', async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, role = 'customer' } = req.body;
+
+    // Validate role
+    const validRoles = ['admin', 'seller', 'customer'];
+    if (!validRoles.includes(role)) {
+        return res.status(400).json({ error: 'Invalid role. Must be admin, seller, or customer.' });
+    }
 
     try {
         const user = await auth0Client.users.create({
@@ -26,6 +68,12 @@ router.post('/sign-up', async (req, res) => {
             email,
             password,
             name,
+            user_metadata: {
+                role: role
+            },
+            app_metadata: {
+                role: role
+            }
         });
 
         res.status(200).json({ message: 'Registration successful!', user });
@@ -77,6 +125,34 @@ router.post('/logout', (req, res) => {
     } catch (error) {
         console.error('Logout error:', error);
         res.status(500).json({ error: 'Logout failed' });
+    }
+});
+
+// Debug endpoint to see raw Auth0 user data
+router.get('/debug-user', verifyToken, async (req, res) => {
+    try {
+        const userId = req.user.sub;
+        console.log('DEBUG: Fetching raw user data for:', userId);
+        
+        const userResponse = await auth0Client.users.get({ id: userId });
+        console.log('DEBUG: Raw Auth0 response:', JSON.stringify(userResponse, null, 2));
+        
+        // The Auth0 client returns data wrapped in a 'data' property
+        const user = userResponse.data || userResponse;
+        
+        res.status(200).json({ 
+            message: 'Debug user data',
+            rawAuth0Data: userResponse,
+            actualUserData: user,
+            extractedRole: {
+                app_metadata_role: user.app_metadata?.role,
+                user_metadata_role: user.user_metadata?.role,
+                fallback: user.app_metadata?.role || user.user_metadata?.role || 'customer'
+            }
+        });
+    } catch (error) {
+        console.error('DEBUG: Error fetching user:', error);
+        res.status(500).json({ error: 'Debug failed', details: error.message });
     }
 });
 

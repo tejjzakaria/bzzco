@@ -90,7 +90,7 @@ router.get('/api/sellers-dropdown', async (req, res) => {
 
 // Products page routes
 router.get('/view-products', (req, res) => {
-    res.render('view-products', { currentPage: 'view-products' });
+    res.render('admin/view-products', { currentPage: 'view-products' });
 });
 
 router.get('/add-product', async (req, res) => {
@@ -116,7 +116,7 @@ router.get('/add-product', async (req, res) => {
     }
 
     // Always render with sellers and categories variables defined
-    res.render('add-product', { 
+    res.render('admin/add-product', { 
         currentPage: 'add-product',
         sellers: sellers || [],
         categories: categories || [] // Double ensure it's always an array
@@ -138,7 +138,7 @@ router.get('/edit-product/:id', async (req, res) => {
     }
     
     // Always render with sellers variable defined
-    res.render('edit-product', { 
+    res.render('admin/edit-product', { 
         currentPage: 'edit-product',
         sellers: sellers || [] // Double ensure it's always an array
     });

@@ -23,13 +23,13 @@ router.get('/view-sellers', async (req, res) => {
             planD: planCounts['Plan D'] || 0
         };
         
-        res.render('view-sellers', { 
+        res.render('admin/view-sellers', { 
             currentPage: 'view-sellers',
             stats: stats
         });
     } catch (error) {
         console.log("ERROR FETCHING SELLER STATS", error);
-        res.render('view-sellers', { 
+        res.render('admin/view-sellers', { 
             currentPage: 'view-sellers',
             stats: { total: 0, planA: 0, planB: 0, planC: 0, planD: 0 }
         });
