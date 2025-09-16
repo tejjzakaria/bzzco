@@ -4,6 +4,9 @@ import sellersRoutes from './sellers.routes.js';
 import productsRoutes from './products.routes.js';
 import categoriesRoutes from './categories.routes.js';
 import ordersRoutes from './orders.routes.js';
+import merchantsRoutes from './merchants.routes.js';
+import teamRoutes from './team.routes.js';
+import contactRoutes from './contact.routes.js';
 import authRoutes from './auth.routes.js';
 import { optionalVerifyToken } from '../middleware/jwt.middleware.js';
 
@@ -48,10 +51,15 @@ router.use('/', productsRoutes);
 router.use('/', categoriesRoutes);
 router.use('/', ordersRoutes);
 router.use('/api/auth', authRoutes);
+router.use('/api/merchants', merchantsRoutes);
+router.use('/api/team', teamRoutes);
+router.use('/api/contact', contactRoutes);
+
 
 router.get('/view-customers', (req, res) => {
     res.render('admin/view-customers', { currentPage: 'view-customers' });
 });
+
 
 router.get('/view-sellers', (req, res) => {
     res.render('admin/view-sellers', { currentPage: 'view-sellers' });
@@ -60,19 +68,23 @@ router.get('/view-sellers', (req, res) => {
 router.get('/view-users', (req, res) => {
     res.render('admin/view-users', { currentPage: 'view-users' });
 });
-
-// Finances routes
-router.get('/view-payments', (req, res) => {
-    res.render('admin/view-payments', { currentPage: 'view-payments' });
+router.get('/view-merchants', (req, res) => {
+    res.render('admin/view-merchants', { currentPage: 'view-merchants' });
 });
 
-router.get('/view-invoices', (req, res) => {
-    res.render('admin/view-invoices', { currentPage: 'view-invoices' });
+router.get('/view-categories', (req, res) => {
+    res.render('admin/view-categories', { currentPage: 'view-categories' });
 });
+
+
 
 // Dynamic Data routes
 router.get('/view-team', (req, res) => {
     res.render('admin/view-team', { currentPage: 'view-team' });
+});
+
+router.get('/view-slider', (req, res) => {
+    res.render('admin/view-slider', { currentPage: 'view-slider' });
 });
 
 
@@ -87,6 +99,22 @@ router.get('/view-countries', (req, res) => {
 // Other routes
 router.get('/documentation', (req, res) => {
     res.render('admin/documentation', { currentPage: 'documentation' });
+});
+
+router.get('/view-contact', (req, res) => {
+    res.render('admin/view-contact', { currentPage: 'view-contact' });
+});
+
+router.get('/view-newsletter', (req, res) => {
+    res.render('admin/view-newsletter', { currentPage: 'view-newsletter' });
+});
+
+router.get('/view-job-applications', (req, res) => {
+    res.render('admin/view-job-applications', { currentPage: 'view-job-applications' });
+});
+
+router.get('/view-docs', (req, res) => {
+    res.render('admin/view-docs', { currentPage: 'view-docs' });
 });
 
 export default router;

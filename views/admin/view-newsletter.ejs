@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Newsletter Subscribers - Bzz Co.</title>
+    <%- include("layout/header") %>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <%- include("layout/sidebar") %>
+            <div class="layout-page">
+                <div class="content-wrapper">
+                    <div class="container-xxl flex-grow-1 container-p-y">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Newsletter Subscribers</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table datatables-newsletter">
+                                        <thead>
+                                            <tr>
+                                                <th>Email</th>
+                                                <th>Subscribed At</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const dt_newsletter_table = document.querySelector('.datatables-newsletter');
+                        if (dt_newsletter_table) {
+                            new DataTable(dt_newsletter_table, {
+                                ajax: {
+                                    url: '/api/newsletter/list',
+                                    type: 'GET',
+                                    dataSrc: function (json) { return json.data || json; },
+                                    error: function (xhr, error, thrown) { console.error('DataTable Ajax Error:', error); return []; }
+                                },
+                                columns: [
+                                    { data: 'email' },
+                                    { data: 'subscribedAt', render: function(data) { return new Date(data).toLocaleString(); } }
+                                ],
+                                order: [[1, 'desc']],
+                                responsive: true
+                            });
+                        }
+                    });
+                    </script>
+                </div>
+                <%- include("layout/footer") %>
+                <div class="content-backdrop fade"></div>
+            </div>
+        </div>
+        <div class="layout-overlay layout-menu-toggle"></div>
+        <div class="drag-target"></div>
+    </div>
+</body>
+</html>

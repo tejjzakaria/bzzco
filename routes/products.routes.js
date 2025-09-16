@@ -4,7 +4,11 @@ import path from 'path';
 import fs from 'fs';
 import { getAllProducts, addProduct, getProductById, updateProduct, updateProductStatus, deleteProduct, getProductStats } from '../controllers/products.controller.js';
 import Seller from '../models/sellers.model.js';
+import Merchant from '../models/merchants.model.js';
 import Category from '../models/categories.model.js'; // Import Category model
+import AWS from 'aws-sdk';
+import multerS3 from 'multer-s3';
+import 'dotenv/config'; // Ensure env variables are loaded
 
 // Debug: Check if Seller model is properly imported
 console.log('Seller model imported:', !!Seller);
@@ -18,7 +22,20 @@ console.log('Category model constructor:', Category.name);
 import mongoose from 'mongoose';
 console.log('Database connection readyState:', mongoose.connection.readyState);
 
+// Debug: Log for environment variables
+console.log('AWS_ACCESS_KEY_ID:', process.env.AWS_ACCESS_KEY_ID);
+console.log('AWS_SECRET_ACCESS_KEY:', process.env.AWS_SECRET_ACCESS_KEY);
+console.log('AWS_REGION:', process.env.AWS_REGION);
+console.log('S3_BUCKET_NAME:', process.env.S3_BUCKET_NAME); // Debug log for bucket name
+
 const router = express.Router();
+
+// Configure AWS S3
+const s3 = new AWS.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION
+});
 
 // Configure multer for image upload
 const storage = multer.diskStorage({
@@ -46,8 +63,15 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-const upload = multer({ 
-    storage: storage,
+const upload = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: process.env.S3_BUCKET_NAME, // <-- updated to match .env
+        key: function (req, file, cb) {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            cb(null, 'products/product-' + uniqueSuffix + path.extname(file.originalname));
+        }
+    }),
     fileFilter: fileFilter,
     limits: {
         fileSize: 5 * 1024 * 1024 // 5MB limit
@@ -94,13 +118,13 @@ router.get('/view-products', (req, res) => {
 });
 
 router.get('/add-product', async (req, res) => {
-    let sellers = [];
+    let merchants = [];
     let categories = [];
     try {
-        // Fetch sellers for the vendor dropdown
-        console.log('Fetching sellers for add-product page...');
-        sellers = await Seller.find({}, 'full_name company email').sort({ full_name: 1 });
-        console.log('Sellers fetched successfully:', sellers.length, 'sellers found');
+        // Fetch merchants for the vendor dropdown
+        console.log('Fetching merchants for add-product page...');
+        merchants = await Merchant.find({}, 'name logo status').sort({ name: 1 });
+        console.log('Merchants fetched successfully:', merchants.length, 'merchants found');
 
         // Fetch categories for the category dropdown
         console.log('Fetching categories for add-product page...');
@@ -111,15 +135,15 @@ router.get('/add-product', async (req, res) => {
         console.log('Categories array:', categories);
     } catch (error) {
         console.log("ERROR FETCHING DATA FOR ADD-PRODUCT", error);
-        sellers = []; // Ensure sellers is always an array
-        categories = []; // Ensure categories is always an array
+        merchants = [];
+        categories = [];
     }
 
-    // Always render with sellers and categories variables defined
+    // Always render with merchants and categories variables defined
     res.render('admin/add-product', { 
         currentPage: 'add-product',
-        sellers: sellers || [],
-        categories: categories || [] // Double ensure it's always an array
+        merchants: merchants || [],
+        categories: categories || []
     });
 });
 
@@ -150,9 +174,8 @@ router.post('/api/products/upload', upload.array('images', 10), (req, res) => {
         if (!req.files || req.files.length === 0) {
             return res.status(400).json({ error: 'No files uploaded' });
         }
-
-        const imageUrls = req.files.map(file => `/assets/img/products/${file.filename}`);
-        
+        // Use S3 URLs
+        const imageUrls = req.files.map(file => file.location);
         res.json({
             success: true,
             message: 'Images uploaded successfully',
@@ -225,9 +248,9 @@ router.post('/api/products', upload.array('images', 10), async (req, res) => {
         // Handle uploaded images - check both multipart files and JSON string
         if (req.files && req.files.length > 0) {
             // Images uploaded via multipart form (direct file upload)
-            const imageUrls = req.files.map(file => `/assets/img/products/${file.filename}`);
+            const imageUrls = req.files.map(file => file.location); // S3 URLs
             productData.images = imageUrls;
-            console.log('Images from multipart upload:', imageUrls);
+            console.log('Images from S3 upload:', imageUrls);
         } else if (productData.images && typeof productData.images === 'string') {
             // Images uploaded via dropzone (already uploaded, sent as JSON string)
             try {
@@ -327,16 +350,6 @@ router.post('/api/products', upload.array('images', 10), async (req, res) => {
 
     } catch (error) {
         console.log("ERROR CREATING PRODUCT WITH IMAGES", error);
-        
-        // Clean up uploaded files if product creation fails
-        if (req.files && req.files.length > 0) {
-            req.files.forEach(file => {
-                fs.unlink(file.path, (err) => {
-                    if (err) console.log('Error deleting file:', err);
-                });
-            });
-        }
-        
         res.status(500).json({ error: "Failed to create product" });
     }
 });
@@ -348,7 +361,6 @@ router.get('/api/products/:id', getProductById);
 router.put('/api/products/:id', upload.array('newImages', 10), async (req, res) => {
     console.log('=== ROUTE PREPROCESSING START ===');
     console.log('PUT /api/products/:id route called');
-    
     try {
         const productData = req.body;
         
@@ -357,8 +369,8 @@ router.put('/api/products/:id', upload.array('newImages', 10), async (req, res) 
         
         // Handle uploaded images
         if (req.files && req.files.length > 0) {
-            const imageUrls = req.files.map(file => `/assets/img/products/${file.filename}`);
-            console.log('New images uploaded:', imageUrls);
+            const imageUrls = req.files.map(file => file.location); // S3 URLs
+            console.log('New images uploaded to S3:', imageUrls);
             // Note: existing images are handled in the controller
         }
 

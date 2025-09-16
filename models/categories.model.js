@@ -15,11 +15,15 @@ const categorySchema = mongoose.Schema({
         enum: ["active", "inactive"],
         default: "active"
     },
+    icon: {
+        type: String, // S3 URL to SVG icon
+        required: false
+    }
 },
 {
     timestamps: true
 }
 );
 
-const Category = mongoose.model("Categories", categorySchema);
+const Category = mongoose.model("Category", categorySchema);
 export default Category;

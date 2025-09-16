@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en" class="layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr" data-skin="default"
+    data-bs-theme="light" data-assets-path="/assets/" data-template="vertical-menu-template">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Merchants - Bzz Co.</title>
+    <meta name="description" content="" />
+    <%- include("layout/header") %>
+</head>
+<body>
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <%- include("layout/sidebar") %>
+            <div class="layout-page">
+                <%- include("layout/header") %>
+                <div class="content-wrapper">
+                    <div class="container-xxl flex-grow-1 container-p-y">
+                        <div class="row g-6 mb-6"></div>
+                        <!-- Merchants List Table -->
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Merchants</h5>
+                                <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddMerchant">
+                                    <i class="ri ri-add-line"></i> Add Merchant
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table datatables-merchants">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th></th>
+                                                <th>Name</th>
+                                                <th>Status</th>
+                                                <th>Logo</th>
+                                                <th>Category</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Offcanvas Add/Edit Merchant -->
+                    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddMerchant" aria-labelledby="offcanvasAddMerchantLabel">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="offcanvasAddMerchantLabel">Add Merchant</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <form id="addNewMerchantForm">
+                                <div class="mb-3">
+                                    <label for="merchant-name" class="form-label">Name</label>
+                                    <input type="text" class="form-control" id="merchant-name" name="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="merchant-status" class="form-label">Status</label>
+                                    <select class="form-select" id="merchant-status" name="status" required>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="merchant-logo" class="form-label">Logo</label>
+                                    <input type="file" class="form-control" id="merchant-logo" name="logo" accept="image/svg+xml,image/png" required>
+                                    <div id="logo-preview" class="mt-2"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="merchant-category" class="form-label">Category</label>
+                                    <select class="form-select" id="merchant-category" name="category" required>
+                                        <option value="">Select Category</option>
+                                        <!-- Categories will be populated dynamically -->
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary data-submit">Add</button>
+                            </form>
+                        </div>
+                    </div>
+                    <%- include("layout/footer") %>
+                    <div class="content-backdrop fade"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layout-overlay layout-menu-toggle"></div>
+        <div class="drag-target"></div>
+    </div>
+    <!-- DataTables Initialization -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // ...existing code...
+            const dt_merchant_table = document.querySelector('.datatables-merchants'),
+                statusObj = {
+                    active: { title: 'Active', class: 'bg-label-success' },
+                    inactive: { title: 'Inactive', class: 'bg-label-secondary' }
+                };
+            let dt_merchant;
+            if (dt_merchant_table) {
+                dt_merchant = new DataTable(dt_merchant_table, {
+                    ajax: {
+                        url: '/api/merchants/datatable',
+                        type: 'GET',
+                        dataSrc: function(json) { return json.data || json; },
+                        error: function(xhr, error, thrown) { console.error('DataTable Ajax Error:', error); return []; }
+                    },
+                    columns: [
+                        { data: '_id' },
+                        { data: '_id', orderable: false },
+                        { data: 'name' },
+                        { data: 'status' },
+                        { data: 'logo' },
+                        { data: 'category.name' },
+                        { data: null, orderable: false, searchable: false }
+                    ],
+                    columnDefs: [
+                        {
+                            className: 'control',
+                            searchable: false,
+                            orderable: false,
+                            responsivePriority: 2,
+                            targets: 0,
+                            render: function (data, type, full, meta) { return ''; }
+                        },
+                        {
+                            targets: 1,
+                            orderable: false,
+                            searchable: false,
+                            responsivePriority: 4,
+                            render: function () { return '<input type="checkbox" class="dt-checkboxes">'; }
+                        },
+                        {
+                            targets: 2,
+                            responsivePriority: 4,
+                            render: function (data, type, full, meta) { return data; }
+                        },
+                        {
+                            targets: 3,
+                            render: function (data, type, full, meta) {
+                                const status = statusObj[data] || { title: 'Unknown', class: 'bg-label-secondary' };
+                                return `<span class="badge ${status.class}">${status.title}</span>`;
+                            }
+                        },
+                        {
+                            targets: 4,
+                            render: function (data, type, full, meta) {
+                                return data ? `<img src="${data}" alt="Logo" style="height:40px;">` : '';
+                            }
+                        },
+                        {
+                            targets: 5,
+                            render: function (data, type, full, meta) { return data; }
+                        },
+                        {
+                            targets: -1,
+                            title: 'Actions',
+                            searchable: false,
+                            orderable: false,
+                            render: (data, type, full, meta) => {
+                                return `
+                                    <div class="d-flex align-items-center gap-1">
+                                        <button class="btn btn-sm btn-warning edit-merchant" data-id="${full._id}"><i class="ri ri-edit-line"></i></button>
+                                        <button class="btn btn-sm btn-danger delete-merchant" data-id="${full._id}"><i class="ri ri-delete-bin-line"></i></button>
+                                    </div>
+                                `;
+                            }
+                        }
+                    ],
+                    order: [[2, 'asc']],
+                    responsive: true
+                });
+            }
+            // Logo upload preview
+            const logoInput = document.getElementById('merchant-logo');
+            if (logoInput) {
+                logoInput.addEventListener('change', async function() {
+                    const file = this.files[0];
+                    if (!file) return;
+                    if (file.type !== 'image/svg+xml' && file.type !== 'image/png') {
+                        Swal.fire({ confirmButtonColor: '#d33', text: 'Only SVG or PNG allowed.' });
+                        this.value = '';
+                        return;
+                    }
+                    let preview = document.getElementById('logo-preview');
+                    preview.innerHTML = 'Uploading...';
+                    try {
+                        const formData = new FormData();
+                        formData.append('logo', file);
+                        const response = await fetch('/api/merchants/upload-logo', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const result = await response.json();
+                        if (result.success && result.logoUrl) {
+                            preview.innerHTML = `<img src="${result.logoUrl}" alt="Logo Preview" style="height:40px;">`;
+                            // Set hidden input for logo URL
+                            let hiddenLogo = document.querySelector('input[type="hidden"][name="logo"]');
+                            if (!hiddenLogo) {
+                                hiddenLogo = document.createElement('input');
+                                hiddenLogo.type = 'hidden';
+                                hiddenLogo.name = 'logo';
+                                logoInput.parentNode.appendChild(hiddenLogo);
+                            }
+                            hiddenLogo.value = result.logoUrl;
+                        } else {
+                            preview.innerHTML = '';
+                            Swal.fire({ confirmButtonColor: '#d33', text: 'Upload failed.' });
+                        }
+                    } catch (error) {
+                        preview.innerHTML = '';
+                        Swal.fire({ confirmButtonColor: '#d33', text: 'Upload error.' });
+                    }
+                });
+            }
+            // Populate category dropdown
+            fetch('/api/categories/list')
+                .then(res => res.json())
+                .then(data => {
+                    const select = document.getElementById('merchant-category');
+                    if (select && Array.isArray(data.categories)) {
+                        data.categories.forEach(cat => {
+                            const option = document.createElement('option');
+                            option.value = cat._id;
+                            option.textContent = cat.name;
+                            select.appendChild(option);
+                        });
+                    }
+                });
+            // Form submission
+            const addNewMerchantForm = document.getElementById('addNewMerchantForm');
+            if (addNewMerchantForm) {
+                addNewMerchantForm.addEventListener('submit', async function (e) {
+                    e.preventDefault();
+                    const formData = new FormData(addNewMerchantForm);
+                    const merchantData = Object.fromEntries(formData.entries());
+                    merchantData.logo = typeof merchantData.logo === 'string' ? merchantData.logo : '';
+                    const isEditMode = addNewMerchantForm.getAttribute('data-mode') === 'edit';
+                    const merchantId = addNewMerchantForm.getAttribute('data-id');
+                    try {
+                        let response;
+                        if (isEditMode && merchantId) {
+                            response = await fetch(`/api/merchants/${merchantId}`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(merchantData)
+                            });
+                        } else {
+                            response = await fetch('/api/merchants', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(merchantData)
+                            });
+                        }
+                        if (response.ok) {
+                            Swal.fire({ icon: 'success', text: isEditMode ? 'Merchant updated!' : 'Merchant added!' });
+                            addNewMerchantForm.reset();
+                            document.getElementById('logo-preview').innerHTML = '';
+                            dt_merchant.ajax.reload();
+                            addNewMerchantForm.removeAttribute('data-mode');
+                            addNewMerchantForm.removeAttribute('data-id');
+                            $('#offcanvasAddMerchantLabel').text('Add Merchant');
+                            $('.data-submit').text('Add');
+                        } else {
+                            Swal.fire({ icon: 'error', text: isEditMode ? 'Update failed.' : 'Failed to add merchant.' });
+                        }
+                    } catch (error) {
+                        Swal.fire({ icon: 'error', text: isEditMode ? 'Error updating merchant.' : 'Error adding merchant.' });
+                    }
+                });
+            }
+            // Reset form on offcanvas close
+            document.getElementById('offcanvasAddMerchant').addEventListener('hidden.bs.offcanvas', function () {
+                if (addNewMerchantForm) {
+                    addNewMerchantForm.reset();
+                    document.getElementById('logo-preview').innerHTML = '';
+                    let hiddenLogo = addNewMerchantForm.querySelector('input[type="hidden"][name="logo"]');
+                    if (hiddenLogo) hiddenLogo.remove();
+                }
+            });
+            // Add event listeners for edit and delete
+            $(document).on('click', '.edit-merchant', function() {
+                const merchantId = $(this).data('id');
+                fetch(`/api/merchants/${merchantId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success && data.merchant) {
+                            const merchant = data.merchant;
+                            // Populate form fields
+                            $('#merchant-name').val(merchant.name);
+                            $('#merchant-status').val(merchant.status);
+                            $('#merchant-category').val(merchant.category?._id || merchant.category);
+                            // Show logo preview
+                            if (merchant.logo) {
+                                $('#logo-preview').html(`<img src="${merchant.logo}" style="height:40px;">`);
+                                let hiddenLogo = document.querySelector('input[type="hidden"][name="logo"]');
+                                if (!hiddenLogo) {
+                                    hiddenLogo = document.createElement('input');
+                                    hiddenLogo.type = 'hidden';
+                                    hiddenLogo.name = 'logo';
+                                    document.getElementById('merchant-logo').parentNode.appendChild(hiddenLogo);
+                                }
+                                hiddenLogo.value = merchant.logo;
+                            }
+                            // Set form to edit mode
+                            $('#addNewMerchantForm').attr('data-mode', 'edit').attr('data-id', merchantId);
+                            $('#offcanvasAddMerchantLabel').text('Edit Merchant');
+                            $('.data-submit').text('Update');
+                            const offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasAddMerchant'));
+                            offcanvas.show();
+                        }
+                    });
+            });
+            $(document).on('click', '.delete-merchant', function() {
+                const merchantId = $(this).data('id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This will permanently delete the merchant.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Delete',
+                    cancelButtonText: 'Cancel'
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        fetch(`/api/merchants/${merchantId}`, { method: 'DELETE' })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire({ icon: 'success', text: 'Merchant deleted!' });
+                                    dt_merchant.ajax.reload();
+                                } else {
+                                    Swal.fire({ icon: 'error', text: 'Delete failed.' });
+                                }
+                            });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

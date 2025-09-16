@@ -3,6 +3,11 @@ import express from 'express';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import routes from './routes/routes.js';
+import sliderRoutes from './routes/slider.routes.js';
+import contactRoutes from './routes/contact.routes.js';
+import newsletterRoutes from './routes/newsletter.routes.js';
+import jobApplicationRoutes from './routes/jobApplication.routes.js';
+import dashboardRoutes from './routes/dashboard.routes.js';
 import { auth0Middleware } from './middleware/auth0.middleware.js';
 
 dotenv.config();
@@ -43,7 +48,11 @@ app.get('/profile', (req, res) => {
   res.render('profile', { user: req.oidc.user });
 });
 
-
+app.use('/api/slider', sliderRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api/newsletter', newsletterRoutes);
+app.use('/api/job-applications', jobApplicationRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Default redirect
 app.get('/', (req, res) => {
@@ -53,7 +62,11 @@ app.get('/', (req, res) => {
 // Error handling
 app.use((err, req, res, next) => {
   console.error('Error:', err.stack);
-  res.status(500).send('Something went wrong!');
+  if (req.originalUrl.startsWith('/api/')) {
+    res.status(500).json({ error: 'Something went wrong!' });
+  } else {
+    res.status(500).send('Something went wrong!');
+  }
 });
 
 process.on('unhandledRejection', (reason, promise) => {

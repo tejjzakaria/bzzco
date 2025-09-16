@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en" class="layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr" data-skin="default" data-bs-theme="light" data-assets-path="/assets/" data-template="vertical-menu-template">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Documentation - Bzz Co. Admin</title>
+    <meta name="description" content="" />
+    <%- include("layout/header") %>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
+    <style>
+        .docs-card-title { color: #696cff; font-weight: 700; font-size: 2rem; }
+        .docs-section-title { color: #233446; font-weight: 600; font-size: 1.2rem; margin-bottom: 0.7rem; }
+        .docs-feature-list li { margin-bottom: 0.7rem; font-size: 1.05rem; }
+        .docs-feature-list i { color: #696cff; margin-right: 0.5rem; }
+        .docs-entity-card { background: #f5f7ff; border-radius: 8px; box-shadow: 0 2px 8px #e3e3e3; padding: 1.2rem 1.5rem; margin-bottom: 1.2rem; border-left: 4px solid #696cff; }
+        .docs-entity-title { font-size: 1.1rem; font-weight: 600; color: #233446; }
+        .docs-entity-desc { color: #555; font-size: 0.98rem; }
+        .docs-stack { display: flex; flex-wrap: wrap; gap: 1.2rem; margin-top: 1.2rem; }
+        .docs-stack-item { background: #fff; border-radius: 6px; padding: 0.7rem 1.2rem; display: flex; align-items: center; font-size: 1rem; box-shadow: 0 1px 4px #e3e3e3; }
+        .docs-stack-item i { font-size: 1.5rem; margin-right: 0.6rem; color: #696cff; }
+        .docs-highlight { background: #fffbe7; border-left: 4px solid #ffab00; padding: 1rem 1.5rem; border-radius: 6px; margin-bottom: 1.5rem; font-size: 1.08rem; }
+        .docs-section { margin-bottom: 2.5rem; }
+    </style>
+</head>
+<body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <!-- Menu -->
+            <%- include("layout/sidebar") %>
+            <div class="menu-mobile-toggler d-xl-none rounded-1">
+                <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large text-bg-secondary p-2 rounded-1">
+                    <i class="ri ri-menu-line icon-base"></i>
+                    <i class="ri ri-arrow-right-s-line icon-base"></i>
+                </a>
+            </div>
+            <!-- / Menu -->
+            <!-- Layout container -->
+            <div class="layout-page">
+                <!-- Navbar -->
+                <%- include("layout/header") %>
+                <!-- / Navbar -->
+                <!-- Content wrapper -->
+                <div class="content-wrapper">
+                    <!-- Content -->
+                    <div class="container-xxl flex-grow-1 container-p-y">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <span class="docs-card-title"><i class="ri ri-book-open-line"></i> Bzz Co. Admin Dashboard Documentation</span>
+                                </div>
+                                <div class="docs-highlight mb-4">
+                                    <b>Welcome!</b> This dashboard is your all-in-one admin platform for managing products, merchants, categories, team, sliders, contacts, newsletters, job applications, and more. It features dynamic statistics, file uploads, DataTables, and seamless backend integration.
+                                </div>
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <div class="docs-section">
+                                            <div class="docs-section-title"><i class="ri ri-dashboard-line"></i> Overview</div>
+                                            <p>The Bzz Co. Admin Dashboard is designed for efficient management of your e-commerce platform’s core entities. It provides CRUD operations, analytics, and file management in a modern, user-friendly interface.</p>
+                                        </div>
+                                        <div class="docs-section">
+                                            <div class="docs-section-title"><i class="ri ri-star-line"></i> Key Features</div>
+                                            <ul class="docs-feature-list">
+                                                <li><i class="ri ri-database-2-line"></i> <b>Entity Management:</b> Full CRUD for Products, Categories, Merchants, Team, Sliders, Orders, Customers, Sellers, etc.</li>
+                                                <li><i class="ri ri-bar-chart-2-line"></i> <b>Dynamic Dashboard:</b> Real-time stats and analytics with Chart.js visualizations.</li>
+                                                <li><i class="ri ri-upload-cloud-2-line"></i> <b>File Uploads:</b> S3 integration for images and documents.</li>
+                                                <li><i class="ri ri-table-line"></i> <b>DataTables:</b> Fast, searchable, and paginated tables for all entities.</li>
+                                                <li><i class="ri ri-lock-2-line"></i> <b>Authentication:</b> Auth0/JWT middleware for secure access.</li>
+                                                <li><i class="ri ri-mail-line"></i> <b>Contact & Newsletter:</b> Manage user messages and subscriptions.</li>
+                                                <li><i class="ri ri-briefcase-4-line"></i> <b>Job Applications:</b> Track and review applicant submissions.</li>
+                                            </ul>
+                                        </div>
+                                        <div class="docs-section">
+                                            <div class="docs-section-title"><i class="ri ri-bar-chart-grouped-line"></i> Dashboard & Analytics</div>
+                                            <p>The dashboard displays live statistics for all major entities, with interactive charts powered by Chart.js. All stats are fetched from the backend and update automatically.</p>
+                                            <img src="/assets/img/illustrations/illustration-john-light.png" alt="Dashboard Illustration" style="max-width:220px;display:block;margin:1.5rem auto;">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="docs-section">
+                                            <div class="docs-section-title"><i class="ri ri-folder-3-line"></i> Entity Management</div>
+                                            <div class="docs-entity-card">
+                                                <div class="docs-entity-title"><i class="ri ri-database-2-line"></i> Products</div>
+                                                <div class="docs-entity-desc">Add, edit, and delete products. Each product is linked to a merchant and category, with image upload support.</div>
+                                            </div>
+                                            <div class="docs-entity-card">
+                                                <div class="docs-entity-title"><i class="ri ri-store-2-line"></i> Merchants</div>
+                                                <div class="docs-entity-desc">Manage merchant accounts, view details, and assign products to merchants.</div>
+                                            </div>
+                                            <div class="docs-entity-card">
+                                                <div class="docs-entity-title"><i class="ri ri-apps-2-line"></i> Categories</div>
+                                                <div class="docs-entity-desc">Organize products into categories for easier browsing and filtering.</div>
+                                            </div>
+                                            <div class="docs-entity-card">
+                                                <div class="docs-entity-title"><i class="ri ri-user-star-line"></i> Team</div>
+                                                <div class="docs-entity-desc">Showcase and manage your team members, including profile images and LinkedIn links.</div>
+                                            </div>
+                                            <div class="docs-entity-card">
+                                                <div class="docs-entity-title"><i class="ri ri-slideshow-2-line"></i> Sliders</div>
+                                                <div class="docs-entity-desc">Create homepage sliders with images, titles, and links for marketing and announcements.</div>
+                                            </div>
+                                            <div class="docs-entity-card">
+                                                <div class="docs-entity-title"><i class="ri ri-mail-line"></i> Contact & Newsletter</div>
+                                                <div class="docs-entity-desc">View and manage user contact messages and newsletter subscriptions.</div>
+                                            </div>
+                                            <div class="docs-entity-card">
+                                                <div class="docs-entity-title"><i class="ri ri-briefcase-4-line"></i> Job Applications</div>
+                                                <div class="docs-entity-desc">Track job applicants and review their submissions and attached resumes.</div>
+                                            </div>
+                                        </div>
+                                        <div class="docs-section">
+                                            <div class="docs-section-title"><i class="ri ri-upload-cloud-2-line"></i> File Uploads & S3 Integration</div>
+                                            <p>Images and documents are uploaded directly to Amazon S3, ensuring secure and scalable storage. Uploads are available for products, team, sliders, and job applications.</p>
+                                        </div>
+                                        <div class="docs-section">
+                                            <div class="docs-section-title"><i class="ri ri-code-s-slash-line"></i> How It Works</div>
+                                            <ul class="docs-feature-list">
+                                                <li><b>Models:</b> Define the data structure for each entity using Mongoose.</li>
+                                                <li><b>Controllers:</b> Handle business logic, CRUD operations, and file uploads.</li>
+                                                <li><b>Routes:</b> Map HTTP endpoints to controller actions for both API and EJS views.</li>
+                                                <li><b>Views:</b> EJS templates render the admin UI, using DataTables and SweetAlert2 for interactivity.</li>
+                                                <li><b>Middleware:</b> Auth0/JWT for authentication, S3 for file handling.</li>
+                                                <li><b>Frontend JS:</b> Handles AJAX, dynamic stats, and chart rendering.</li>
+                                            </ul>
+                                        </div>
+                                        <div class="docs-section">
+                                            <div class="docs-section-title"><i class="ri ri-stack-line"></i> Tech Stack</div>
+                                            <div class="docs-stack">
+                                                <div class="docs-stack-item"><i class="ri ri-nodejs-line"></i> Node.js</div>
+                                                <div class="docs-stack-item"><i class="ri ri-database-2-line"></i> MongoDB + Mongoose</div>
+                                                <div class="docs-stack-item"><i class="ri ri-server-line"></i> Express.js</div>
+                                                <div class="docs-stack-item"><i class="ri ri-html5-line"></i> EJS Templates</div>
+                                                <div class="docs-stack-item"><i class="ri ri-bar-chart-2-line"></i> Chart.js</div>
+                                                <div class="docs-stack-item"><i class="ri ri-upload-cloud-2-line"></i> AWS S3</div>
+                                                <div class="docs-stack-item"><i class="ri ri-lock-2-line"></i> Auth0 / JWT</div>
+                                                <div class="docs-stack-item"><i class="ri ri-css3-line"></i> DataTables, SweetAlert2</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="docs-section" style="text-align:center; color:#888; margin-top:2.5rem;">
+                                    <i class="ri ri-information-line" style="font-size:2rem;"></i><br>
+                                    For more details, see the code comments or contact the development team.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- / Content -->
+                    <!-- Footer -->
+                    <%- include("layout/footer") %>
+                    <!-- / Footer -->
+                    <div class="content-backdrop fade"></div>
+                </div>
+                <!-- Content wrapper -->
+            </div>
+            <!-- / Layout page -->
+        </div>
+        <!-- Overlay -->
+        <div class="layout-overlay layout-menu-toggle"></div>
+        <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+        <div class="drag-target"></div>
+    </div>
+    <!-- / Layout wrapper -->
+</body>
+</html>

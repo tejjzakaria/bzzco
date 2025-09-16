@@ -19,14 +19,14 @@ const getAllCategories = async (req, res) => {
             inactivePercentage
         };
         
-        res.render('view-categories', { 
+        res.render('admin/view-categories', { 
             currentPage: 'view-categories',
             categories: categories,
             stats: stats
         });
     } catch (error) {
         console.log("ERROR FETCHING CATEGORIES", error);
-        res.render('view-categories', { 
+        res.render('admin/view-categories', { 
             currentPage: 'view-categories',
             categories: [],
             stats: {
@@ -42,7 +42,7 @@ const getAllCategories = async (req, res) => {
 
 const addCategory = async (req, res) => {
     try {
-        const { name, description, status } = req.body;
+        const { name, description, status, icon } = req.body;
 
         if (!name) {
             return res.status(400).json({ error: "Category name is required" });
@@ -51,7 +51,8 @@ const addCategory = async (req, res) => {
         const newCategory = new Category({
             name,
             description,
-            status
+            status,
+            icon // S3 URL for SVG icon
         });
 
         await newCategory.save();
@@ -68,11 +69,11 @@ const addCategory = async (req, res) => {
 
 const updateCategory = async (req, res) => {
     try {
-        const { name, description, status } = req.body;
+        const { name, description, status, icon } = req.body;
 
         const updatedCategory = await Category.findByIdAndUpdate(
             req.params.id,
-            { name, description, status },
+            { name, description, status, icon },
             { new: true, runValidators: true }
         );
 
@@ -135,7 +136,8 @@ const getCategoriesForDataTable = async (req, res) => {
                 _id: category._id,
                 name: category.name,
                 description: category.description,
-                status: category.status
+                status: category.status,
+                icon: category.icon // Include icon URL
             }))
         });
     } catch (error) {

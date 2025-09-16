@@ -163,6 +163,11 @@
                                                     </select>
                                                     <label for="add-category-status">Status</label>
                                                 </div>
+                                                <div class="form-floating form-floating-outline mb-5">
+                                                    <label for="add-category-icon" class="form-label">SVG Icon</label>
+                                                    <input type="file" class="form-control" id="add-category-icon" name="icon" accept="image/svg+xml">
+                                                    <div class="form-text">Upload an SVG icon for this category.</div>
+                                                </div>
 
                                                 <button type="submit"
                                                     class="btn btn-primary me-sm-3 me-1 data-submit">Add</button>
@@ -925,6 +930,69 @@
                     // Form handling
                     const addNewCategoryForm = document.getElementById('addNewCategoryForm');
 
+                    // SVG upload logic for S3
+                    const iconInput = document.getElementById('add-category-icon');
+                    if (iconInput) {
+                        iconInput.setAttribute('accept', 'image/svg+xml,image/png');
+                        iconInput.addEventListener('change', async function() {
+                            const file = this.files[0];
+                            if (!file) return;
+                            if (file.type !== 'image/svg+xml' && file.type !== 'image/png') {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Invalid File',
+                                    text: 'Please upload an SVG or PNG file.',
+                                    confirmButtonColor: '#d33'
+                                });
+                                this.value = '';
+                                return;
+                            }
+                            // Show loading
+                            let preview = document.getElementById('icon-preview');
+                            if (!preview) {
+                                preview = document.createElement('div');
+                                preview.id = 'icon-preview';
+                                iconInput.parentNode.appendChild(preview);
+                            }
+                            preview.innerHTML = 'Uploading...';
+                            try {
+                                // Upload to S3 via backend
+                                const formData = new FormData();
+                                formData.append('icon', file);
+                                // Replace with your actual upload endpoint
+                                const response = await fetch('/api/categories/upload-icon', {
+                                    method: 'POST',
+                                    body: formData
+                                });
+                                const result = await response.json();
+                                if (result.success && result.iconUrl) {
+                                    // Set the value of the input to the S3 URL
+                                    const hiddenInput = document.createElement('input');
+                                    hiddenInput.type = 'hidden';
+                                    hiddenInput.name = 'icon';
+                                    hiddenInput.value = result.iconUrl;
+                                    // Remove previous hidden input if exists
+                                    const oldHidden = iconInput.form.querySelector('input[type="hidden"][name="icon"]');
+                                    if (oldHidden) oldHidden.remove();
+                                    iconInput.form.appendChild(hiddenInput);
+                                    // Remove name from file input so only hidden input is submitted
+                                    iconInput.removeAttribute('name');
+                                    preview.innerHTML = `<img src="${result.iconUrl}" alt="Icon Preview" style="height:40px;">`;
+                                } else {
+                                    throw new Error(result.message || 'Upload failed');
+                                }
+                            } catch (error) {
+                                preview.innerHTML = '';
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Upload Error',
+                                    text: error.message || 'Failed to upload icon.',
+                                    confirmButtonColor: '#d33'
+                                });
+                            }
+                        });
+                    }
+
                     // Handle form submission for both add and edit modes
                     if (addNewCategoryForm) {
                         addNewCategoryForm.addEventListener('submit', async function (e) {
@@ -932,6 +1000,9 @@
 
                             const formData = new FormData(addNewCategoryForm);
                             const categoryData = Object.fromEntries(formData.entries());
+
+                            // Ensure icon is always a string
+                            categoryData.icon = typeof categoryData.icon === 'string' ? categoryData.icon : '';
 
                             const isEditMode = addNewCategoryForm.dataset.mode === 'edit';
                             const categoryId = addNewCategoryForm.dataset.categoryId;
@@ -1030,6 +1101,17 @@
                             if (submitButton) {
                                 submitButton.textContent = 'Add';
                             }
+                            // Restore file input name and remove hidden input
+                            const iconInput = document.getElementById('add-category-icon');
+                            if (iconInput) {
+                                iconInput.setAttribute('name', 'icon');
+                                const oldHidden = addNewCategoryForm.querySelector('input[type="hidden"][name="icon"]');
+                                if (oldHidden) oldHidden.remove();
+                                iconInput.value = '';
+                            }
+                            // Remove icon preview
+                            const preview = document.getElementById('icon-preview');
+                            if (preview) preview.remove();
                         }
                     });
                 });

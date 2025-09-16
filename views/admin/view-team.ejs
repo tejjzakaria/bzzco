@@ -12,6 +12,8 @@
 
     <meta name="description" content="" />
     <%- include("layout/header") %>
+    <!-- Add SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -22,38 +24,324 @@
 
             <%- include("layout/sidebar") %>
 
-            <div class="menu-mobile-toggler d-xl-none rounded-1">
-                <a href="javascript:void(0);"
-                    class="layout-menu-toggle menu-link text-large text-bg-secondary p-2 rounded-1">
-                    <i class="ri ri-menu-line icon-base"></i>
-                    <i class="ri ri-arrow-right-s-line icon-base"></i>
-                </a>
-            </div>
-            <!-- / Menu -->
-
-            <!-- Layout container -->
-            <div class="layout-page">
-                <!-- Navbar -->
-
-                <%- include("layout/header") %>
-
-                <!-- / Navbar -->
-
-                <!-- Content wrapper -->
-                <div class="content-wrapper">
-                    <!-- Content -->
-                    
-                    <!-- / Content -->
-
-                    <!-- Footer -->
-                    <%- include("layout/footer") %>
-                    <!-- / Footer -->
-
-                    <div class="content-backdrop fade"></div>
+                <div class="menu-mobile-toggler d-xl-none rounded-1">
+                    <a href="javascript:void(0);"
+                        class="layout-menu-toggle menu-link text-large text-bg-secondary p-2 rounded-1">
+                        <i class="ri ri-menu-line icon-base"></i>
+                        <i class="ri ri-arrow-right-s-line icon-base"></i>
+                    </a>
                 </div>
-                <!-- Content wrapper -->
-            </div>
-            <!-- / Layout page -->
+                <!-- / Menu -->
+
+                <!-- Layout container -->
+                <div class="layout-page">
+                    <!-- Navbar -->
+
+                    <%- include("layout/header") %> 
+
+                        <!-- / Navbar -->
+
+                        <!-- Content wrapper -->
+                        <div class="content-wrapper">
+                            <!-- Content -->
+                            <!-- Team List Table -->
+                            <div class="container-xxl flex-grow-1 container-p-y">
+                                        <div class="card">
+                                            <div class="card-header d-flex justify-content-between align-items-center">
+                                                <h5 class="card-title mb-0">Team Members</h5>
+                                                <button class="btn btn-primary" data-bs-toggle="offcanvas"
+                                                    data-bs-target="#offcanvasAddTeam">
+                                                    <i class="ri ri-add-line"></i> Add Member
+                                                </button>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table datatables-team">
+                                                        <thead>
+                                                            <tr>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th>Name</th>
+                                                                <th>Role</th>
+                                                                <th>Status</th>
+                                                                <th>Email</th>
+                                                                <th>LinkedIn</th>
+                                                                <th>Actions</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody></tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                            </div>
+
+                            <!-- Offcanvas Add/Edit Team Member -->
+                            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddTeam"
+                                aria-labelledby="offcanvasAddTeamLabel">
+                                <div class="offcanvas-header">
+                                    <h5 class="offcanvas-title" id="offcanvasAddTeamLabel">Add Team Member</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="offcanvas-body">
+                                    <form id="addNewTeamForm">
+                                        <div class="mb-3">
+                                            <label for="team-name" class="form-label">Name</label>
+                                            <input type="text" class="form-control" id="team-name" name="name" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="team-role" class="form-label">Role</label>
+                                            <input type="text" class="form-control" id="team-role" name="role" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="team-status" class="form-label">Status</label>
+                                            <select class="form-select" id="team-status" name="status" required>
+                                                <option value="active">Active</option>
+                                                <option value="inactive">Inactive</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="team-email" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="team-email" name="email"
+                                                required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="team-linkedin" class="form-label">LinkedIn</label>
+                                            <input type="url" class="form-control" id="team-linkedin" name="linkedin"
+                                                placeholder="https://linkedin.com/in/username">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="team-image" class="form-label">Image</label>
+                                            <input type="file" class="form-control" id="team-image" name="image"
+                                                accept="image/*">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary data-submit">Add</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- DataTables Initialization -->
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    const dt_team_table = document.querySelector('.datatables-team'),
+                                        statusObj = {
+                                            active: { title: 'Active', class: 'bg-label-success' },
+                                            inactive: { title: 'Inactive', class: 'bg-label-secondary' }
+                                        };
+                                    let dt_team;
+                                    if (dt_team_table) {
+                                        dt_team = new DataTable(dt_team_table, {
+                                            ajax: {
+                                                url: '/api/team/datatable',
+                                                type: 'GET',
+                                                dataSrc: function (json) { return json.data || json; },
+                                                error: function (xhr, error, thrown) { console.error('DataTable Ajax Error:', error); return []; }
+                                            },
+                                            columns: [
+                                                { data: '_id' },
+                                                { data: '_id', orderable: false },
+                                                { data: 'name' },
+                                                { data: 'role' },
+                                                { data: 'status' },
+                                                { data: 'email' },
+                                                { data: 'linkedin' },
+                                                { data: null, orderable: false, searchable: false }
+                                            ],
+                                            columnDefs: [
+                                                {
+                                                    className: 'control',
+                                                    searchable: false,
+                                                    orderable: false,
+                                                    responsivePriority: 2,
+                                                    targets: 0,
+                                                    render: function (data, type, full, meta) { return ''; }
+                                                },
+                                                {
+                                                    targets: 1,
+                                                    orderable: false,
+                                                    searchable: false,
+                                                    responsivePriority: 4,
+                                                    render: function () { return '<input type="checkbox" class="dt-checkboxes">'; }
+                                                },
+                                                {
+                                                    targets: 2,
+                                                    responsivePriority: 4,
+                                                    render: function (data, type, full, meta) {
+                                                        let imgHtml = '';
+                                                        if (full.image) {
+                                                            imgHtml = `<img src="${full.image}" alt="${data}" class="rounded-circle me-2" style="width:32px;height:32px;object-fit:cover;">`;
+                                                        }
+                                                        return `${imgHtml}${data}`;
+                                                    }
+                                                },
+                                                {
+                                                    targets: 3,
+                                                    render: function (data, type, full, meta) { return data; }
+                                                },
+                                                {
+                                                    targets: 4,
+                                                    render: function (data, type, full, meta) {
+                                                        const status = statusObj[data] || { title: 'Unknown', class: 'bg-label-secondary' };
+                                                        return `<span class="badge ${status.class}">${status.title}</span>`;
+                                                    }
+                                                },
+                                                {
+                                                    targets: 5,
+                                                    render: function (data, type, full, meta) { return data; }
+                                                },
+                                                {
+                                                    targets: 6,
+                                                    render: function (data, type, full, meta) {
+                                                        return data ? `<a href="${data}" target="_blank">Go to profile</a>` : '';
+                                                    }
+                                                },
+                                                {
+                                                    targets: -1,
+                                                    title: 'Actions',
+                                                    searchable: false,
+                                                    orderable: false,
+                                                    render: (data, type, full, meta) => {
+                                                        return `<div class="d-flex align-items-center gap-1">
+                                                            <button class="btn btn-sm btn-icon btn-edit-team" data-id="${full._id}" title="Edit"><i class="ri ri-edit-line"></i></button>
+                                                            <button class="btn btn-sm btn-icon btn-delete-team" data-id="${full._id}" title="Delete"><i class="ri ri-delete-bin-line"></i></button>
+                                                        </div>`;
+                                                    }
+                                                }
+                                            ],
+                                            order: [[2, 'asc']],
+                                            responsive: true
+                                        });
+                                    }
+
+                                    let editMode = false;
+                                    let editId = null;
+
+                                    // Add Team Member form AJAX submission with SweetAlert2
+                                    const addTeamForm = document.getElementById('addNewTeamForm');
+                                    if (addTeamForm) {
+                                        addTeamForm.addEventListener('submit', function (e) {
+                                            e.preventDefault();
+                                            const formData = new FormData(addTeamForm);
+                                            let url = '/api/team/add';
+                                            let method = 'POST';
+                                            if (editMode && editId) {
+                                                url = `/api/team/${editId}`;
+                                                method = 'PUT';
+                                            }
+                                            fetch(url, {
+                                                method: method,
+                                                body: formData
+                                            })
+                                            .then(res => res.json())
+                                            .then(data => {
+                                                if (data.success) {
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: editMode ? 'Team member updated!' : 'Team member added!',
+                                                        showConfirmButton: false,
+                                                        timer: 1500
+                                                    });
+                                                    addTeamForm.reset();
+                                                    document.querySelector('#offcanvasAddTeam .btn-close').click();
+                                                    if (dt_team) dt_team.ajax.reload();
+                                                    editMode = false;
+                                                    editId = null;
+                                                    addTeamForm.querySelector('.data-submit').textContent = 'Add';
+                                                } else {
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'Error',
+                                                        text: data.message || (editMode ? 'Error updating team member' : 'Error adding team member')
+                                                    });
+                                                }
+                                            })
+                                            .catch(() => {
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Error',
+                                                    text: editMode ? 'Error updating team member' : 'Error adding team member'
+                                                });
+                                            });
+                                        });
+                                    }
+
+                                    // Add action icons to DataTable
+                                    if (dt_team_table) {
+                                        dt_team.on('draw', function () {
+                                            document.querySelectorAll('.btn-edit-team').forEach(btn => {
+                                                btn.addEventListener('click', function () {
+                                                    const id = btn.getAttribute('data-id');
+                                                    fetch(`/api/team/${id}`)
+                                                        .then(res => res.json())
+                                                        .then(data => {
+                                                            if (data.success && data.member) {
+                                                                // Populate form fields
+                                                                addTeamForm.querySelector('[name="name"]').value = data.member.name || '';
+                                                                addTeamForm.querySelector('[name="role"]').value = data.member.role || '';
+                                                                addTeamForm.querySelector('[name="status"]').value = data.member.status || 'active';
+                                                                addTeamForm.querySelector('[name="email"]').value = data.member.email || '';
+                                                                addTeamForm.querySelector('[name="linkedin"]').value = data.member.linkedin || '';
+                                                                // Switch to edit mode
+                                                                editMode = true;
+                                                                editId = id;
+                                                                addTeamForm.querySelector('.data-submit').textContent = 'Update';
+                                                                // Show offcanvas
+                                                                const offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasAddTeam'));
+                                                                offcanvas.show();
+                                                            } else {
+                                                                Swal.fire('Error', 'Could not load team member data', 'error');
+                                                            }
+                                                        })
+                                                        .catch(() => {
+                                                            Swal.fire('Error', 'Could not load team member data', 'error');
+                                                        });
+                                                });
+                                            });
+                                            document.querySelectorAll('.btn-delete-team').forEach(btn => {
+                                                btn.addEventListener('click', function () {
+                                                    const id = btn.getAttribute('data-id');
+                                                    Swal.fire({
+                                                        title: 'Are you sure?',
+                                                        text: 'This will permanently delete the team member.',
+                                                        icon: 'warning',
+                                                        showCancelButton: true,
+                                                        confirmButtonColor: '#d33',
+                                                        cancelButtonColor: '#3085d6',
+                                                        confirmButtonText: 'Yes, delete it!'
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            fetch(`/api/team/${id}`, { method: 'DELETE' })
+                                                                .then(res => res.json())
+                                                                .then(data => {
+                                                                    if (data.success) {
+                                                                        Swal.fire('Deleted!', 'Team member has been deleted.', 'success');
+                                                                        if (dt_team) dt_team.ajax.reload();
+                                                                    } else {
+                                                                        Swal.fire('Error', data.message || 'Error deleting team member', 'error');
+                                                                    }
+                                                                })
+                                                                .catch(() => {
+                                                                    Swal.fire('Error', 'Error deleting team member', 'error');
+                                                                });
+                                                        }
+                                                    });
+                                                });
+                                            });
+                                        });
+                                    }
+                                });
+                            </script>
+                            <!-- / Content -->
+
+                            <!-- Footer -->
+                            <%- include("layout/footer") %>
+                                <!-- / Footer -->
+
+                                <div class="content-backdrop fade"></div>
+                        </div>
+                        <!-- Content wrapper -->
+                </div>
+                <!-- / Layout page -->
         </div>
 
         <!-- Overlay -->

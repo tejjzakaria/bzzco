@@ -16,6 +16,7 @@
     "@auth/core": "^0.40.0",
     "@auth0/auth0-spa-js": "^2.3.0",
     "auth0": "^4.28.0",
+    "aws-sdk": "^2.1692.0",
     "axios": "^1.11.0",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.1",
@@ -27,7 +28,8 @@
     "jwks-rsa": "^3.2.0",
     "mongodb": "^6.18.0",
     "mongoose": "^8.17.0",
-    "multer": "^2.0.2"
+    "multer": "^2.0.2",
+    "multer-s3": "^2.10.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

@@ -266,14 +266,14 @@
                                                         <label class="form-label" for="vendor">Vendor</label>
                                                         <select class="select2 form-select" id="vendor" name="vendor">
                                                             <option value="">Select Vendor</option>
-                                                            <% if (sellers && sellers.length > 0) { %>
-                                                                <% sellers.forEach(seller => { %>
-                                                                    <option value="<%= seller._id %>">
-                                                                        <%= seller.full_name %><% if (seller.company) { %> - <%= seller.company %><% } %>
+                                                            <% if (merchants && merchants.length > 0) { %>
+                                                                <% merchants.forEach(merchant => { %>
+                                                                    <option value="<%= merchant.name %>">
+                                                                        <%= merchant.name %>
                                                                     </option>
                                                                 <% }); %>
                                                             <% } else { %> 
-                                                                <option value="" disabled>No sellers available</option>
+                                                                <option value="" disabled>No merchants available</option>
                                                             <% } %>
                                                         </select>
                                                     </div>
