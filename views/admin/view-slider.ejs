@@ -1,329 +1,349 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr" data-skin="default"
+    data-bs-theme="light" data-assets-path="/assets/" data-template="vertical-menu-template">
+
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sliders - Bzz Co.</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Slider - Bzz Co.</title>
+
+    <meta name="description" content="" />
+    
 </head>
+
 <body>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <%- include("layout/sidebar") %>
-            <div class="layout-page">
-                    <%- include("layout/header") %> 
+                <div class="layout-page">
+                    <%- include("layout/header") %>
 
-                <div class="content-wrapper">
-                    <div class="container-xxl flex-grow-1 container-p-y">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="card-title mb-0">Sliders</h5>
-                                <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAddSlider">
-                                    <i class="ri ri-add-line"></i> Add Slider
-                                </button>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table datatables-slider">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th></th>
-                                                <th>Image</th>
-                                                <th>Title</th>
-                                                <th>Subtitle</th>
-                                                <th>Offer</th>
-                                                <th>Accent</th>
-                                                <th>Blue</th>
-                                                <th>Link</th>
-                                                <th>Status</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
+
+                    <div class="content-wrapper">
+                        <div class="container-xxl flex-grow-1 container-p-y">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Sliders</h5>
+                                    <button class="btn btn-primary" data-bs-toggle="offcanvas"
+                                        data-bs-target="#offcanvasAddSlider">
+                                        <i class="ri ri-add-line"></i> Add Slider
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table datatables-slider">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th>Image</th>
+                                                    <th>Title</th>
+                                                    <th>Subtitle</th>
+                                                    <th>Offer</th>
+                                                    <th>Accent</th>
+                                                    <th>Blue</th>
+                                                    <th>Link</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Offcanvas Add/Edit Slider -->
-                    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddSlider" aria-labelledby="offcanvasAddSliderLabel">
-                        <div class="offcanvas-header">
-                            <h5 class="offcanvas-title" id="offcanvasAddSliderLabel">Add Slider</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        <!-- Offcanvas Add/Edit Slider -->
+                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddSlider"
+                            aria-labelledby="offcanvasAddSliderLabel">
+                            <div class="offcanvas-header">
+                                <h5 class="offcanvas-title" id="offcanvasAddSliderLabel">Add Slider</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="offcanvas-body">
+                                <form id="addNewSliderForm">
+                                    <div class="mb-3">
+                                        <label for="slider-title" class="form-label">Title</label>
+                                        <input type="text" class="form-control" id="slider-title" name="title" required
+                                            placeholder="Slider Title">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="slider-subtitle" class="form-label">Subtitle</label>
+                                        <input type="text" class="form-control" id="slider-subtitle" name="subtitle"
+                                            placeholder="Subtitle">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="slider-offer" class="form-label">Offer</label>
+                                        <input type="text" class="form-control" id="slider-offer" name="offer"
+                                            placeholder="Offer">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="slider-accent" class="form-label">Accent</label>
+                                        <input type="color" class="form-control form-control-color" id="slider-accent"
+                                            name="accent" placeholder="Accent color">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="slider-blue" class="form-label">Blue</label>
+                                        <input type="color" class="form-control form-control-color" id="slider-blue"
+                                            name="blue" placeholder="Blue color">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="slider-order" class="form-label">Order</label>
+                                        <input type="number" class="form-control" id="slider-order" name="order"
+                                            value="0" placeholder="Order">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="slider-link" class="form-label">Link</label>
+                                        <input type="url" class="form-control" id="slider-link" name="link"
+                                            placeholder="Link URL">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="slider-status" class="form-label">Status</label>
+                                        <select class="form-select" id="slider-status" name="status" required>
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="slider-image" class="form-label">Image</label>
+                                        <input type="file" class="form-control" id="slider-image" name="image"
+                                            accept="image/*" placeholder="Upload image">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary data-submit">Add</button>
+                                </form>
+                            </div>
                         </div>
-                        <div class="offcanvas-body">
-                            <form id="addNewSliderForm">
-                                <div class="mb-3">
-                                    <label for="slider-title" class="form-label">Title</label>
-                                    <input type="text" class="form-control" id="slider-title" name="title" required placeholder="Slider Title">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="slider-subtitle" class="form-label">Subtitle</label>
-                                    <input type="text" class="form-control" id="slider-subtitle" name="subtitle" placeholder="Subtitle">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="slider-offer" class="form-label">Offer</label>
-                                    <input type="text" class="form-control" id="slider-offer" name="offer" placeholder="Offer">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="slider-accent" class="form-label">Accent</label>
-                                    <input type="color" class="form-control form-control-color" id="slider-accent" name="accent" placeholder="Accent color">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="slider-blue" class="form-label">Blue</label>
-                                    <input type="color" class="form-control form-control-color" id="slider-blue" name="blue" placeholder="Blue color">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="slider-order" class="form-label">Order</label>
-                                    <input type="number" class="form-control" id="slider-order" name="order" value="0" placeholder="Order">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="slider-link" class="form-label">Link</label>
-                                    <input type="url" class="form-control" id="slider-link" name="link" placeholder="Link URL">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="slider-status" class="form-label">Status</label>
-                                    <select class="form-select" id="slider-status" name="status" required>
-                                        <option value="active">Active</option>
-                                        <option value="inactive">Inactive</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="slider-image" class="form-label">Image</label>
-                                    <input type="file" class="form-control" id="slider-image" name="image" accept="image/*" placeholder="Upload image">
-                                </div>
-                                <button type="submit" class="btn btn-primary data-submit">Add</button>
-                            </form>
-                        </div>
-                    </div>
-                    <!-- DataTables Initialization -->
-                    <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                        const dt_slider_table = document.querySelector('.datatables-slider'),
-                            statusObj = {
-                                active: { title: 'Active', class: 'bg-label-success' },
-                                inactive: { title: 'Inactive', class: 'bg-label-secondary' }
-                            };
-                        let dt_slider;
-                        if (dt_slider_table) {
-                            dt_slider = new DataTable(dt_slider_table, {
-                                ajax: {
-                                    url: '/api/slider/datatable',
-                                    type: 'GET',
-                                    dataSrc: function (json) { return json.data || json; },
-                                    error: function (xhr, error, thrown) { console.error('DataTable Ajax Error:', error); return []; }
-                                },
-                                columns: [
-                                    { data: '_id' },
-                                    { data: '_id', orderable: false },
-                                    { data: 'image' },
-                                    { data: 'title' },
-                                    { data: 'subtitle' },
-                                    { data: 'offer' },
-                                    { data: 'accent' },
-                                    { data: 'blue' },
-                                    { data: 'link' },
-                                    { data: 'status' },
-                                    { data: null, orderable: false, searchable: false }
-                                ],
-                                columnDefs: [
-                                    {
-                                        className: 'control',
-                                        searchable: false,
-                                        orderable: false,
-                                        responsivePriority: 2,
-                                        targets: 0,
-                                        render: function () { return ''; }
-                                    },
-                                    {
-                                        targets: 1,
-                                        orderable: false,
-                                        searchable: false,
-                                        responsivePriority: 4,
-                                        render: function () { return '<input type="checkbox" class="dt-checkboxes">'; }
-                                    },
-                                    {
-                                        targets: 2,
-                                        render: function (data) {
-                                            return data ? `<img src="${data}" alt="slider" class="rounded" style="width:64px;height:32px;object-fit:cover;">` : '';
-                                        }
-                                    },
-                                    {
-                                        targets: 3,
-                                        render: function (data) { return data; }
-                                    },
-                                    {
-                                        targets: 4,
-                                        render: function (data) { return data; }
-                                    },
-                                    {
-                                        targets: 5,
-                                        render: function (data) { return data; }
-                                    },
-                                    {
-                                        targets: 6,
-                                        render: function (data) { return data; }
-                                    },
-                                    {
-                                        targets: 7,
-                                        render: function (data) { return data; }
-                                    },
-                                    {
-                                        targets: 8,
-                                        render: function (data) {
-                                            return data ? `<a href="${data}" target="_blank">${data}</a>` : '';
-                                        }
-                                    },
-                                    {
-                                        targets: 9,
-                                        render: function (data) {
-                                            const status = statusObj[data] || { title: 'Unknown', class: 'bg-label-secondary' };
-                                            return `<span class="badge ${status.class}">${status.title}</span>`;
-                                        }
-                                    },
-                                    {
-                                        targets: -1,
-                                        title: 'Actions',
-                                        searchable: false,
-                                        orderable: false,
-                                        render: (data, type, full, meta) => {
-                                            return `<div class="d-flex align-items-center gap-1">
+                        <!-- DataTables Initialization -->
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                const dt_slider_table = document.querySelector('.datatables-slider'),
+                                    statusObj = {
+                                        active: { title: 'Active', class: 'bg-label-success' },
+                                        inactive: { title: 'Inactive', class: 'bg-label-secondary' }
+                                    };
+                                let dt_slider;
+                                if (dt_slider_table) {
+                                    dt_slider = new DataTable(dt_slider_table, {
+                                        ajax: {
+                                            url: '/api/slider/datatable',
+                                            type: 'GET',
+                                            dataSrc: function (json) { return json.data || json; },
+                                            error: function (xhr, error, thrown) { console.error('DataTable Ajax Error:', error); return []; }
+                                        },
+                                        columns: [
+                                            { data: '_id' },
+                                            { data: '_id', orderable: false },
+                                            { data: 'image' },
+                                            { data: 'title' },
+                                            { data: 'subtitle' },
+                                            { data: 'offer' },
+                                            { data: 'accent' },
+                                            { data: 'blue' },
+                                            { data: 'link' },
+                                            { data: 'status' },
+                                            { data: null, orderable: false, searchable: false }
+                                        ],
+                                        columnDefs: [
+                                            {
+                                                className: 'control',
+                                                searchable: false,
+                                                orderable: false,
+                                                responsivePriority: 2,
+                                                targets: 0,
+                                                render: function () { return ''; }
+                                            },
+                                            {
+                                                targets: 1,
+                                                orderable: false,
+                                                searchable: false,
+                                                responsivePriority: 4,
+                                                render: function () { return '<input type="checkbox" class="dt-checkboxes">'; }
+                                            },
+                                            {
+                                                targets: 2,
+                                                render: function (data) {
+                                                    return data ? `<img src="${data}" alt="slider" class="rounded" style="width:64px;height:32px;object-fit:cover;">` : '';
+                                                }
+                                            },
+                                            {
+                                                targets: 3,
+                                                render: function (data) { return data; }
+                                            },
+                                            {
+                                                targets: 4,
+                                                render: function (data) { return data; }
+                                            },
+                                            {
+                                                targets: 5,
+                                                render: function (data) { return data; }
+                                            },
+                                            {
+                                                targets: 6,
+                                                render: function (data) { return data; }
+                                            },
+                                            {
+                                                targets: 7,
+                                                render: function (data) { return data; }
+                                            },
+                                            {
+                                                targets: 8,
+                                                render: function (data) {
+                                                    return data ? `<a href="${data}" target="_blank">${data}</a>` : '';
+                                                }
+                                            },
+                                            {
+                                                targets: 9,
+                                                render: function (data) {
+                                                    const status = statusObj[data] || { title: 'Unknown', class: 'bg-label-secondary' };
+                                                    return `<span class="badge ${status.class}">${status.title}</span>`;
+                                                }
+                                            },
+                                            {
+                                                targets: -1,
+                                                title: 'Actions',
+                                                searchable: false,
+                                                orderable: false,
+                                                render: (data, type, full, meta) => {
+                                                    return `<div class="d-flex align-items-center gap-1">
                                                 <button class="btn btn-sm btn-icon btn-edit-slider" data-id="${full._id}" title="Edit"><i class="ri ri-edit-line"></i></button>
                                                 <button class="btn btn-sm btn-icon btn-delete-slider" data-id="${full._id}" title="Delete"><i class="ri ri-delete-bin-line"></i></button>
                                             </div>`;
-                                        }
-                                    }
-                                ],
-                                order: [[3, 'asc']],
-                                responsive: true
-                            });
-                        }
-                        let editMode = false;
-                        let editId = null;
-                        const addSliderForm = document.getElementById('addNewSliderForm');
-                        if (addSliderForm) {
-                            addSliderForm.addEventListener('submit', function (e) {
-                                e.preventDefault();
-                                const formData = new FormData(addSliderForm);
-                                let url = '/api/slider/add';
-                                let method = 'POST';
-                                if (editMode && editId) {
-                                    url = `/api/slider/${editId}`;
-                                    method = 'PUT';
-                                }
-                                fetch(url, {
-                                    method: method,
-                                    body: formData
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    if (data.success) {
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: editMode ? 'Slider updated!' : 'Slider added!',
-                                            showConfirmButton: false,
-                                            timer: 1500
-                                        });
-                                        addSliderForm.reset();
-                                        document.querySelector('#offcanvasAddSlider .btn-close').click();
-                                        if (dt_slider) dt_slider.ajax.reload();
-                                        editMode = false;
-                                        editId = null;
-                                        addSliderForm.querySelector('.data-submit').textContent = 'Add';
-                                    } else {
-                                        console.error('Slider error response:', data);
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Error',
-                                            text: data.error || data.message || (editMode ? 'Error updating slider' : 'Error adding slider')
-                                        });
-                                    }
-                                })
-                                .catch((err) => {
-                                    console.error('Slider fetch error:', err);
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error',
-                                        text: editMode ? 'Error updating slider' : 'Error adding slider'
+                                                }
+                                            }
+                                        ],
+                                        order: [[3, 'asc']],
+                                        responsive: true
                                     });
-                                });
-                            });
-                        }
-                        if (dt_slider_table) {
-                            dt_slider.on('draw', function () {
-                                document.querySelectorAll('.btn-edit-slider').forEach(btn => {
-                                    btn.addEventListener('click', function () {
-                                        const id = btn.getAttribute('data-id');
-                                        fetch(`/api/slider/${id}`)
+                                }
+                                let editMode = false;
+                                let editId = null;
+                                const addSliderForm = document.getElementById('addNewSliderForm');
+                                if (addSliderForm) {
+                                    addSliderForm.addEventListener('submit', function (e) {
+                                        e.preventDefault();
+                                        const formData = new FormData(addSliderForm);
+                                        let url = '/api/slider/add';
+                                        let method = 'POST';
+                                        if (editMode && editId) {
+                                            url = `/api/slider/${editId}`;
+                                            method = 'PUT';
+                                        }
+                                        fetch(url, {
+                                            method: method,
+                                            body: formData
+                                        })
                                             .then(res => res.json())
                                             .then(data => {
-                                                if (data.success && data.slider) {
-                                                    addSliderForm.querySelector('[name="title"]').value = data.slider.title || '';
-                                                    addSliderForm.querySelector('[name="subtitle"]').value = data.slider.subtitle || '';
-                                                    addSliderForm.querySelector('[name="offer"]').value = data.slider.offer || '';
-                                                    addSliderForm.querySelector('[name="accent"]').value = data.slider.accent || '';
-                                                    addSliderForm.querySelector('[name="blue"]').value = data.slider.blue || '';
-                                                    addSliderForm.querySelector('[name="order"]').value = data.slider.order || 0;
-                                                    addSliderForm.querySelector('[name="link"]').value = data.slider.link || '';
-                                                    addSliderForm.querySelector('[name="status"]').value = data.slider.status || 'active';
-                                                    // Switch to edit mode
-                                                    editMode = true;
-                                                    editId = id;
-                                                    addSliderForm.querySelector('.data-submit').textContent = 'Update';
-                                                    const offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasAddSlider'));
-                                                    offcanvas.show();
+                                                if (data.success) {
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: editMode ? 'Slider updated!' : 'Slider added!',
+                                                        showConfirmButton: false,
+                                                        timer: 1500
+                                                    });
+                                                    addSliderForm.reset();
+                                                    document.querySelector('#offcanvasAddSlider .btn-close').click();
+                                                    if (dt_slider) dt_slider.ajax.reload();
+                                                    editMode = false;
+                                                    editId = null;
+                                                    addSliderForm.querySelector('.data-submit').textContent = 'Add';
                                                 } else {
-                                                    Swal.fire('Error', 'Could not load slider data', 'error');
+                                                    console.error('Slider error response:', data);
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'Error',
+                                                        text: data.error || data.message || (editMode ? 'Error updating slider' : 'Error adding slider')
+                                                    });
                                                 }
                                             })
-                                            .catch(() => {
-                                                Swal.fire('Error', 'Could not load slider data', 'error');
+                                            .catch((err) => {
+                                                console.error('Slider fetch error:', err);
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Error',
+                                                    text: editMode ? 'Error updating slider' : 'Error adding slider'
+                                                });
                                             });
                                     });
-                                });
-                                document.querySelectorAll('.btn-delete-slider').forEach(btn => {
-                                    btn.addEventListener('click', function () {
-                                        const id = btn.getAttribute('data-id');
-                                        Swal.fire({
-                                            title: 'Are you sure?',
-                                            text: 'This will permanently delete the slider.',
-                                            icon: 'warning',
-                                            showCancelButton: true,
-                                            confirmButtonColor: '#d33',
-                                            cancelButtonColor: '#3085d6',
-                                            confirmButtonText: 'Yes, delete it!'
-                                        }).then((result) => {
-                                            if (result.isConfirmed) {
-                                                fetch(`/api/slider/${id}`, { method: 'DELETE' })
+                                }
+                                if (dt_slider_table) {
+                                    dt_slider.on('draw', function () {
+                                        document.querySelectorAll('.btn-edit-slider').forEach(btn => {
+                                            btn.addEventListener('click', function () {
+                                                const id = btn.getAttribute('data-id');
+                                                fetch(`/api/slider/${id}`)
                                                     .then(res => res.json())
                                                     .then(data => {
-                                                        if (data.success) {
-                                                            Swal.fire('Deleted!', 'Slider has been deleted.', 'success');
-                                                            if (dt_slider) dt_slider.ajax.reload();
+                                                        if (data.success && data.slider) {
+                                                            addSliderForm.querySelector('[name="title"]').value = data.slider.title || '';
+                                                            addSliderForm.querySelector('[name="subtitle"]').value = data.slider.subtitle || '';
+                                                            addSliderForm.querySelector('[name="offer"]').value = data.slider.offer || '';
+                                                            addSliderForm.querySelector('[name="accent"]').value = data.slider.accent || '';
+                                                            addSliderForm.querySelector('[name="blue"]').value = data.slider.blue || '';
+                                                            addSliderForm.querySelector('[name="order"]').value = data.slider.order || 0;
+                                                            addSliderForm.querySelector('[name="link"]').value = data.slider.link || '';
+                                                            addSliderForm.querySelector('[name="status"]').value = data.slider.status || 'active';
+                                                            // Switch to edit mode
+                                                            editMode = true;
+                                                            editId = id;
+                                                            addSliderForm.querySelector('.data-submit').textContent = 'Update';
+                                                            const offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasAddSlider'));
+                                                            offcanvas.show();
                                                         } else {
-                                                            Swal.fire('Error', data.message || 'Error deleting slider', 'error');
+                                                            Swal.fire('Error', 'Could not load slider data', 'error');
                                                         }
                                                     })
                                                     .catch(() => {
-                                                        Swal.fire('Error', 'Error deleting slider', 'error');
+                                                        Swal.fire('Error', 'Could not load slider data', 'error');
                                                     });
-                                            }
+                                            });
+                                        });
+                                        document.querySelectorAll('.btn-delete-slider').forEach(btn => {
+                                            btn.addEventListener('click', function () {
+                                                const id = btn.getAttribute('data-id');
+                                                Swal.fire({
+                                                    title: 'Are you sure?',
+                                                    text: 'This will permanently delete the slider.',
+                                                    icon: 'warning',
+                                                    showCancelButton: true,
+                                                    confirmButtonColor: '#d33',
+                                                    cancelButtonColor: '#3085d6',
+                                                    confirmButtonText: 'Yes, delete it!'
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        fetch(`/api/slider/${id}`, { method: 'DELETE' })
+                                                            .then(res => res.json())
+                                                            .then(data => {
+                                                                if (data.success) {
+                                                                    Swal.fire('Deleted!', 'Slider has been deleted.', 'success');
+                                                                    if (dt_slider) dt_slider.ajax.reload();
+                                                                } else {
+                                                                    Swal.fire('Error', data.message || 'Error deleting slider', 'error');
+                                                                }
+                                                            })
+                                                            .catch(() => {
+                                                                Swal.fire('Error', 'Error deleting slider', 'error');
+                                                            });
+                                                    }
+                                                });
+                                            });
                                         });
                                     });
-                                });
+                                }
                             });
-                        }
-                    });
-                    </script>
-                </div>
-                <%- include("layout/footer") %>
+                        </script>
+                    </div>
+                    <%- include("layout/footer") %>
 
-                <div class="content-backdrop fade"></div>
-            </div>
+                        <div class="content-backdrop fade"></div>
+                </div>
         </div>
         <div class="layout-overlay layout-menu-toggle"></div>
         <div class="drag-target"></div>
     </div>
 </body>
+
 </html>
