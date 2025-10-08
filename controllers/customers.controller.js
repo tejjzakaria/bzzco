@@ -6,7 +6,6 @@ const getAllCustomers = async (req, res) => {
     // DataTables expects data in this format
     res.json({ data: customers });
   } catch (error) {
-    console.log("ERROR FETCHING CUSTOMERS", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -41,7 +40,6 @@ const addCustomer = async (req, res) => {
       };
       res.redirect("/view-customers");
     } catch (error) {
-      console.log("ERROR ADDING CUSTOMER", error);
       req.session.message = {
         type: "error",
         text: "Internal server error.",

@@ -93,10 +93,7 @@
     <script src="/assets/js/token-manager.js"></script>
 
     <script>
-        console.log('Script loaded');
-
         document.addEventListener('DOMContentLoaded', function () {
-            console.log('DOM loaded');
 
             // Password toggle functionality
             const passwordToggle = document.querySelector('.form-password-toggle .input-group-text');
@@ -118,11 +115,9 @@
             }
 
             const form = document.getElementById('formAuthentication');
-            console.log('Form found:', form);
 
             if (form) {
                 form.addEventListener('submit', async (e) => {
-                    console.log('Form submitted');
                     e.preventDefault();
 
                     // Clear previous alerts
@@ -133,8 +128,6 @@
                     const email = formData.get('email');
                     const password = formData.get('password');
 
-                    console.log('Email:', email, 'Password length:', password.length);
-
                     // Show loading state
                     const submitButton = e.target.querySelector('button[type="submit"]');
                     const originalText = submitButton.textContent;
@@ -142,7 +135,6 @@
                     submitButton.disabled = true;
 
                     try {
-                        console.log('Making API request...');
                         const response = await fetch('/api/auth/login', {
                             method: 'POST',
                             headers: {
@@ -154,9 +146,7 @@
                             }),
                         });
 
-                        console.log('Response status:', response.status);
                         const data = await response.json();
-                        console.log('Response data:', data);
 
                         if (response.ok) {
                             // Login successful
@@ -197,8 +187,6 @@
                         submitButton.disabled = false;
                     }
                 });
-            } else {
-                console.error('Form not found!');
             }
         });
     </script>

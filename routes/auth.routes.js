@@ -25,7 +25,6 @@ const requireAdminRole = async (req, res, next) => {
         
         next();
     } catch (error) {
-        console.error('Error checking admin role:', error);
         res.status(500).json({ error: 'Failed to verify admin role' });
     }
 };
@@ -43,21 +42,12 @@ router.get('/verify', verifyToken, (req, res) => {
 router.get('/profile', verifyToken, async (req, res) => {
     try {
         const userId = req.user.sub;
-        console.log('Fetching profile for user ID:', userId);
-        
+
         const userResponse = await auth0Client.users.get({ id: userId });
-        
+
         // The Auth0 client returns data wrapped in a 'data' property
         const user = userResponse.data || userResponse;
-        
-        console.log('Auth0 user data:', {
-            user_id: user.user_id,
-            email: user.email,
-            name: user.name,
-            user_metadata: user.user_metadata,
-            app_metadata: user.app_metadata
-        });
-        
+
         const userProfile = {
             id: user.user_id,
             name: user.name,
@@ -67,10 +57,8 @@ router.get('/profile', verifyToken, async (req, res) => {
             last_login: user.last_login
         };
 
-        console.log('Returning user profile:', userProfile);
         res.status(200).json({ user: userProfile });
     } catch (error) {
-        console.error('Error fetching user profile:', error);
         res.status(500).json({ error: 'Failed to fetch user profile' });
     }
 });
@@ -100,7 +88,6 @@ router.post('/sign-up', async (req, res) => {
 
         res.status(200).json({ message: 'Registration successful!', user });
     } catch (error) {
-        console.error('Auth0 registration error:', error);
         const errorMessage = error?.body ? JSON.parse(error.body).message : 'Registration failed';
         res.status(500).json({ error: errorMessage });
     }
@@ -124,7 +111,6 @@ router.post('/login', async (req, res) => {
 
         res.status(200).json({ message: 'Login successful!', access_token });
     } catch (error) {
-        console.error('Auth0 login error:', error);
         const errorMessage = error?.response?.data?.error_description || 'Login failed';
         res.status(401).json({ error: errorMessage });
     }
@@ -140,12 +126,11 @@ router.post('/logout', (req, res) => {
         // Return logout URL for Auth0 to clear Auth0 session
         const logoutURL = `https://${process.env.AUTH0_DOMAIN}/v2/logout?client_id=${process.env.AUTH0_CLIENT_ID}&returnTo=${encodeURIComponent(process.env.AUTH0_BASE_URL || 'http://localhost:3000')}`;
         
-        res.status(200).json({ 
-            message: 'Logout successful!', 
-            logoutURL 
+        res.status(200).json({
+            message: 'Logout successful!',
+            logoutURL
         });
     } catch (error) {
-        console.error('Logout error:', error);
         res.status(500).json({ error: 'Logout failed' });
     }
 });
@@ -154,15 +139,13 @@ router.post('/logout', (req, res) => {
 router.get('/debug-user', verifyToken, async (req, res) => {
     try {
         const userId = req.user.sub;
-        console.log('DEBUG: Fetching raw user data for:', userId);
-        
+
         const userResponse = await auth0Client.users.get({ id: userId });
-        console.log('DEBUG: Raw Auth0 response:', JSON.stringify(userResponse, null, 2));
-        
+
         // The Auth0 client returns data wrapped in a 'data' property
         const user = userResponse.data || userResponse;
-        
-        res.status(200).json({ 
+
+        res.status(200).json({
             message: 'Debug user data',
             rawAuth0Data: userResponse,
             actualUserData: user,
@@ -173,7 +156,6 @@ router.get('/debug-user', verifyToken, async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('DEBUG: Error fetching user:', error);
         res.status(500).json({ error: 'Debug failed', details: error.message });
     }
 });
@@ -181,20 +163,16 @@ router.get('/debug-user', verifyToken, async (req, res) => {
 // Admin endpoint to get all users from Auth0
 router.get('/admin/users', verifyToken, requireAdminRole, async (req, res) => {
     try {
-        console.log('Fetching all users from Auth0...');
-        
         // Get all users from Auth0
         const usersResponse = await auth0Client.users.getAll({
             search_engine: 'v3',
             per_page: 100, // Adjust as needed
             page: 0
         });
-        
-        console.log('Raw Auth0 users response:', JSON.stringify(usersResponse, null, 2));
-        
+
         // The Auth0 client returns data wrapped in a 'data' property
         const users = usersResponse.data || usersResponse;
-        
+
         // Process and clean up user data
         const processedUsers = users.map(user => {
             const userData = user.data || user;
@@ -215,16 +193,13 @@ router.get('/admin/users', verifyToken, requireAdminRole, async (req, res) => {
                 identities: userData.identities
             };
         });
-        
-        console.log(`Returning ${processedUsers.length} users`);
-        
-        res.status(200).json({ 
+
+        res.status(200).json({
             message: 'Users retrieved successfully',
             count: processedUsers.length,
-            users: processedUsers 
+            users: processedUsers
         });
     } catch (error) {
-        console.error('Error fetching all users:', error);
         res.status(500).json({ error: 'Failed to fetch users', details: error.message });
     }
 });
@@ -236,11 +211,9 @@ router.delete('/admin/users/:id', verifyToken, requireAdminRole, async (req, res
         return res.status(400).json({ error: 'User ID is required' });
     }
     try {
-        console.log(`Admin deleting user: ${userId}`);
         await auth0Client.users.delete({ id: userId });
         res.status(200).json({ message: 'User deleted successfully', userId });
     } catch (error) {
-        console.error('Error deleting user:', error);
         let details = error.message;
         if (error?.response?.data?.message) details = error.response.data.message;
         res.status(500).json({ error: 'Failed to delete user', details });

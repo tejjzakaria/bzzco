@@ -19,14 +19,13 @@ const getAllCategories = async (req, res) => {
             inactivePercentage
         };
         
-        res.render('admin/view-categories', { 
+        res.render('admin/view-categories', {
             currentPage: 'view-categories',
             categories: categories,
             stats: stats
         });
     } catch (error) {
-        console.log("ERROR FETCHING CATEGORIES", error);
-        res.render('admin/view-categories', { 
+        res.render('admin/view-categories', {
             currentPage: 'view-categories',
             categories: [],
             stats: {
@@ -58,10 +57,9 @@ const addCategory = async (req, res) => {
         await newCategory.save();
         res.status(201).json({
             success: true,
-            message: "Category added successfully", category: newCategory 
+            message: "Category added successfully", category: newCategory
         });
     } catch (error) {
-        console.error("Error adding category:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 };
@@ -83,7 +81,6 @@ const updateCategory = async (req, res) => {
 
         res.json({ success: true, message: "Category updated successfully", category: updatedCategory });
     } catch (error) {
-        console.error("Error updating category:", error);
         res.status(500).json({ success: false, message: "Failed to update category" });
     }
 };
@@ -97,7 +94,6 @@ const deleteCategory = async (req, res) => {
         }
         res.json({ success: true, message: "Category deleted successfully" });
     } catch (error) {
-        console.error("Error deleting category:", error);
         res.status(500).json({ success: false, message: "Failed to delete category" });
     }
 };
@@ -123,7 +119,6 @@ const deleteBulkCategories = async (req, res) => {
             deletedCount: result.deletedCount
         });
     } catch (error) {
-        console.error("Error bulk deleting categories:", error);
         res.status(500).json({ success: false, message: "Failed to delete categories" });
     }
 };
@@ -141,7 +136,6 @@ const getCategoriesForDataTable = async (req, res) => {
             }))
         });
     } catch (error) {
-        console.error("Error fetching categories for DataTable:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 };
@@ -154,7 +148,6 @@ const getCategoryById = async (req, res) => {
         }
         res.json({ success: true, category });
     } catch (error) {
-        console.error("Error fetching category:", error);
         res.status(500).json({ success: false, message: "Failed to fetch category" });
     }
 };

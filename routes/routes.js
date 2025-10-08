@@ -8,6 +8,7 @@ import merchantsRoutes from './merchants.routes.js';
 import teamRoutes from './team.routes.js';
 import contactRoutes from './contact.routes.js';
 import authRoutes from './auth.routes.js';
+import pagesRoutes from './pages.routes.js';
 import { optionalVerifyToken } from '../middleware/jwt.middleware.js';
 
 const router = express.Router();
@@ -54,6 +55,7 @@ router.use('/api/auth', authRoutes);
 router.use('/api/merchants', merchantsRoutes);
 router.use('/api/team', teamRoutes);
 router.use('/api/contact', contactRoutes);
+router.use('/admin/pages', pagesRoutes);
 
 
 router.get('/view-customers', (req, res) => {
@@ -115,6 +117,16 @@ router.get('/view-job-applications', (req, res) => {
 
 router.get('/view-docs', (req, res) => {
     res.render('admin/view-docs', { currentPage: 'view-docs' });
+});
+
+router.get('/view-privacy-policy', async (req, res) => {
+    // Find privacy policy page in DB
+    const Page = (await import('../models/pages.model.js')).default;
+    let page = await Page.findOne({ slug: 'privacy-policy' });
+    if (!page) {
+        page = { title: '', content: '', status: 'draft' };
+    }
+    res.render('admin/view-privacy-policy', { currentPage: 'view-privacy-policy', page });
 });
 
 export default router;

@@ -23,13 +23,12 @@ router.get('/view-sellers', async (req, res) => {
             planD: planCounts['Plan D'] || 0
         };
         
-        res.render('admin/view-sellers', { 
+        res.render('admin/view-sellers', {
             currentPage: 'view-sellers',
             stats: stats
         });
     } catch (error) {
-        console.log("ERROR FETCHING SELLER STATS", error);
-        res.render('admin/view-sellers', { 
+        res.render('admin/view-sellers', {
             currentPage: 'view-sellers',
             stats: { total: 0, planA: 0, planB: 0, planC: 0, planD: 0 }
         });
@@ -50,7 +49,6 @@ router.get("/api/sellers/:id", async (req, res) => {
         }
         res.json({ success: true, seller });
     } catch (error) {
-        console.error("Error fetching seller:", error);
         res.status(500).json({ success: false, message: "Failed to fetch seller" });
     }
 });
@@ -72,7 +70,6 @@ router.post("/api/sellers", async (req, res) => {
         await seller.save();
         res.json({ success: true, message: "Seller added successfully", seller });
     } catch (error) {
-        console.error("Error adding seller:", error);
         res.status(500).json({ success: false, message: "Failed to add seller" });
     }
 });
@@ -94,7 +91,6 @@ router.put("/api/sellers/:id", async (req, res) => {
 
         res.json({ success: true, message: "Seller updated successfully", seller });
     } catch (error) {
-        console.error("Error updating seller:", error);
         res.status(500).json({ success: false, message: "Failed to update seller" });
     }
 });
@@ -114,13 +110,12 @@ router.delete("/api/sellers/bulk/delete", async (req, res) => {
             return res.status(404).json({ success: false, message: "No sellers found to delete" });
         }
         
-        res.json({ 
-            success: true, 
+        res.json({
+            success: true,
             message: `${result.deletedCount} seller(s) deleted successfully`,
             deletedCount: result.deletedCount
         });
     } catch (error) {
-        console.error("Error bulk deleting sellers:", error);
         res.status(500).json({ success: false, message: "Failed to delete sellers" });
     }
 });
@@ -136,7 +131,6 @@ router.delete("/api/sellers/:id", async (req, res) => {
 
         res.json({ success: true, message: "Seller deleted successfully" });
     } catch (error) {
-        console.error("Error deleting seller:", error);
         res.status(500).json({ success: false, message: "Failed to delete seller" });
     }
 });

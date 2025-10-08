@@ -22,9 +22,7 @@ router.get('/add-order', async (req, res) => {
         const products = await Product.find({})
             .select('productTitle productPrice _id')
             .sort({ productTitle: 1 });
-        
-        console.log(`Fetched ${customers.length} customers and ${products.length} products for dropdown`);
-        
+
         res.render('admin/add-order', { 
             title: 'Add New Order',
             currentPage: 'add-order',
@@ -44,8 +42,6 @@ router.get('/add-order', async (req, res) => {
 
 router.get('/view-orders', async (req, res) => {
     try {
-        console.log('Loading view-orders page...');
-        
         // Calculate order statistics
         const totalOrders = await Order.countDocuments();
         const pendingOrders = await Order.countDocuments({ status: 'Pending' });
@@ -60,9 +56,7 @@ router.get('/view-orders', async (req, res) => {
             cancelled: cancelledOrders,
             refunded: refundedOrders
         };
-        
-        console.log('Order statistics:', stats);
-        
+
         res.render('admin/view-orders', { 
             title: 'View Orders',
             currentPage: 'view-orders',
@@ -88,8 +82,7 @@ router.get('/view-orders', async (req, res) => {
 router.get('/edit-order/:orderId', async (req, res) => {
     try {
         const orderId = req.params.orderId;
-        console.log(`Loading edit order page for order: ${orderId}`);
-        
+
         // Fetch the order with populated fields
         const order = await Order.findById(orderId)
             .populate('customer_id', 'full_name email phone_number')
@@ -109,9 +102,7 @@ router.get('/edit-order/:orderId', async (req, res) => {
         const products = await Product.find({})
             .select('productTitle productPrice _id')
             .sort({ productTitle: 1 });
-        
-        console.log(`Fetched order: ${order.order_number} with ${order.products.length} products`);
-        
+
         res.render('admin/edit-order', { 
             title: 'Edit Order',
             currentPage: 'edit-order',
@@ -136,8 +127,6 @@ router.put('/api/orders/:orderId', updateOrder);
 router.delete('/api/orders/:orderId', deleteOrder);
 
 export default router;
-// Debug: Test if this route file is loaded
-console.log("Orders routes file loaded!");
 
 
 
