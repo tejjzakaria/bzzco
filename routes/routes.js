@@ -57,6 +57,27 @@ router.use('/api/team', teamRoutes);
 router.use('/api/contact', contactRoutes);
 router.use('/admin/pages', pagesRoutes);
 
+// Dynamic public page route (must be near the end to avoid conflicts)
+router.get('/:slug', async (req, res, next) => {
+    try {
+        const Page = (await import('../models/pages.model.js')).default;
+        const page = await Page.findOne({
+            slug: req.params.slug,
+            status: 'published'
+        });
+
+        if (!page) {
+            return next(); // Pass to next route handler (404)
+        }
+
+        res.render('page', {
+            page: page,
+            title: page.title
+        });
+    } catch (error) {
+        next(error);
+    }
+});
 
 router.get('/view-customers', (req, res) => {
     res.render('admin/view-customers', { currentPage: 'view-customers' });
@@ -76,6 +97,10 @@ router.get('/view-merchants', (req, res) => {
 
 router.get('/view-categories', (req, res) => {
     res.render('admin/view-categories', { currentPage: 'view-categories' });
+});
+
+router.get('/view-pages', (req, res) => {
+    res.render('admin/view-pages', { currentPage: 'view-pages' });
 });
 
 
@@ -117,16 +142,6 @@ router.get('/view-job-applications', (req, res) => {
 
 router.get('/view-docs', (req, res) => {
     res.render('admin/view-docs', { currentPage: 'view-docs' });
-});
-
-router.get('/view-privacy-policy', async (req, res) => {
-    // Find privacy policy page in DB
-    const Page = (await import('../models/pages.model.js')).default;
-    let page = await Page.findOne({ slug: 'privacy-policy' });
-    if (!page) {
-        page = { title: '', content: '', status: 'draft' };
-    }
-    res.render('admin/view-privacy-policy', { currentPage: 'view-privacy-policy', page });
 });
 
 export default router;

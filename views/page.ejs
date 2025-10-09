@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title><%= page.title %> - Bzz Co.</title>
+    <meta name="description" content="<%= page.metaDescription || '' %>" />
+    <% if (page.metaKeywords && page.metaKeywords.length > 0) { %>
+    <meta name="keywords" content="<%= page.metaKeywords.join(', ') %>" />
+    <% } %>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="/assets/vendor/css/core.css" />
+    <link rel="stylesheet" href="/assets/css/demo.css" />
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f9;
+            color: #676a7b;
+        }
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .page-header {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #262b43;
+            margin: 0;
+        }
+        .page-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            line-height: 1.8;
+        }
+        .page-content h1, .page-content h2, .page-content h3, .page-content h4 {
+            color: #262b43;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        .page-content h1 { font-size: 2rem; }
+        .page-content h2 { font-size: 1.75rem; }
+        .page-content h3 { font-size: 1.5rem; }
+        .page-content h4 { font-size: 1.25rem; }
+        .page-content p {
+            margin-bottom: 1rem;
+        }
+        .page-content ul, .page-content ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        .page-content a {
+            color: #f97316;
+            text-decoration: none;
+        }
+        .page-content a:hover {
+            text-decoration: underline;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #676a7b;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            color: #f97316;
+        }
+        .page-meta {
+            color: #9295a1;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+        }
+
+        <% if (page.template === 'sidebar') { %>
+        @media (min-width: 992px) {
+            .page-layout {
+                display: grid;
+                grid-template-columns: 250px 1fr;
+                gap: 2rem;
+            }
+        }
+        <% } else if (page.template === 'full-width') { %>
+        .page-container {
+            max-width: 100%;
+            padding: 2rem 4rem;
+        }
+        <% } %>
+    </style>
+</head>
+
+<body>
+    <div class="page-container">
+        <a href="/" class="back-link">
+            <i class="ri-arrow-left-line"></i> Back to Home
+        </a>
+
+        <div class="page-header">
+            <h1 class="page-title"><%= page.title %></h1>
+            <div class="page-meta">
+                Last updated: <%= new Date(page.updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <%- page.content %>
+        </div>
+    </div>
+</body>
+</html>

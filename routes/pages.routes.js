@@ -1,35 +1,48 @@
 import express from 'express';
-import Page from '../models/pages.model.js';
+import {
+    getAllPages,
+    getPageById,
+    createPage,
+    updatePage,
+    deletePage,
+    bulkDeletePages,
+    getPageStats
+} from '../controllers/pages.controller.js';
 
 const router = express.Router();
 
-// GET privacy policy page for admin edit
-router.get('/privacy-policy', async (req, res) => {
-    let page = await Page.findOne({ slug: 'privacy-policy' });
-    if (!page) {
-        page = new Page({ title: 'Privacy Policy', slug: 'privacy-policy', content: '', status: 'draft' });
-        await page.save();
-    }
-    res.render('admin/view-privacy-policy', { page, currentPage: 'view-privacy-policy' });
+// View routes (Admin UI)
+router.get('/view-pages', (req, res) => {
+    res.render('admin/view-pages', {
+        currentPage: 'view-pages',
+        title: 'Manage Pages'
+    });
 });
 
-// POST update privacy policy
-router.post('/privacy-policy', async (req, res) => {
-    const { title, content, status } = req.body;
-    await Page.findOneAndUpdate(
-        { slug: 'privacy-policy' },
-        { title, content, status, updatedAt: new Date() },
-        { new: true, upsert: true }
-    );
-    // After saving, fetch updated page and render
-    const page = await Page.findOne({ slug: 'privacy-policy' });
-    res.render('admin/view-privacy-policy', { page, currentPage: 'view-privacy-policy' });
+router.get('/add-page', (req, res) => {
+    res.render('admin/add-page', {
+        currentPage: 'add-page',
+        title: 'Add New Page',
+        tinymceApiKey: process.env.TINYMCE_API_KEY
+    });
 });
 
-// POST delete privacy policy
-router.post('/privacy-policy/delete', async (req, res) => {
-    await Page.findOneAndDelete({ slug: 'privacy-policy' });
-    res.render('admin/view-privacy-policy', { page: { title: '', content: '', status: 'draft' }, currentPage: 'view-privacy-policy' });
+router.get('/edit-page/:id', (req, res) => {
+    res.render('admin/edit-page', {
+        currentPage: 'edit-page',
+        title: 'Edit Page',
+        pageId: req.params.id,
+        tinymceApiKey: process.env.TINYMCE_API_KEY
+    });
 });
+
+// API routes
+router.get('/api/pages', getAllPages);
+router.get('/api/pages/stats', getPageStats);
+router.get('/api/pages/:id', getPageById);
+router.post('/api/pages', createPage);
+router.put('/api/pages/:id', updatePage);
+router.delete('/api/pages/:id', deletePage);
+router.post('/api/pages/bulk-delete', bulkDeletePages);
 
 export default router;

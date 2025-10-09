@@ -590,6 +590,11 @@ document.addEventListener('DOMContentLoaded', function (e) {
         })
         .then(data => {
           if (data.success) {
+            // Debug: log the order data to see what we're getting
+            console.log('Order data received:', data.order);
+            if (data.order.products) {
+              console.log('Products in order:', data.order.products);
+            }
             displayOrderDetails(data.order);
             $('#orderDetailsModal').modal('show');
           } else {
@@ -650,12 +655,25 @@ document.addEventListener('DOMContentLoaded', function (e) {
         productsHtml = order.products.map(item => {
           const product = item.product_id;
           const subtotal = item.quantity * item.unit_price;
+
+          // Handle product name - check multiple possible properties
+          let productName = 'Unknown Product';
+          if (product) {
+            productName = product.productTitle || product.name || product.title || 'Unknown Product';
+          }
+
+          // Handle product SKU
+          let productSku = 'N/A';
+          if (product) {
+            productSku = product.productSku || product.sku || 'N/A';
+          }
+
           return `
             <tr>
               <td>
                 <div class="d-flex flex-column">
-                  <h6 class="mb-1">${product ? product.productTitle : 'Unknown Product'}</h6>
-                  <small class="text-muted">SKU: ${product ? product.productSku : 'N/A'}</small>
+                  <h6 class="mb-1">${productName}</h6>
+                  <small class="text-muted">SKU: ${productSku}</small>
                 </div>
               </td>
               <td class="text-center">${item.quantity}</td>
