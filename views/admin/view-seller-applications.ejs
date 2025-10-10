@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en" class="layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr" data-skin="default"
+    data-bs-theme="light" data-assets-path="/assets/" data-template="vertical-menu-template">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Seller Applications - Bzz Co.</title>
+    <meta name="description" content="" />
+    <%- include("layout/header") %>
+</head>
+
+<body>
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <%- include("layout/sidebar") %>
+            <div class="layout-page">
+                <%- include("layout/header") %>
+                <div class="content-wrapper">
+                    <div class="container-xxl flex-grow-1 container-p-y">
+
+                        <!-- Statistics Cards -->
+                        <div class="row mb-4">
+                            <div class="col-xl-2 col-md-4 col-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="card-info">
+                                                <p class="card-text">Total</p>
+                                                <div class="d-flex align-items-end mb-2">
+                                                    <h4 class="card-title mb-0 me-2" id="totalApplications">0</h4>
+                                                </div>
+                                            </div>
+                                            <div class="card-icon">
+                                                <span class="badge bg-label-primary rounded p-2">
+                                                    <i class="icon-base ri ri-file-list-3-line icon-24px"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-md-4 col-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="card-info">
+                                                <p class="card-text">Pending</p>
+                                                <div class="d-flex align-items-end mb-2">
+                                                    <h4 class="card-title mb-0 me-2" id="pendingApplications">0</h4>
+                                                </div>
+                                            </div>
+                                            <div class="card-icon">
+                                                <span class="badge bg-label-warning rounded p-2">
+                                                    <i class="icon-base ri ri-time-line icon-24px"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-md-4 col-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="card-info">
+                                                <p class="card-text">Under Review</p>
+                                                <div class="d-flex align-items-end mb-2">
+                                                    <h4 class="card-title mb-0 me-2" id="underReviewApplications">0</h4>
+                                                </div>
+                                            </div>
+                                            <div class="card-icon">
+                                                <span class="badge bg-label-info rounded p-2">
+                                                    <i class="icon-base ri ri-search-eye-line icon-24px"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-md-4 col-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="card-info">
+                                                <p class="card-text">Approved</p>
+                                                <div class="d-flex align-items-end mb-2">
+                                                    <h4 class="card-title mb-0 me-2" id="approvedApplications">0</h4>
+                                                </div>
+                                            </div>
+                                            <div class="card-icon">
+                                                <span class="badge bg-label-success rounded p-2">
+                                                    <i class="icon-base ri ri-check-line icon-24px"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-md-4 col-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="card-info">
+                                                <p class="card-text">Rejected</p>
+                                                <div class="d-flex align-items-end mb-2">
+                                                    <h4 class="card-title mb-0 me-2" id="rejectedApplications">0</h4>
+                                                </div>
+                                            </div>
+                                            <div class="card-icon">
+                                                <span class="badge bg-label-danger rounded p-2">
+                                                    <i class="icon-base ri ri-close-line icon-24px"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Applications Table -->
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Seller Applications</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="applicationsTable" class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <input type="checkbox" class="form-check-input" id="selectAll">
+                                                </th>
+                                                <th>Shop Name</th>
+                                                <th>Owner Name</th>
+                                                <th>Email</th>
+                                                <th>Phone</th>
+                                                <th>Business Type</th>
+                                                <th>Status</th>
+                                                <th>Submitted</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                                <div class="mt-3">
+                                    <button class="btn btn-danger" id="bulkDeleteBtn" style="display: none;">
+                                        <i class="icon-base ri ri-delete-bin-line me-1"></i> Delete Selected
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <%- include("layout/footer") %>
+                    <div class="content-backdrop fade"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layout-overlay layout-menu-toggle"></div>
+        <div class="drag-target"></div>
+    </div>
+
+    <script src="/assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="/assets/vendor/libs/popper/popper.js"></script>
+    <script src="/assets/vendor/js/bootstrap.js"></script>
+    <script src="/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="/assets/vendor/js/menu.js"></script>
+    <script src="/assets/js/main.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            let selectedApplications = [];
+
+            // Load statistics
+            function loadStats() {
+                $.get('/api/seller-applications/stats', function (response) {
+                    if (response.success) {
+                        $('#totalApplications').text(response.stats.total);
+                        $('#pendingApplications').text(response.stats.pending);
+                        $('#underReviewApplications').text(response.stats.underReview);
+                        $('#approvedApplications').text(response.stats.approved);
+                        $('#rejectedApplications').text(response.stats.rejected);
+                    }
+                });
+            }
+
+            loadStats();
+
+            // Initialize DataTable
+            const table = $('#applicationsTable').DataTable({
+                ajax: {
+                    url: '/api/seller-applications',
+                    dataSrc: 'applications',
+                    error: function(xhr, error, thrown) {
+                        console.error('DataTables Ajax Error:', {
+                            status: xhr.status,
+                            statusText: xhr.statusText,
+                            responseText: xhr.responseText,
+                            error: error,
+                            thrown: thrown
+                        });
+                        Swal.fire({
+                            title: 'Error Loading Data',
+                            html: `Status: ${xhr.status}<br>Error: ${error}<br>Response: ${xhr.responseText}`,
+                            icon: 'error'
+                        });
+                    }
+                },
+                columns: [
+                    {
+                        data: '_id',
+                        orderable: false,
+                        render: function (data) {
+                            return `<input type="checkbox" class="form-check-input application-checkbox" value="${data}">`;
+                        }
+                    },
+                    { data: 'shopName' },
+                    { data: 'ownerName' },
+                    { data: 'email' },
+                    { data: 'phone' },
+                    {
+                        data: 'businessType',
+                        render: function (data) {
+                            const badges = {
+                                'online': 'bg-label-info',
+                                'brick-and-mortar': 'bg-label-primary',
+                                'both': 'bg-label-success'
+                            };
+                            return `<span class="badge ${badges[data] || 'bg-label-secondary'}">${data}</span>`;
+                        }
+                    },
+                    {
+                        data: 'status',
+                        render: function (data) {
+                            const badges = {
+                                'pending': 'bg-label-warning',
+                                'under-review': 'bg-label-info',
+                                'approved': 'bg-label-success',
+                                'rejected': 'bg-label-danger'
+                            };
+                            return `<span class="badge ${badges[data]}">${data}</span>`;
+                        }
+                    },
+                    {
+                        data: 'submittedAt',
+                        render: function (data) {
+                            return new Date(data).toLocaleDateString();
+                        }
+                    },
+                    {
+                        data: '_id',
+                        orderable: false,
+                        render: function (data, type, row) {
+                            return `
+                                <div class="d-flex gap-2">
+                                    <a href="/view-seller-application/${data}" class="btn btn-sm btn-icon btn-text-secondary rounded-pill" title="View Details">
+                                        <i class="icon-base ri ri-eye-line"></i>
+                                    </a>
+                                    ${row.status === 'pending' || row.status === 'under-review' ? `
+                                        <button type="button" class="btn btn-sm btn-icon btn-text-success rounded-pill approve-application" data-id="${data}" title="Approve">
+                                            <i class="icon-base ri ri-check-line"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-icon btn-text-danger rounded-pill reject-application" data-id="${data}" title="Reject">
+                                            <i class="icon-base ri ri-close-line"></i>
+                                        </button>
+                                    ` : ''}
+                                    <button type="button" class="btn btn-sm btn-icon btn-text-secondary rounded-pill delete-application" data-id="${data}" title="Delete">
+                                        <i class="icon-base ri ri-delete-bin-line"></i>
+                                    </button>
+                                </div>
+                            `;
+                        }
+                    }
+                ],
+                order: [[7, 'desc']],
+                pageLength: 25
+            });
+
+            // Handle select all checkbox
+            $('#selectAll').on('change', function () {
+                const isChecked = $(this).is(':checked');
+                $('.application-checkbox').prop('checked', isChecked);
+                updateSelectedApplications();
+            });
+
+            // Handle individual checkbox
+            $(document).on('change', '.application-checkbox', updateSelectedApplications);
+
+            function updateSelectedApplications() {
+                selectedApplications = [];
+                $('.application-checkbox:checked').each(function () {
+                    selectedApplications.push($(this).val());
+                });
+                $('#bulkDeleteBtn').toggle(selectedApplications.length > 0);
+            }
+
+            // Approve application
+            $(document).on('click', '.approve-application', function () {
+                const applicationId = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Approve Application?',
+                    input: 'textarea',
+                    inputLabel: 'Approval Notes (optional)',
+                    inputPlaceholder: 'Enter any notes about this approval...',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    confirmButtonText: 'Yes, approve it!',
+                    showLoaderOnConfirm: true,
+                    preConfirm: (notes) => {
+                        return $.ajax({
+                            url: `/api/seller-applications/${applicationId}/status`,
+                            method: 'PUT',
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                status: 'approved',
+                                approvalNotes: notes
+                            })
+                        });
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Check if credentials were generated
+                        if (result.value.credentials) {
+                            const { email, password, role } = result.value.credentials;
+                            Swal.fire({
+                                title: 'Application Approved!',
+                                html: `
+                                    <div class="text-start">
+                                        <p class="mb-3">A seller account has been created with the following credentials:</p>
+                                        <div class="alert alert-info">
+                                            <strong>Email:</strong> ${email}<br>
+                                            <strong>Password:</strong> <code>${password}</code><br>
+                                            <strong>Role:</strong> ${role}
+                                        </div>
+                                        <p class="text-warning mb-0">
+                                            <i class="icon-base ri ri-error-warning-line me-1"></i>
+                                            <strong>Important:</strong> Please copy these credentials and send them to the seller.
+                                            The password is temporarily stored in the application details.
+                                        </p>
+                                    </div>
+                                `,
+                                icon: 'success',
+                                confirmButtonText: 'Copy Credentials',
+                                showCancelButton: true,
+                                cancelButtonText: 'Close'
+                            }).then((copyResult) => {
+                                if (copyResult.isConfirmed) {
+                                    const credentialsText = `Email: ${email}\nPassword: ${password}\nRole: ${role}\n\nLogin URL: ${window.location.origin}/login`;
+                                    navigator.clipboard.writeText(credentialsText).then(() => {
+                                        Swal.fire('Copied!', 'Credentials copied to clipboard', 'success');
+                                    });
+                                }
+                            });
+                        } else {
+                            Swal.fire('Approved!', result.value.message, 'success');
+                        }
+                        table.ajax.reload();
+                        loadStats();
+                    }
+                });
+            });
+
+            // Reject application
+            $(document).on('click', '.reject-application', function () {
+                const applicationId = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Reject Application?',
+                    input: 'textarea',
+                    inputLabel: 'Rejection Reason (required)',
+                    inputPlaceholder: 'Enter the reason for rejection...',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'You must provide a rejection reason!';
+                        }
+                    },
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Yes, reject it!',
+                    showLoaderOnConfirm: true,
+                    preConfirm: (reason) => {
+                        return $.ajax({
+                            url: `/api/seller-applications/${applicationId}/status`,
+                            method: 'PUT',
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                status: 'rejected',
+                                rejectionReason: reason
+                            })
+                        });
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire('Rejected!', result.value.message, 'success');
+                        table.ajax.reload();
+                        loadStats();
+                    }
+                });
+            });
+
+            // Bulk delete
+            $('#bulkDeleteBtn').on('click', function () {
+                if (selectedApplications.length === 0) return;
+
+                Swal.fire({
+                    title: 'Delete Selected Applications?',
+                    text: `You are about to delete ${selectedApplications.length} application(s). This action cannot be undone.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete them!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/api/seller-applications/bulk-delete',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ ids: selectedApplications }),
+                            success: function (response) {
+                                Swal.fire('Deleted!', response.message, 'success');
+                                table.ajax.reload();
+                                selectedApplications = [];
+                                $('#selectAll').prop('checked', false);
+                                $('#bulkDeleteBtn').hide();
+                                loadStats();
+                            },
+                            error: function () {
+                                Swal.fire('Error!', 'Failed to delete applications', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Delete single application
+            $(document).on('click', '.delete-application', function () {
+                const applicationId = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Delete Application?',
+                    text: 'This action cannot be undone.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/api/seller-applications/${applicationId}`,
+                            method: 'DELETE',
+                            success: function (response) {
+                                Swal.fire('Deleted!', response.message, 'success');
+                                table.ajax.reload();
+                                loadStats();
+                            },
+                            error: function () {
+                                Swal.fire('Error!', 'Failed to delete application', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

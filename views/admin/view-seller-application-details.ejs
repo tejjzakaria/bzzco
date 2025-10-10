@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en" class="layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr" data-skin="default"
+    data-bs-theme="light" data-assets-path="/assets/" data-template="vertical-menu-template">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Application Details - Bzz Co.</title>
+    <meta name="description" content="" />
+    <%- include("layout/header") %>
+</head>
+
+<body>
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <%- include("layout/sidebar") %>
+            <div class="layout-page">
+                <%- include("layout/header") %>
+                <div class="content-wrapper">
+                    <div class="container-xxl flex-grow-1 container-p-y">
+
+                        <!-- Back Button -->
+                        <div class="mb-4">
+                            <a href="/view-seller-applications" class="btn btn-sm btn-secondary">
+                                <i class="icon-base ri ri-arrow-left-line me-1"></i> Back to Applications
+                            </a>
+                        </div>
+
+                        <!-- Application Details -->
+                        <div id="applicationDetails">
+                            <!-- Content will be loaded here -->
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <%- include("layout/footer") %>
+                    <div class="content-backdrop fade"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layout-overlay layout-menu-toggle"></div>
+        <div class="drag-target"></div>
+    </div>
+
+    <script src="/assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="/assets/vendor/libs/popper/popper.js"></script>
+    <script src="/assets/vendor/js/bootstrap.js"></script>
+    <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="/assets/vendor/js/menu.js"></script>
+    <script src="/assets/js/main.js"></script>
+
+    <script>
+        const applicationId = '<%= applicationId %>';
+
+        $(document).ready(function () {
+            loadApplicationDetails();
+        });
+
+        function loadApplicationDetails() {
+            $.get(`/api/seller-applications/${applicationId}`, function (response) {
+                if (response.success) {
+                    renderApplicationDetails(response.application);
+                } else {
+                    $('#applicationDetails').html(`
+                        <div class="alert alert-danger" role="alert">
+                            <i class="icon-base ri ri-error-warning-line me-2"></i>
+                            Failed to load application details
+                        </div>
+                    `);
+                }
+            }).fail(function () {
+                $('#applicationDetails').html(`
+                    <div class="alert alert-danger" role="alert">
+                        <i class="icon-base ri ri-error-warning-line me-2"></i>
+                        Error loading application details
+                    </div>
+                `);
+            });
+        }
+
+        function renderApplicationDetails(app) {
+            const statusBadges = {
+                'pending': 'bg-label-warning',
+                'under-review': 'bg-label-info',
+                'approved': 'bg-label-success',
+                'rejected': 'bg-label-danger'
+            };
+
+            const businessTypeBadges = {
+                'online': 'bg-label-info',
+                'brick-and-mortar': 'bg-label-primary',
+                'both': 'bg-label-success'
+            };
+
+            let html = `
+                <!-- Header Card -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h4 class="mb-2">${app.shopName}</h4>
+                                <p class="mb-0 text-body-secondary">Submitted on ${new Date(app.submittedAt).toLocaleDateString()}</p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <span class="badge ${statusBadges[app.status]} p-2 px-3 fs-6">${app.status}</span>
+                            </div>
+                        </div>
+                        ${(app.status === 'pending' || app.status === 'under-review') ? `
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <button class="btn btn-success me-2" onclick="approveApplication()">
+                                    <i class="icon-base ri ri-check-line me-1"></i> Approve
+                                </button>
+                                <button class="btn btn-danger" onclick="rejectApplication()">
+                                    <i class="icon-base ri ri-close-line me-1"></i> Reject
+                                </button>
+                                <button class="btn btn-info ms-2" onclick="setUnderReview()">
+                                    <i class="icon-base ri ri-eye-line me-1"></i> Mark Under Review
+                                </button>
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Basic Information -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="icon-base ri ri-user-line me-2"></i>Basic Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td class="fw-semibold">Shop Name:</td>
+                                        <td>${app.shopName}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-semibold">Owner Name:</td>
+                                        <td>${app.ownerName}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-semibold">Email:</td>
+                                        <td><a href="mailto:${app.email}">${app.email}</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-semibold">Phone:</td>
+                                        <td><a href="tel:${app.phone}">${app.phone}</a></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Business Information -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="icon-base ri ri-store-2-line me-2"></i>Business Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td class="fw-semibold">Business Type:</td>
+                                        <td><span class="badge ${businessTypeBadges[app.businessType]}">${app.businessType}</span></td>
+                                    </tr>
+                                    ${app.businessRegistrationNumber ? `
+                                    <tr>
+                                        <td class="fw-semibold">Registration #:</td>
+                                        <td>${app.businessRegistrationNumber}</td>
+                                    </tr>
+                                    ` : ''}
+                                    ${app.taxId ? `
+                                    <tr>
+                                        <td class="fw-semibold">Tax ID:</td>
+                                        <td>${app.taxId}</td>
+                                    </tr>
+                                    ` : ''}
+                                    ${app.yearEstablished ? `
+                                    <tr>
+                                        <td class="fw-semibold">Established:</td>
+                                        <td>${app.yearEstablished}</td>
+                                    </tr>
+                                    ` : ''}
+                                    ${app.numberOfEmployees ? `
+                                    <tr>
+                                        <td class="fw-semibold">Employees:</td>
+                                        <td>${app.numberOfEmployees}</td>
+                                    </tr>
+                                    ` : ''}
+                                    ${app.estimatedMonthlyRevenue ? `
+                                    <tr>
+                                        <td class="fw-semibold">Monthly Revenue:</td>
+                                        <td>${app.estimatedMonthlyRevenue}</td>
+                                    </tr>
+                                    ` : ''}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Address Information -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="icon-base ri ri-map-pin-line me-2"></i>Address Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td class="fw-semibold">Address:</td>
+                                        <td>${app.address}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-semibold">City:</td>
+                                        <td>${app.city}</td>
+                                    </tr>
+                                    ${app.state ? `
+                                    <tr>
+                                        <td class="fw-semibold">State:</td>
+                                        <td>${app.state}</td>
+                                    </tr>
+                                    ` : ''}
+                                    <tr>
+                                        <td class="fw-semibold">Postal Code:</td>
+                                        <td>${app.postalCode}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-semibold">Country:</td>
+                                        <td>${app.country}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Business Details -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="icon-base ri ri-file-text-line me-2"></i>Business Details
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <strong>Description:</strong>
+                                    <p class="mt-2">${app.businessDescription}</p>
+                                </div>
+                                ${app.productCategories && app.productCategories.length > 0 ? `
+                                <div class="mb-3">
+                                    <strong>Product Categories:</strong>
+                                    <div class="mt-2">
+                                        ${app.productCategories.map(cat => `<span class="badge bg-label-primary me-1 mb-1">${cat}</span>`).join('')}
+                                    </div>
+                                </div>
+                                ` : ''}
+                                ${app.websiteUrl ? `
+                                <div>
+                                    <strong>Website:</strong>
+                                    <p class="mt-2"><a href="${app.websiteUrl}" target="_blank">${app.websiteUrl}</a></p>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Media -->
+                    ${app.socialMedia && (app.socialMedia.facebook || app.socialMedia.instagram || app.socialMedia.linkedin || app.socialMedia.twitter) ? `
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="icon-base ri ri-links-line me-2"></i>Social Media
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-borderless">
+                                    ${app.socialMedia.facebook ? `
+                                    <tr>
+                                        <td class="fw-semibold">Facebook:</td>
+                                        <td><a href="${app.socialMedia.facebook}" target="_blank">${app.socialMedia.facebook}</a></td>
+                                    </tr>
+                                    ` : ''}
+                                    ${app.socialMedia.instagram ? `
+                                    <tr>
+                                        <td class="fw-semibold">Instagram:</td>
+                                        <td><a href="${app.socialMedia.instagram}" target="_blank">${app.socialMedia.instagram}</a></td>
+                                    </tr>
+                                    ` : ''}
+                                    ${app.socialMedia.linkedin ? `
+                                    <tr>
+                                        <td class="fw-semibold">LinkedIn:</td>
+                                        <td><a href="${app.socialMedia.linkedin}" target="_blank">${app.socialMedia.linkedin}</a></td>
+                                    </tr>
+                                    ` : ''}
+                                    ${app.socialMedia.twitter ? `
+                                    <tr>
+                                        <td class="fw-semibold">Twitter:</td>
+                                        <td><a href="${app.socialMedia.twitter}" target="_blank">${app.socialMedia.twitter}</a></td>
+                                    </tr>
+                                    ` : ''}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <!-- Bank Information -->
+                    ${app.bankName || app.accountHolderName || app.accountNumber || app.iban ? `
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="icon-base ri ri-bank-line me-2"></i>Bank Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-borderless">
+                                    ${app.bankName ? `
+                                    <tr>
+                                        <td class="fw-semibold">Bank Name:</td>
+                                        <td>${app.bankName}</td>
+                                    </tr>
+                                    ` : ''}
+                                    ${app.accountHolderName ? `
+                                    <tr>
+                                        <td class="fw-semibold">Account Holder:</td>
+                                        <td>${app.accountHolderName}</td>
+                                    </tr>
+                                    ` : ''}
+                                    ${app.accountNumber ? `
+                                    <tr>
+                                        <td class="fw-semibold">Account Number:</td>
+                                        <td>${app.accountNumber}</td>
+                                    </tr>
+                                    ` : ''}
+                                    ${app.iban ? `
+                                    <tr>
+                                        <td class="fw-semibold">IBAN:</td>
+                                        <td>${app.iban}</td>
+                                    </tr>
+                                    ` : ''}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <!-- Account Information (if approved) -->
+                    ${app.auth0UserId ? `
+                    <div class="col-12 mb-4">
+                        <div class="card border-success">
+                            <div class="card-header bg-label-success">
+                                <h5 class="card-title mb-0">
+                                    <i class="icon-base ri ri-shield-check-line me-2"></i>Seller Account Created
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Account Created:</strong> ${new Date(app.accountCreatedAt).toLocaleString()}</p>
+                                <p><strong>Auth0 User ID:</strong> <code>${app.auth0UserId}</code></p>
+                                ${app.generatedPassword ? `
+                                <div class="alert alert-warning">
+                                    <strong><i class="icon-base ri ri-key-line me-2"></i>Login Credentials:</strong>
+                                    <div class="mt-2">
+                                        <strong>Email:</strong> ${app.email}<br>
+                                        <strong>Password:</strong> <code class="fs-5">${app.generatedPassword}</code><br>
+                                        <strong>Role:</strong> seller
+                                    </div>
+                                    <button class="btn btn-sm btn-primary mt-3" onclick="copyCredentials('${app.email}', '${app.generatedPassword}')">
+                                        <i class="icon-base ri ri-file-copy-line me-1"></i>Copy Credentials
+                                    </button>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <!-- Review Information -->
+                    ${app.reviewedAt || app.rejectionReason || app.approvalNotes ? `
+                    <div class="col-12 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="icon-base ri ri-information-line me-2"></i>Review Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                ${app.reviewedAt ? `
+                                <p><strong>Reviewed At:</strong> ${new Date(app.reviewedAt).toLocaleString()}</p>
+                                ` : ''}
+                                ${app.reviewedBy ? `
+                                <p><strong>Reviewed By:</strong> ${app.reviewedBy.name || app.reviewedBy.email}</p>
+                                ` : ''}
+                                ${app.approvalNotes ? `
+                                <div class="alert alert-success">
+                                    <strong>Approval Notes:</strong>
+                                    <p class="mb-0 mt-2">${app.approvalNotes}</p>
+                                </div>
+                                ` : ''}
+                                ${app.rejectionReason ? `
+                                <div class="alert alert-danger">
+                                    <strong>Rejection Reason:</strong>
+                                    <p class="mb-0 mt-2">${app.rejectionReason}</p>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+
+            $('#applicationDetails').html(html);
+        }
+
+        function approveApplication() {
+            Swal.fire({
+                title: 'Approve Application?',
+                input: 'textarea',
+                inputLabel: 'Approval Notes (optional)',
+                inputPlaceholder: 'Enter any notes about this approval...',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                confirmButtonText: 'Yes, approve it!',
+                showLoaderOnConfirm: true,
+                preConfirm: (notes) => {
+                    return $.ajax({
+                        url: `/api/seller-applications/${applicationId}/status`,
+                        method: 'PUT',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            status: 'approved',
+                            approvalNotes: notes
+                        })
+                    });
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Check if credentials were generated
+                    if (result.value.credentials) {
+                        const { email, password, role } = result.value.credentials;
+                        Swal.fire({
+                            title: 'Application Approved!',
+                            html: `
+                                <div class="text-start">
+                                    <p class="mb-3">A seller account has been created with the following credentials:</p>
+                                    <div class="alert alert-info">
+                                        <strong>Email:</strong> ${email}<br>
+                                        <strong>Password:</strong> <code>${password}</code><br>
+                                        <strong>Role:</strong> ${role}
+                                    </div>
+                                    <p class="text-warning mb-0">
+                                        <i class="icon-base ri ri-error-warning-line me-1"></i>
+                                        <strong>Important:</strong> Please copy these credentials and send them to the seller.
+                                    </p>
+                                </div>
+                            `,
+                            icon: 'success',
+                            confirmButtonText: 'Copy Credentials',
+                            showCancelButton: true,
+                            cancelButtonText: 'Close'
+                        }).then((copyResult) => {
+                            if (copyResult.isConfirmed) {
+                                const credentialsText = `Email: ${email}\nPassword: ${password}\nRole: ${role}\n\nLogin URL: ${window.location.origin}/login`;
+                                navigator.clipboard.writeText(credentialsText).then(() => {
+                                    Swal.fire('Copied!', 'Credentials copied to clipboard', 'success');
+                                });
+                            }
+                            loadApplicationDetails();
+                        });
+                    } else {
+                        Swal.fire('Approved!', result.value.message, 'success');
+                        loadApplicationDetails();
+                    }
+                }
+            });
+        }
+
+        function copyCredentials(email, password) {
+            const credentialsText = `Email: ${email}\nPassword: ${password}\nRole: seller\n\nLogin URL: ${window.location.origin}/login`;
+            navigator.clipboard.writeText(credentialsText).then(() => {
+                Swal.fire('Copied!', 'Credentials copied to clipboard', 'success');
+            }).catch(() => {
+                Swal.fire('Error', 'Failed to copy credentials', 'error');
+            });
+        }
+
+        function rejectApplication() {
+            Swal.fire({
+                title: 'Reject Application?',
+                input: 'textarea',
+                inputLabel: 'Rejection Reason (required)',
+                inputPlaceholder: 'Enter the reason for rejection...',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'You must provide a rejection reason!';
+                    }
+                },
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Yes, reject it!',
+                showLoaderOnConfirm: true,
+                preConfirm: (reason) => {
+                    return $.ajax({
+                        url: `/api/seller-applications/${applicationId}/status`,
+                        method: 'PUT',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            status: 'rejected',
+                            rejectionReason: reason
+                        })
+                    });
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire('Rejected!', result.value.message, 'success');
+                    loadApplicationDetails();
+                }
+            });
+        }
+
+        function setUnderReview() {
+            $.ajax({
+                url: `/api/seller-applications/${applicationId}/status`,
+                method: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    status: 'under-review'
+                }),
+                success: function(response) {
+                    Swal.fire('Updated!', response.message, 'success');
+                    loadApplicationDetails();
+                },
+                error: function() {
+                    Swal.fire('Error!', 'Failed to update status', 'error');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

@@ -9,6 +9,7 @@ import teamRoutes from './team.routes.js';
 import contactRoutes from './contact.routes.js';
 import authRoutes from './auth.routes.js';
 import pagesRoutes from './pages.routes.js';
+import sellerApplicationsRoutes from './seller-applications.routes.js';
 import { optionalVerifyToken } from '../middleware/jwt.middleware.js';
 
 const router = express.Router();
@@ -56,6 +57,7 @@ router.use('/api/merchants', merchantsRoutes);
 router.use('/api/team', teamRoutes);
 router.use('/api/contact', contactRoutes);
 router.use('/admin/pages', pagesRoutes);
+router.use('/', sellerApplicationsRoutes);
 
 // Dynamic public page route (must be near the end to avoid conflicts)
 router.get('/:slug', async (req, res, next) => {

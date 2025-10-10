@@ -2,7 +2,7 @@
     <div class="app-brand demo">
         <a href="/dashboard" class="app-brand-link">
             <span class="app-brand-logo demo">
-                <img src="/assets/img/bzzco_logo.png" alt="" width="150" class="logo-img mt-4">
+                <img src="/assets/img/bzzco_logo.png" alt="" width="170" class="logo-img mt-4">
 
             </span>
             <span class="app-brand-text demo menu-text fw-semibold ms-2"></span>
@@ -47,12 +47,7 @@
             </a>
         </li>
 
-        <li class="menu-item <%= currentPage === 'view-merchants' ? 'active' : '' %>">
-            <a href="/view-merchants" class="menu-link">
-                <i class="menu-icon icon-base ri ri-user-shared-line"></i>
-                <div>Merchants</div>
-            </a>
-        </li>
+        
 
 
         <li class="menu-header small mt-5">
@@ -139,6 +134,13 @@
 
         </li>
 
+        <li class="menu-item <%= currentPage === 'view-merchants' ? 'active' : '' %>">
+            <a href="/view-merchants" class="menu-link">
+                <i class="menu-icon icon-base ri ri-building-2-line"></i>
+                <div>Merchants</div>
+            </a>
+        </li>
+
         <li class="menu-item <%= currentPage === 'view-slider' ? 'active' : '' %>">
             <a href="/view-slider" class="menu-link">
                 <i class="menu-icon icon-base ri ri-slideshow-line"></i>
@@ -181,7 +183,14 @@
 
         </li>
 
-        
+        <li class="menu-item <%= currentPage === 'view-seller-applications' ? 'active' : '' %>">
+            <a href="/view-seller-applications" class="menu-link">
+                <i class="menu-icon icon-base ri ri-store-2-line"></i>
+                <div>Seller Applications</div>
+            </a>
+        </li>
+
+
 
 
 
