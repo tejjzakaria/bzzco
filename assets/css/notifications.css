@@ -1,0 +1,48 @@
+/* Notification Badge Positioning */
+.layout-navbar .navbar-dropdown .badge-notifications {
+    inset-block-start: 5px;
+    inset-inline-end: -3px;
+}
+
+/* Ensure notification list items are visible */
+.dropdown-menu #notificationsList {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    max-height: none !important;
+}
+
+.dropdown-menu #notificationsList .list-group-item {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Notification dropdown custom scrollbar */
+.dropdown-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Notification item hover effect */
+.list-group-item-action:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
+}
+
+/* Unread notification highlight */
+.list-group-item.bg-label-primary {
+    background-color: rgba(var(--bs-primary-rgb), 0.05) !important;
+    border-left: 3px solid var(--bs-primary);
+}

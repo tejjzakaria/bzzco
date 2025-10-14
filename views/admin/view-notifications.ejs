@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en" class="layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr" data-skin="default"
+    data-bs-theme="light" data-assets-path="/assets/" data-template="vertical-menu-template">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Manage Notifications - Bzz Co.</title>
+    <meta name="description" content="" />
+    <%- include("layout/header") %>
+</head>
+
+<body>
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <%- include("layout/sidebar") %>
+            <div class="layout-page">
+                <%- include("layout/header") %>
+                <div class="content-wrapper">
+                    <div class="container-xxl flex-grow-1 container-p-y">
+
+                        <!-- Statistics Cards -->
+                        <div class="row mb-4">
+                            <div class="col-xl-2 col-md-4 col-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="card-info">
+                                                <p class="card-text">Total</p>
+                                                <div class="d-flex align-items-end mb-2">
+                                                    <h4 class="card-title mb-0 me-2" id="totalNotifications">0</h4>
+                                                </div>
+                                            </div>
+                                            <div class="card-icon">
+                                                <span class="badge bg-label-primary rounded p-2">
+                                                    <i class="icon-base ri ri-notification-3-line icon-24px"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-md-4 col-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="card-info">
+                                                <p class="card-text">Active</p>
+                                                <div class="d-flex align-items-end mb-2">
+                                                    <h4 class="card-title mb-0 me-2" id="activeNotifications">0</h4>
+                                                </div>
+                                            </div>
+                                            <div class="card-icon">
+                                                <span class="badge bg-label-success rounded p-2">
+                                                    <i class="icon-base ri ri-check-line icon-24px"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-md-4 col-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="card-info">
+                                                <p class="card-text">Scheduled</p>
+                                                <div class="d-flex align-items-end mb-2">
+                                                    <h4 class="card-title mb-0 me-2" id="scheduledNotifications">0</h4>
+                                                </div>
+                                            </div>
+                                            <div class="card-icon">
+                                                <span class="badge bg-label-info rounded p-2">
+                                                    <i class="icon-base ri ri-time-line icon-24px"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-md-4 col-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="card-info">
+                                                <p class="card-text">Total Views</p>
+                                                <div class="d-flex align-items-end mb-2">
+                                                    <h4 class="card-title mb-0 me-2" id="totalViews">0</h4>
+                                                </div>
+                                            </div>
+                                            <div class="card-icon">
+                                                <span class="badge bg-label-warning rounded p-2">
+                                                    <i class="icon-base ri ri-eye-line icon-24px"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-md-4 col-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="card-info">
+                                                <p class="card-text">Total Clicks</p>
+                                                <div class="d-flex align-items-end mb-2">
+                                                    <h4 class="card-title mb-0 me-2" id="totalClicks">0</h4>
+                                                </div>
+                                            </div>
+                                            <div class="card-icon">
+                                                <span class="badge bg-label-secondary rounded p-2">
+                                                    <i class="icon-base ri ri-cursor-line icon-24px"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notifications Table -->
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">All Notifications</h5>
+                                <a href="/add-notification" class="btn btn-primary">
+                                    <i class="icon-base ri ri-add-line me-1"></i> Create Notification
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="notificationsTable" class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <input type="checkbox" class="form-check-input" id="selectAll">
+                                                </th>
+                                                <th>Title</th>
+                                                <th>Type</th>
+                                                <th>Audience</th>
+                                                <th>Priority</th>
+                                                <th>Status</th>
+                                                <th>Views</th>
+                                                <th>Created</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                                <div class="mt-3">
+                                    <button class="btn btn-danger" id="bulkDeleteBtn" style="display: none;">
+                                        <i class="icon-base ri ri-delete-bin-line me-1"></i> Delete Selected
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="content-backdrop fade"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layout-overlay layout-menu-toggle"></div>
+        <div class="drag-target"></div>
+    </div>
+
+    <%- include("layout/footer") %>
+
+    <script>
+        $(document).ready(function () {
+            let selectedNotifications = [];
+
+            // Load statistics
+            async function loadStats() {
+                try {
+                    const response = await window.tokenManager.makeAuthenticatedRequest('/api/notifications/stats');
+                    const data = await response.json();
+
+                    if (data.success) {
+                        $('#totalNotifications').text(data.stats.total);
+                        $('#activeNotifications').text(data.stats.active);
+                        $('#scheduledNotifications').text(data.stats.scheduled);
+                        $('#totalViews').text(data.stats.totalViews);
+                        $('#totalClicks').text(data.stats.totalClicks);
+                    }
+                } catch (error) {
+                    console.error('Failed to load stats:', error);
+                }
+            }
+
+            loadStats();
+
+            // Initialize DataTable
+            const table = $('#notificationsTable').DataTable({
+                ajax: {
+                    url: '/api/notifications',
+                    dataSrc: 'notifications',
+                    beforeSend: function(xhr) {
+                        const token = window.tokenManager.getToken();
+                        if (token) {
+                            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+                        }
+                    }
+                },
+                columns: [
+                    {
+                        data: '_id',
+                        orderable: false,
+                        render: function (data) {
+                            return `<input type="checkbox" class="form-check-input notification-checkbox" value="${data}">`;
+                        }
+                    },
+                    {
+                        data: 'title',
+                        render: function (data, type, row) {
+                            const iconClass = row.icon || 'ri-notification-line';
+                            return `
+                                <div class="d-flex align-items-center">
+                                    <i class="icon-base ri ${iconClass} me-2"></i>
+                                    <span>${data}</span>
+                                </div>
+                            `;
+                        }
+                    },
+                    {
+                        data: 'type',
+                        render: function (data) {
+                            const badges = {
+                                'info': 'bg-label-info',
+                                'success': 'bg-label-success',
+                                'warning': 'bg-label-warning',
+                                'error': 'bg-label-danger',
+                                'announcement': 'bg-label-primary'
+                            };
+                            return `<span class="badge ${badges[data]}">${data}</span>`;
+                        }
+                    },
+                    {
+                        data: 'targetAudience',
+                        render: function (data) {
+                            const badges = {
+                                'all': 'bg-label-primary',
+                                'admin': 'bg-label-danger',
+                                'seller': 'bg-label-warning',
+                                'customer': 'bg-label-info'
+                            };
+                            return `<span class="badge ${badges[data]}">${data}</span>`;
+                        }
+                    },
+                    {
+                        data: 'priority',
+                        render: function (data) {
+                            const badges = {
+                                'low': 'bg-label-secondary',
+                                'medium': 'bg-label-info',
+                                'high': 'bg-label-warning',
+                                'urgent': 'bg-label-danger'
+                            };
+                            return `<span class="badge ${badges[data]}">${data}</span>`;
+                        }
+                    },
+                    {
+                        data: 'status',
+                        render: function (data) {
+                            const badges = {
+                                'active': 'bg-label-success',
+                                'inactive': 'bg-label-secondary',
+                                'scheduled': 'bg-label-info',
+                                'expired': 'bg-label-danger'
+                            };
+                            return `<span class="badge ${badges[data]}">${data}</span>`;
+                        }
+                    },
+                    {
+                        data: 'viewCount',
+                        render: function (data) {
+                            return `<span class="text-muted">${data}</span>`;
+                        }
+                    },
+                    {
+                        data: 'createdAt',
+                        render: function (data) {
+                            return new Date(data).toLocaleDateString();
+                        }
+                    },
+                    {
+                        data: '_id',
+                        orderable: false,
+                        render: function (data) {
+                            return `
+                                <div class="d-flex gap-2">
+                                    <a href="/edit-notification/${data}" class="btn btn-sm btn-icon btn-text-secondary rounded-pill" title="Edit">
+                                        <i class="icon-base ri ri-edit-box-line"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-icon btn-text-secondary rounded-pill delete-notification" data-id="${data}" title="Delete">
+                                        <i class="icon-base ri ri-delete-bin-line"></i>
+                                    </button>
+                                </div>
+                            `;
+                        }
+                    }
+                ],
+                order: [[7, 'desc']],
+                pageLength: 25
+            });
+
+            // Handle select all checkbox
+            $('#selectAll').on('change', function () {
+                const isChecked = $(this).is(':checked');
+                $('.notification-checkbox').prop('checked', isChecked);
+                updateSelectedNotifications();
+            });
+
+            // Handle individual checkbox
+            $(document).on('change', '.notification-checkbox', updateSelectedNotifications);
+
+            function updateSelectedNotifications() {
+                selectedNotifications = [];
+                $('.notification-checkbox:checked').each(function () {
+                    selectedNotifications.push($(this).val());
+                });
+                $('#bulkDeleteBtn').toggle(selectedNotifications.length > 0);
+            }
+
+            // Bulk delete
+            $('#bulkDeleteBtn').on('click', function () {
+                if (selectedNotifications.length === 0) return;
+
+                Swal.fire({
+                    title: 'Delete Selected Notifications?',
+                    text: `You are about to delete ${selectedNotifications.length} notification(s). This action cannot be undone.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete them!'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            const response = await window.tokenManager.makeAuthenticatedRequest('/api/notifications/bulk-delete', {
+                                method: 'POST',
+                                body: JSON.stringify({ ids: selectedNotifications })
+                            });
+                            const data = await response.json();
+
+                            if (data.success) {
+                                Swal.fire('Deleted!', data.message, 'success');
+                                table.ajax.reload();
+                                selectedNotifications = [];
+                                $('#selectAll').prop('checked', false);
+                                $('#bulkDeleteBtn').hide();
+                                loadStats();
+                            } else {
+                                Swal.fire('Error!', data.message || 'Failed to delete notifications', 'error');
+                            }
+                        } catch (error) {
+                            Swal.fire('Error!', 'Failed to delete notifications', 'error');
+                        }
+                    }
+                });
+            });
+
+            // Delete single notification
+            $(document).on('click', '.delete-notification', function () {
+                const notificationId = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Delete Notification?',
+                    text: 'This action cannot be undone.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            const response = await window.tokenManager.makeAuthenticatedRequest(`/api/notifications/${notificationId}`, {
+                                method: 'DELETE'
+                            });
+                            const data = await response.json();
+
+                            if (data.success) {
+                                Swal.fire('Deleted!', data.message, 'success');
+                                table.ajax.reload();
+                                loadStats();
+                            } else {
+                                Swal.fire('Error!', data.message || 'Failed to delete notification', 'error');
+                            }
+                        } catch (error) {
+                            Swal.fire('Error!', 'Failed to delete notification', 'error');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

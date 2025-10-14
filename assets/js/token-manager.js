@@ -282,13 +282,22 @@ class TokenManager {
         }
     }
 
+    // Get user ID from token
+    getUserId() {
+        const token = this.getToken();
+        if (!token) return null;
+
+        const decoded = this.decodeToken(token);
+        return decoded?.sub || null;
+    }
+
     // Method to make authenticated requests
     async makeAuthenticatedRequest(url, options = {}) {
         const token = this.getToken();
         console.log('Making authenticated request to:', url);
         console.log('Token exists:', !!token);
         console.log('Token preview:', token ? token.substring(0, 20) + '...' : 'No token');
-        
+
         if (!token) {
             console.error('No token available for authenticated request');
             window.location.href = '/login';
